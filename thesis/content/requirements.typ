@@ -1,9 +1,10 @@
 #import "/utils/todo.typ": TODO
+#import "/utils/open_questions.typ": OPENQ
 
 = Requirements
 
 
-#TODO[
+#OPENQ[
   Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
 ]
 
@@ -32,8 +33,8 @@
 #TODO[
   List and describe all functional requirements of your system. Also mention requirements that you were not able to realize. The short title should be in the form “verb objective”
 
-  - FR1 Short Title: Short Description. 
-  - FR2 Short Title: Short Description. 
+  - FR1 Short Title: Short Description.
+  - FR2 Short Title: Short Description.
   - FR3 Short Title: Short Description.
 ]
 
@@ -41,8 +42,8 @@
 #TODO[
   List and describe all quality attributes of your system. All your quality attributes should fall into the URPS categories mentioned in . Also mention requirements that you were not able to realize.
 
-  - QA1 Category: Short Description. 
-  - QA2 Category: Short Description. 
+  - QA1 Category: Short Description.
+  - QA2 Category: Short Description.
   - QA3 Category: Short Description.
 
 ]
@@ -52,8 +53,8 @@
 #TODO[
   List and describe all pseudo requirements of your system. Also mention requirements that you were not able to realize.
 
-  - C1 Category: Short Description. 
-  - C2 Category: Short Description. 
+  - C1 Category: Short Description.
+  - C2 Category: Short Description.
   - C3 Category: Short Description.
 
 ]

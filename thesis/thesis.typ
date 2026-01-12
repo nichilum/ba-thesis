@@ -22,7 +22,11 @@
 #include "/content/introduction.typ"
 #include "/content/background.typ"
 #include "/content/related_work.typ"
-#include "/content/requirements.typ"
-#include "/content/system_design.typ"
+
+#include "/content/methodology.typ"
+#include "/content/experiments.typ"
+
+
+#include "/content/results.typ"
 #include "/content/evaluation.typ"
 #include "/content/summary.typ"

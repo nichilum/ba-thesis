@@ -26,7 +26,6 @@
 #include "/content/methodology.typ"
 #include "/content/experiments.typ"
 
-
 #include "/content/results.typ"
 #include "/content/evaluation.typ"
 #include "/content/summary.typ"

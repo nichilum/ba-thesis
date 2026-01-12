@@ -1,6 +1,13 @@
 #import "/utils/todo.typ": TODO
 
 = Requirements
+
+
+#TODO[
+  Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
+]
+
+
 #TODO[
   This chapter follows the Requirements Analysis Document Template in . Important: Make sure that the whole chapter is independent of the chosen technology and development platform. The idea is that you illustrate concepts, taxonomies and relationships of the application domain independent of the solution domain! Cite several times in this chapter.
 

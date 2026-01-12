@@ -1,0 +1,99 @@
+show-today: false
+headers:
+  - month
+  - week
+start: 2026-01-01
+end: 2026-03-31
+
+tasks:
+  - name: "1. Research & Conceptualization"
+    intervals:
+      - start: 2026-01-01
+        end: 2026-01-13
+    subtasks:
+      - name: "1.1 State-of-the-Art Review (Dereverberation & Deep Learning)"
+        start: 2026-01-01
+        end: 2026-01-09
+      - name: "1.2 Definition of System Requirements (Latency, Sampling Rate)"
+        start: 2026-01-07
+        end: 2026-01-13
+
+  - name: "2. Dataset Development"
+    intervals:
+      - start: 2026-01-13
+        end: 2026-01-29
+    subtasks:
+      - name: "2.1 Collection of Dry Audio Signals (Speech & Non-Speech)"
+        start: 2026-01-13
+        end: 2026-01-22
+      - name: "2.2 Room Simulation & Generation of Dry–Wet Pairs"
+        start: 2026-01-19
+        end: 2026-01-29
+
+  - name: "3. SoTA Evaluation"
+    intervals:
+      - start: 2026-01-27
+        end: 2026-02-11
+    subtasks:
+      - name: "3.1 Implementation of Baseline Model (TasNet / Conv-TasNet)"
+        start: 2026-01-27
+        end: 2026-02-03
+      - name: "3.2 Training & Evaluation on Non-Speech Signals"
+        start: 2026-02-03
+        end: 2026-02-11
+
+  - name: "4. Domain Evaluation (Time vs. Frequency)"
+    intervals:
+      - start: 2026-02-08
+        end: 2026-02-27
+    subtasks:
+      - name: "4.1 Time-Domain Architecture Design & Training"
+        start: 2026-02-08
+        end: 2026-02-17
+      - name: "4.2 Frequency-Domain Architecture Design & Training"
+        start: 2026-02-14
+        end: 2026-02-23
+      - name: "4.3 Sampling Rate & Latency Comparison"
+        start: 2026-02-20
+        end: 2026-02-27
+
+  - name: "5. Incremental Learning & Adaptation"
+    intervals:
+      - start: 2026-02-25
+        end: 2026-03-08
+    subtasks:
+      - name: "5.1 Quality Discriminator Design"
+        start: 2026-02-25
+        end: 2026-03-02
+      - name: "5.2 Incremental Learning Integration & Testing"
+        start: 2026-03-02
+        end: 2026-03-08
+
+  - name: "6. Evaluation & Real-Time Validation"
+    intervals:
+      - start: 2026-03-03
+        end: 2026-03-12
+    subtasks:
+      - name: "6.1 Latency & Stability Testing (<50 ms)"
+        start: 2026-03-03
+        end: 2026-03-08
+      - name: "6.2 Perceptual Quality & Coloration Evaluation"
+        start: 2026-03-05
+        end: 2026-03-12
+
+  - name: "7. Thesis Writing"
+    intervals:
+      - start: 2026-02-27
+        end: 2026-03-31
+    subtasks:
+      - name: "7.1 Drafting Chapters (Methods, Experiments, Results)"
+        start: 2026-02-27
+        end: 2026-03-23
+      - name: "7.2 Revision, Formatting & Final Editing"
+        start: 2026-03-23
+        end: 2026-03-31
+
+milestones:
+  - name: "Final Hand-In"
+    date: 2026-03-31
+    show-date: true

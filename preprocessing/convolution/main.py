@@ -116,11 +116,11 @@ for sample_path in sample_paths:
 
         total_samples_reverb = num_samples_reverb * num_channels_reverb
 
-        print("Sample rate of sample: ", samplerate_sample)
-        print("Sample rate of reverb: ", samplerate_reverb)
+        # print("Sample rate of sample: ", samplerate_sample)
+        # print("Sample rate of reverb: ", samplerate_reverb)
 
-        print("Number of channels in sample: ", num_channels_sample)
-        print("Number of channels in reverb: ", num_channels_reverb)
+        # print("Number of channels in sample: ", num_channels_sample)
+        # print("Number of channels in reverb: ", num_channels_reverb)
 
         sample_max = np.maximum(np.max(np.abs(sample), axis=1, keepdims=True), 1e-12)
         sample = sample / sample_max

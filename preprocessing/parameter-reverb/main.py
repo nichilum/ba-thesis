@@ -34,12 +34,3 @@ offline_reverberate(
     effect, "test-data/-0atYHAfGHA ('Male singing',).wav", "test-data/out.wav"
 )
 print(time.perf_counter() - ts)
-
-
-random.seed(100)
-ts = time.perf_counter()
-set_effect_attrib(random.choice, effect, constants.VALLHALLA_DICT)
-offline_reverberate(
-    effect, "test-data/-0atYHAfGHA ('Male singing',).wav", "test-data/out.wav"
-)
-print(time.perf_counter() - ts)

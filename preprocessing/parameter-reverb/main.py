@@ -3,6 +3,7 @@ from pedalboard import load_plugin
 from pedalboard.io import AudioFile
 import random
 import time
+import constants
 
 
 def live_reverberate(effect, chunk, samplerate):
@@ -24,57 +25,20 @@ def set_effect_attrib(choice, effect, parameter_dict: dict[str, Any]):
 
 
 effect = load_plugin("vst3/ValhallaSupermassive.vst3")
-valhalla_dict = {
-    "mix": range(0, 100),
-    "delay_ms": range(0, 2000),
-    "delaywarp": range(0, 100),
-    "feedback": range(0, 100),
-    "density": range(0, 100),
-    "width": range(-100, 100),
-    "lowcut": range(10, 2000, 10),
-    "highcut": range(200, 20000, 15),
-    "modrate": [x / 100.0 for x in range(1, 1000, 2)],
-    "moddepth": range(0, 100),
-    "mode": [
-        "Gemini",
-        "Hydra",
-        "Centaurus",
-        "Sagittarius",
-        "Great Annihilator",
-        "Andromeda",
-        "Large Magellanic Cloud",
-        "Triangulum",
-        "Lyra",
-        "Capricorn",
-        "Cirrus Major",
-        "Cirrus Minor",
-        "Cassiopeia",
-        "Orion",
-        "Aquarius",
-        "Pisces",
-        "Scorpio",
-        "Libra",
-        "Leo",
-        "Virgo",
-        "Pleiades",
-        "Sirius",
-    ],
-}
+
 
 random.seed(42)
 ts = time.perf_counter()
-set_effect_attrib(random.choice, effect, valhalla_dict)
-print(effect.parameters)
+set_effect_attrib(random.choice, effect, constants.VALLHALLA_DICT)
 offline_reverberate(
     effect, "test-data/-0atYHAfGHA ('Male singing',).wav", "test-data/out.wav"
 )
 print(time.perf_counter() - ts)
 
 
-random.seed(43)
+random.seed(100)
 ts = time.perf_counter()
-set_effect_attrib(random.choice, effect, valhalla_dict)
-print(effect.parameters)
+set_effect_attrib(random.choice, effect, constants.VALLHALLA_DICT)
 offline_reverberate(
     effect, "test-data/-0atYHAfGHA ('Male singing',).wav", "test-data/out.wav"
 )

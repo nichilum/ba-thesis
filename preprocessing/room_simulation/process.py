@@ -1,7 +1,9 @@
 from numpy.typing import ArrayLike
+import time
 import random
 import pyroomacoustics as pra
 import numpy as np
+
 
 def sample_rt60(rng: random.Random) -> float:
     """Sample a plausible RT60 in seconds.
@@ -10,16 +12,16 @@ def sample_rt60(rng: random.Random) -> float:
     """
 
     # Typical small/medium room reverberation times.
-    return rng.uniform(0.2, 1.8)
+    return rng.uniform(0.4, 1.0)
 
 
 def sample_room_dim(rng: random.Random) -> list[float]:
     """Sample room dimensions [x, y, z] in meters."""
 
     # Keep z (height) smaller than x/y; enforce minimums to avoid near-degenerate rooms.
-    x = rng.uniform(3.0, 12.0)
-    y = rng.uniform(3.0, 12.0)
-    z = rng.uniform(2.2, 4.2)
+    x = rng.uniform(5.0, 15.0)
+    y = rng.uniform(5.0, 15.0)
+    z = rng.uniform(2, 6)
     return [x, y, z]
 
 
@@ -79,8 +81,12 @@ def sample_source_and_mic_positions(
     mic_z = (1.0, min(1.8, room_dim[2] - wall_margin))
 
     for _ in range(max_tries):
-        s = sample_position_in_room(rng, room_dim, wall_margin=wall_margin, z_range=source_z)
-        m = sample_position_in_room(rng, room_dim, wall_margin=wall_margin, z_range=mic_z)
+        s = sample_position_in_room(
+            rng, room_dim, wall_margin=wall_margin, z_range=source_z
+        )
+        m = sample_position_in_room(
+            rng, room_dim, wall_margin=wall_margin, z_range=mic_z
+        )
         if float(np.linalg.norm(np.array(s) - np.array(m))) >= min_distance:
             return s, m
 
@@ -89,7 +95,9 @@ def sample_source_and_mic_positions(
         f"(room_dim={room_dim}, wall_margin={wall_margin}, min_distance={min_distance})."
     )
 
+
 def simulate_room(sample: ArrayLike, samplerate: int) -> tuple[np.ndarray, pra.ShoeBox]:
+    t0 = time.perf_counter()
 
     # Randomize acoustic parameters for each run.
     # NOTE: uses the module-level seed above for reproducibility.
@@ -121,5 +129,8 @@ def simulate_room(sample: ArrayLike, samplerate: int) -> tuple[np.ndarray, pra.S
     mic_locs = np.c_[mic_pos]
     room.add_microphone_array(mic_locs)
     room.simulate()
+
+    dt = time.perf_counter() - t0
+    print(f"  processing took {dt:.3f}s")
 
     return room.mic_array.signals[0], room

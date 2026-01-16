@@ -1,5 +1,5 @@
 from scipy.io import wavfile
-from os import walk, path
+from os import walk, path, makedirs
 import random
 from process import apply_convolution_reverb
 
@@ -7,6 +7,8 @@ from process import apply_convolution_reverb
 IRS_PER_SAMPLE = 5
 OUTPUT_DIR = "./out"
 MASTER_SAMPLE_RATE = 44100
+
+makedirs(OUTPUT_DIR, exist_ok=True)
 
 random.seed(42)
 

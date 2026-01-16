@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import convolve
 from scipy.signal import resample_poly
+import time
 
 
 def resample_stereo(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
@@ -61,6 +62,8 @@ def apply_convolution_reverb(
     samplerate_reverb: int,
     master_samplerate: int,
 ) -> np.ndarray:
+    t0 = time.perf_counter()
+
     sample = wav_to_float_stereo(sample)
     num_samples_sample = sample.shape[1]
     num_channels_sample = sample.shape[0]
@@ -124,5 +127,8 @@ def apply_convolution_reverb(
     )
     reverb_to_render[0::2] = reverb_integer[0]
     reverb_to_render[1::2] = reverb_integer[1]
+
+    dt = time.perf_counter() - t0
+    print(f"  processing took {dt:.3f}s")
 
     return reverb_to_render

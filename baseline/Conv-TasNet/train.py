@@ -41,12 +41,12 @@ def Train(opt):
         )
 
     # Don't ask GPU if they are not available.
-    if torch.cuda.is_available():
-        gpus = len(opt["gpu_ids"])
-    else:
-        gpus = None
+    # if torch.cuda.is_available():
+    #     gpus = len(opt["gpu_ids"])
+    # else:
+    #     gpus = None
     # logger
-
+    gpus = "auto"
     # default logger used by trainer
     logger = TensorBoardLogger(save_dir="./logger", version=1, name="lightning_logs")
     # Trainer

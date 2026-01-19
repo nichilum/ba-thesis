@@ -62,6 +62,7 @@ class Lightning(LightningModule):
         self.patience = patience
         # -----------------------model-----------------------
         self.convtasnet = ConvTasNet(N, L, B, H, P, X, R, norm, num_spks, activate)
+        self.criterion = Loss()
 
     def forward(self, x):
         return self.convtasnet(x)
@@ -84,25 +85,21 @@ class Lightning(LightningModule):
     # ---------------------
 
     def validation_step(self, batch, batch_idx):
-        """
-        Lightning calls this inside the validation loop with the data from the validation dataloader
-        passed in as `batch`.
-        """
-        mix = batch["mix"]
-        refs = batch["ref"]
-        ests = self.forward(mix)
-        ls_fn = Loss()
-        loss = ls_fn.compute_loss(ests, refs)
-        return {"val_loss": loss}
+        mix = batch["mix"]  # [B, T]
+        ref = batch["ref"]  # [B, T]
 
-    def on_validation_epoch_end(self, outputs):
-        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
-        tensorboard_logs = {"val_loss": avg_loss}
-        return {
-            "val_loss": avg_loss,
-            "log": tensorboard_logs,
-            "progress_bar": tensorboard_logs,
-        }
+        est = self(mix)  # [B, T]
+
+        loss = self.criterion.compute_loss(est, ref)
+
+        self.log(
+            "val_loss",
+            loss,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
 
     # ---------------------
     # TRAINING SETUP

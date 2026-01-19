@@ -33,7 +33,11 @@ def read_wav(fname):
 
 
 def make_dataloader(
-    is_train=True, data_kwargs=None, num_workers=4, chunk_size=32000, batch_size=16
+    is_train=True,
+    data_kwargs=None,
+    num_workers=0,
+    chunk_size=32000,
+    batch_size=16,  # from num_workers 4
 ):
     dataset = Datasets(**data_kwargs, chunk_size=chunk_size)
     return DataLoader(
@@ -64,11 +68,20 @@ class Datasets(Dataset):
         dry_sample, or_sr = read_wav(self.samples[index])
 
         resampler = T.Resample(or_sr, self.sr)
-        dry_resample = resampler(dry_sample).numpy()
+        dry = resampler(dry_sample)
 
-        wet_sample = live_reverberate(dry_resample, self.sr)
+        # --- ensure fixed length ---
+        if dry.shape[0] < self.chunk_size:
+            pad = self.chunk_size - dry.shape[0]
+            dry = F.pad(dry, (0, pad))
+        else:
+            start = random.randint(0, dry.shape[0] - self.chunk_size)
+            dry = dry[start : start + self.chunk_size]
+
+        dry_np = dry.numpy()
+        wet_np = live_reverberate(dry_np, self.sr)
 
         return {
-            "mix": torch.from_numpy(wet_sample).float(),
-            "ref": [torch.from_numpy(dry_resample).float()],
+            "mix": torch.from_numpy(wet_np).float(),
+            "ref": torch.from_numpy(dry_np).float(),
         }

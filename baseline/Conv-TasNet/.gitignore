@@ -1,2 +1,7 @@
-.env
-/output
+.venv
+options/.DS_Store
+.DS_Store
+password.txt
+/logger
+/train-output
+__pycache__

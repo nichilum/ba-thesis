@@ -29,3 +29,10 @@ def offline_reverberate(audio_file_path, output_file_path):
 def set_effect_attrib(choice, effect, parameter_dict: dict[str, Any]):
     for key in parameter_dict.keys():
         setattr(effect, key, choice(parameter_dict[key]))
+
+
+if __name__ == "__main__":
+    offline_reverberate(
+        "E:/Github/ba-thesis/datasets/LibriMix/data/LibriSpeech/dev-clean/84/121123/84-121123-0000.flac",
+        "out.wav",
+    )

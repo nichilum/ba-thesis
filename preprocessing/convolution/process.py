@@ -126,7 +126,6 @@ def apply_convolution_reverb(
     #make shape from (1,N) to (N,)
     reverb_out = reverb_out.reshape(-1)
     reverb_out = reverb_out[0:num_samples_sample]
-    print(reverb_out.shape)
 
     return reverb_out
 

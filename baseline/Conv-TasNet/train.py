@@ -52,8 +52,8 @@ def train():
 
     trainer.fit(model, train_loader, val_loader)
 
-    # torch.save(model.state_dict(), params["synth_model_out"])
-    # print(f"Synthetic model saved to {params["synth_model_out"]}")
+    torch.save(model.state_dict(), params["model_out"])
+    print(f"model saved to {params["model_out"]}")
 
 
 

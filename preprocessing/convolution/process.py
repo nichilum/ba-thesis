@@ -106,7 +106,7 @@ def apply_convolution_reverb(
 
     gain_dry = 1
     gain_wet = 1
-    output_gain = 0.05
+    output_gain = 0.1
 
     reverb_out = np.zeros(
         [2, np.shape(sample)[1] + np.shape(reverb)[1] - 1], dtype=np.float64
@@ -118,23 +118,16 @@ def apply_convolution_reverb(
         convolve(sample[1] * gain_dry, reverb[1] * gain_wet, method="fft")
     )
 
-    #   WRITING TO FILE   #
-
-    reverb_integer = np.zeros((reverb_out.shape))
-
-    reverb_integer[0] = (reverb_out[0] * int(np.iinfo(np.int16).max)).astype(np.int16)
-    reverb_integer[1] = (reverb_out[1] * int(np.iinfo(np.int16).max)).astype(np.int16)
-
-    reverb_to_render = np.empty(
-        (reverb_integer[0].size + reverb_integer[1].size), dtype=np.int16
-    )
-    reverb_to_render[0::2] = reverb_integer[0]
-    reverb_to_render[1::2] = reverb_integer[1]
-
     dt = time.perf_counter() - t0
     # print(f"  processing took {dt:.3f}s")
 
-    return reverb_to_render
+    #make mono (only left channel)
+    reverb_out = reverb_out[0:1,:]
+    #make shape from (1,N) to (N,)
+    reverb_out = reverb_out.reshape(-1)
+    reverb_out = reverb_out[0:num_samples_sample]
+
+    return reverb_out
 
 ir_paths = [
     path.join(dirpath, f)
@@ -146,4 +139,4 @@ def live_reverberate(sample: np.ndarray, samplerate_sample: int) -> np.ndarray:
     reverb_in = random.choice(ir_paths)
     samplerate_reverb, reverb = wavfile.read(reverb_in)
 
-    return apply_convolution_reverb(sample, samplerate_sample, reverb, samplerate_reverb, samplerate_sample)[0:len(sample)]
+    return apply_convolution_reverb(sample, samplerate_sample, reverb, samplerate_reverb, samplerate_sample)

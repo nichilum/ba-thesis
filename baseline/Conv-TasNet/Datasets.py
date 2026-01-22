@@ -13,7 +13,6 @@ import random
 from utils import handle_scp
 import numpy as np
 import soundfile as sf
-import torchaudio
 import glob
 import torchaudio.transforms as T
 import sys
@@ -24,11 +23,13 @@ from parameter_reverb import live_reverberate
 
 
 def read_wav(fname):
-    wav, sr = torchaudio.load(fname)
-    if wav.shape[0] > 1:
-        wav = wav.mean(dim=0)
+    audio, sr = sf.read(fname, always_2d=True, dtype="float32")  # (frames, channels)
+    # Convert to mono to match previous behavior.
+    if audio.shape[1] > 1:
+        audio = audio.mean(axis=1)
     else:
-        wav = wav[0]
+        audio = audio[:, 0]
+    wav = torch.from_numpy(audio)
     return wav, sr
 
 

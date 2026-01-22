@@ -8,30 +8,24 @@
 
 import torch
 from itertools import permutations
+from torchmetrics.audio import ScaleInvariantSignalNoiseRatio
 
 
 class Loss(object):
-    def sisnr(self, x, s, eps=1e-8):
-        x = x - torch.mean(x, dim=-1, keepdim=True)
-        s = s - torch.mean(s, dim=-1, keepdim=True)
+    def compute_loss(self, est, ref, device="cuda"):
+        # ref = ref.unsqueeze(1)  # (B, 1, T)
 
-        t = (
-            torch.sum(x * s, dim=-1, keepdim=True)
-            * s
-            / (torch.sum(s**2, dim=-1, keepdim=True) + eps)
-        )
+        si_snr = ScaleInvariantSignalNoiseRatio().to(device)
+        si_snr_val = si_snr(est, ref)
 
-        return 20 * torch.log10(
-            torch.norm(t, dim=-1) / (torch.norm(x - t, dim=-1) + eps)
-        )
+        #throw if nan
+        if torch.isnan(si_snr_val):
+            print("LOSS est:", est)
+            print("LOSS ref:", ref)
+            raise RuntimeError("SI-SNR loss is NaN.")
 
-    def compute_loss(self, est, ref):
-        if isinstance(est, list):
-            est = est[0]
-        if isinstance(ref, list):
-            ref = ref[0]
+        return si_snr_val
 
-        return -torch.mean(self.sisnr(est, ref))
 
 
 if __name__ == "__main__":

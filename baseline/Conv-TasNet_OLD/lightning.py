@@ -6,13 +6,10 @@
 @Version     :1.0
 """
 
-import os
 from pytorch_lightning import LightningModule
 import torch
 from Loss import Loss
-import torch.nn as nn
 from torch import optim
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from Datasets import Datasets
 
@@ -77,8 +74,19 @@ class Lightning(LightningModule):
         ests = self.forward(mix)
         ls_fn = Loss()
         loss = ls_fn.compute_loss(ests, refs)
-        tensorboard_logs = {"train_loss": loss}
-        return {"loss": loss, "log": tensorboard_logs}
+        # Log in the current Lightning style to avoid silent logging issues.
+        # If loss becomes non-finite, surface it clearly.
+        if not torch.isfinite(loss):
+            self.log("train_loss_non_finite", 1.0, on_step=True, on_epoch=False, prog_bar=True)
+        self.log(
+            "train_loss",
+            loss,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+        return loss
 
     # ---------------------
     # VALIDATION SETUP
@@ -92,6 +100,17 @@ class Lightning(LightningModule):
 
         loss = self.criterion.compute_loss(est, ref)
 
+        if not torch.isfinite(loss):
+            # Keep logging val_loss (will show up as nan) but also emit a flag for debugging.
+            self.log(
+                "val_loss_non_finite",
+                1.0,
+                on_step=False,
+                on_epoch=True,
+                prog_bar=True,
+                logger=True,
+            )
+
         self.log(
             "val_loss",
             loss,
@@ -100,6 +119,8 @@ class Lightning(LightningModule):
             prog_bar=True,
             logger=True,
         )
+
+        return loss
 
     # ---------------------
     # TRAINING SETUP
@@ -138,6 +159,7 @@ class Lightning(LightningModule):
             num_workers=self.num_workers,
             shuffle=True,
             drop_last=True,
+            persistent_workers=True
         )
 
     def val_dataloader(self):
@@ -147,5 +169,8 @@ class Lightning(LightningModule):
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             shuffle=False,
-            drop_last=True,
+            # Validation must not drop the last batch; dropping can make val empty for small datasets
+            # and can lead to missing/NaN monitored metrics that trigger early stopping.
+            drop_last=False,
+            persistent_workers=True
         )

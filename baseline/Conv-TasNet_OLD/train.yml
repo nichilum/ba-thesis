@@ -13,7 +13,7 @@ light_conf:
   activate: relu
   causal: false
   # optimizer
-  lr: !!float 1e-3
+  lr: !!float 1e-4
   # scheduler
   scheduler_mode: min
   scheduler_factor: 0.5
@@ -21,7 +21,7 @@ light_conf:
   sr: 8000
   # DataLoader
   batch_size: 2
-  num_workers: 0 # from num_workers 16
+  num_workers: 6 # from num_workers 16
 
 train:
   epochs: 130

@@ -10,6 +10,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 import torch.nn.functional as F
 import random
+from utils import handle_scp
 import numpy as np
 import soundfile as sf
 import glob
@@ -17,11 +18,8 @@ import torchaudio.transforms as T
 import sys
 import os
 
-# sys.path.append("../../preprocessing/parameter-reverb")
-# from parameter_reverb import live_reverberate
-
-sys.path.append("../../preprocessing/convolution")
-from process import live_reverberate
+sys.path.append("../../preprocessing/parameter-reverb")
+from parameter_reverb import live_reverberate
 
 
 def read_wav(fname):
@@ -37,19 +35,18 @@ def read_wav(fname):
 
 def make_dataloader(
     is_train=True,
-    directories=None,
-    num_workers=4,
+    data_kwargs=None,
+    num_workers=0,
     chunk_size=32000,
-    batch_size=16,
+    batch_size=16,  # from num_workers 4
 ):
-    dataset = Datasets(directories=directories, chunk_size=chunk_size)
+    dataset = Datasets(**data_kwargs, chunk_size=chunk_size)
     return DataLoader(
         dataset,
         batch_size=batch_size,
         num_workers=num_workers,
         shuffle=is_train,
         drop_last=True,
-        persistent_workers=True,
     )
 
 
@@ -86,6 +83,6 @@ class Datasets(Dataset):
         wet_np = live_reverberate(dry_np, self.sr)
 
         return {
-            "wet": torch.from_numpy(wet_np).float(),
-            "dry": torch.from_numpy(dry_np).float(),
+            "mix": torch.from_numpy(wet_np).float(),
+            "ref": torch.from_numpy(dry_np).float(),
         }

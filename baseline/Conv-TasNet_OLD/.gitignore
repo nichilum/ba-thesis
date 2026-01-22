@@ -5,6 +5,3 @@ password.txt
 /logger
 /train-output
 __pycache__
-checkpoints
-logs
-output

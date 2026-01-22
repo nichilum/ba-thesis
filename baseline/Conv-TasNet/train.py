@@ -1,76 +1,62 @@
-# -*- encoding: utf-8 -*-
-"""
-@Filename    :train.py
-@Time        :2020/07/10 23:23:18
-@Author      :Kai Li
-@Version     :1.0
-"""
-
-from option import parse
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-from lightning import Lightning
-import torch
-import argparse
-import os
+from datasets import make_dataloader
+from model import TasNet
+from torch.utils.data import DataLoader, random_split
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
+import os
+import torch
+
+from seed import set_seeds
 
 
-def Train(opt):
-    # init Lightning Model
-    light = Lightning(**opt["light_conf"])
+def train():
+    set_seeds(42)
 
-    # mkdir the file of Experiment path
-    os.makedirs(
-        os.path.join(opt["resume"]["path"], opt["resume"]["checkpoint"]), exist_ok=True
-    )
-    checkpoint_path = os.path.join(opt["resume"]["path"], opt["resume"]["checkpoint"])
-    checkpoint = ModelCheckpoint(
-        checkpoint_path,
+    params = {
+        "epochs": 100,  # Epochs for training on synthetic data
+        "batch_size": 32,
+        "lr": 0.001,
+        "model_out": "output/tasnet.pt",  # Checkpoint after synthetic training
+    }
+
+    os.makedirs(os.path.dirname(params["model_out"]), exist_ok=True)
+
+    train_loader = make_dataloader(is_train=True, directories=["../../datasets/LibriMix/data/LibriSpeech/train-clean-100"])
+    val_loader = make_dataloader(is_train=False, directories=["../../datasets/LibriMix/data/LibriSpeech/dev-clean"], )
+
+    model = TasNet()
+
+    checkpoint_callback = ModelCheckpoint(
+        dirpath="checkpoints",
+        filename="{epoch:02d}-{val_loss:.4f}",
+        save_top_k=3,
         monitor="val_loss",
         mode="min",
-        save_top_k=1,
-        save_last=True,
     )
 
-    # Early Stopping
-    early_stopping = False
-    if opt["train"]["early_stop"]:
-        early_stopping = EarlyStopping(
-            monitor="val_loss", patience=opt["train"]["patience"], mode="min"
-        )
+    early_stop_callback = EarlyStopping(
+        monitor="val_loss", patience=5, mode="min"
+    )
 
-    # Don't ask GPU if they are not available.
-    # if torch.cuda.is_available():
-    #     gpus = len(opt["gpu_ids"])
-    # else:
-    #     gpus = None
-    # logger
-    gpus = "auto"
-    # default logger used by trainer
-    logger = TensorBoardLogger(save_dir="./logger", version=1, name="lightning_logs")
-    # Trainer
-    callbacks = [checkpoint]
-    if early_stopping:
-        callbacks.append(early_stopping)
+    logger = TensorBoardLogger("logs", name="tasnet")
 
     trainer = pl.Trainer(
-        max_epochs=opt["train"]["epochs"],
-        default_root_dir=checkpoint_path,
-        accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        devices=gpus if torch.cuda.is_available() else 1,
-        callbacks=callbacks,
-        gradient_clip_val=5.0,
+        max_epochs=params["epochs"],
+        accelerator="auto",  # Automatically use GPU if available
+        callbacks=[checkpoint_callback, early_stop_callback],
         logger=logger,
+        log_every_n_steps=10,
+        gradient_clip_val=5.0,
     )
 
-    trainer.fit(light)
+    trainer.fit(model, train_loader, val_loader)
+
+    # torch.save(model.state_dict(), params["synth_model_out"])
+    # print(f"Synthetic model saved to {params["synth_model_out"]}")
+
+
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--opt", type=str, help="Path to option YAML file.")
-    args = parser.parse_args()
-
-    opt = parse(args.opt, is_train=True)
-    Train(opt)
+    train()

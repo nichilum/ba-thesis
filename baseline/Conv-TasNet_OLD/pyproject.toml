@@ -8,7 +8,6 @@ dependencies = [
     "dotenv>=0.9.9",
     "pedalboard>=0.9.21",
     "pytorch-lightning>=2.6.0",
-    "scipy>=1.17.0",
     "soundfile>=0.13.1",
     "tensorboard>=2.20.0",
     "torch>=2.9.1",

@@ -2,6 +2,9 @@ import numpy as np
 from scipy.signal import convolve
 from scipy.signal import resample_poly
 import time
+from os import walk, path, makedirs
+import random
+from scipy.io import wavfile
 
 
 def resample_stereo(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
@@ -129,6 +132,18 @@ def apply_convolution_reverb(
     reverb_to_render[1::2] = reverb_integer[1]
 
     dt = time.perf_counter() - t0
-    print(f"  processing took {dt:.3f}s")
+    # print(f"  processing took {dt:.3f}s")
 
     return reverb_to_render
+
+ir_paths = [
+    path.join(dirpath, f)
+    for (dirpath, dirnames, filenames) in walk("H:/thesis-data/impulse_responses")
+    for f in filenames
+]
+
+def live_reverberate(sample: np.ndarray, samplerate_sample: int) -> np.ndarray:
+    reverb_in = random.choice(ir_paths)
+    samplerate_reverb, reverb = wavfile.read(reverb_in)
+
+    return apply_convolution_reverb(sample, samplerate_sample, reverb, samplerate_reverb, samplerate_sample)[0:len(sample)]

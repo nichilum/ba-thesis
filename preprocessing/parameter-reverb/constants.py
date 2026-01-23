@@ -71,3 +71,19 @@ FULL_RANGES_VALLHALLA_DICT = {
         "Sirius",
     ],
 }
+
+TAL_REVERB_DICT = {
+    "wet": range(20, 80),
+    "delay_s": [x / 1000.0 for x in range(0, 1001)],
+    "size": range(20, 80),
+    # "low_cut_freq": range(0, 30000, 60),
+    # "high_cut_freq": range(0, 30000, 60),
+    # "peak_freq": range(0, 30000, 60),
+    # "peak_amount": [x / 1000 for x in range(-36000, 36000, 75)],
+    "modulation_rate": range(20, 80),
+    "modulation_depth": range(20, 80),
+    "diffuse": range(20, 80),
+    "damp": range(20, 80),
+    "harmonic_tune": [x * 0.02 for x in range(0, 300)],
+    "harmonic_amount": range(0, 20),
+}

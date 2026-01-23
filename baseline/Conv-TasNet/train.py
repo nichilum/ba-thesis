@@ -1,6 +1,5 @@
 from datasets import make_dataloader
 from model import TasNet
-from torch.utils.data import DataLoader, random_split
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
@@ -44,7 +43,7 @@ def train():
     trainer = pl.Trainer(
         max_epochs=params["epochs"],
         accelerator="auto",  # Automatically use GPU if available
-        callbacks=[checkpoint_callback, early_stop_callback],
+        callbacks=[checkpoint_callback],
         logger=logger,
         log_every_n_steps=10,
         gradient_clip_val=5.0,
@@ -53,7 +52,7 @@ def train():
     trainer.fit(model, train_loader, val_loader)
 
     torch.save(model.state_dict(), params["model_out"])
-    print(f"model saved to {params["model_out"]}")
+    print(f"model saved to {params['model_out']}")
 
 
 

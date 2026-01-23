@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 import pytorch_lightning as pl
 from loss import Loss
@@ -101,7 +100,8 @@ class TasNet(pl.LightningModule):
         # Compute per-example loss, then reduce to a scalar Tensor for Lightning logging.
         per_example = []
         for inp, out in zip(targets, outputs):
-            per_example.append(self.loss_fn(inp, out.squeeze(0)))
+            # loss_fn signature: (estimate, reference)
+            per_example.append(self.loss_fn(out.squeeze(0), inp))
 
         loss = torch.stack(per_example).mean()
 
@@ -114,7 +114,7 @@ class TasNet(pl.LightningModule):
 
         per_example = []
         for inp, out in zip(targets, outputs):
-            per_example.append(self.loss_fn(inp, out.squeeze(0)))
+            per_example.append(self.loss_fn(out.squeeze(0), inp))
 
         loss = torch.stack(per_example).mean()
 
@@ -128,7 +128,8 @@ class TasNet(pl.LightningModule):
 
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,
-            mode='max',     
+            # We're minimizing (negative SI-SNR)
+            mode='min',
             factor=0.5,      # halve the learning rate
             patience=3,      # 3 consecutive epochs without improvement
         )

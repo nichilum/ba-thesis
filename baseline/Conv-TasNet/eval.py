@@ -4,7 +4,7 @@ from datasets import Datasets
 import torch
 import soundfile as sf
 
-model = TasNet.load_from_checkpoint("checkpoints/epoch=25-val_loss=-69.7684.ckpt")
+model = TasNet.load_from_checkpoint("checkpoints/epoch=46-val_loss=20.2211.ckpt")
 model.eval()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

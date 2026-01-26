@@ -350,3 +350,7 @@ enh2gpu2.job
 .plots
 .wav
 .web
+
+dry-test-data
+enhanced-out
+processed-test-data

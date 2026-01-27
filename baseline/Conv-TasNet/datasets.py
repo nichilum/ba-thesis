@@ -62,7 +62,7 @@ class Datasets(Dataset):
         self.samples = []
         for dir in directories:
             self.samples += glob.glob(os.path.join(dir, "**/*.flac"), recursive=True)
-        self.samples = self.samples[:4000]  # TODO: remove for prod
+        # self.samples = self.samples[:4000]  # TODO: remove for prod
         # print(self.samples)
 
     def __len__(self):

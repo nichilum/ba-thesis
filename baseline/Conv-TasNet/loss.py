@@ -23,9 +23,7 @@ class Loss(object):
             print("LOSS ref:", ref)
             raise RuntimeError("SI-SNR loss is NaN.")
 
-        # TorchMetrics SI-SNR is a *higher-is-better* metric (dB).
-        # For training we need a quantity to *minimize*, so return the negative.
-        return -si_snr_val
+        return si_snr_val
 
 
 

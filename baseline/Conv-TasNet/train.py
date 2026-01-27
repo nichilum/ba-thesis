@@ -31,12 +31,12 @@ def train():
         filename="{epoch:02d}-{val_loss:.4f}",
         save_top_k=3,
         monitor="val_loss",
-        mode="min",
+        mode="max",
     )
 
-    early_stop_callback = EarlyStopping(
-        monitor="val_loss", patience=5, mode="min"
-    )
+    # early_stop_callback = EarlyStopping(
+    #     monitor="val_loss", patience=5, mode="min"
+    # )
 
     logger = TensorBoardLogger("logs", name="tasnet")
 

@@ -129,7 +129,7 @@ class TasNet(pl.LightningModule):
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,
             # We're minimizing (negative SI-SNR)
-            mode='min',
+            mode='max',
             factor=0.5,      # halve the learning rate
             patience=3,      # 3 consecutive epochs without improvement
         )

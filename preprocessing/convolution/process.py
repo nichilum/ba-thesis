@@ -5,6 +5,12 @@ import time
 from os import walk, path, makedirs
 import random
 from scipy.io import wavfile
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+assert os.getenv("IR_FOLDER") is not None, "IR_FOLDER environment variable not set"
 
 
 def resample_stereo(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
@@ -121,22 +127,26 @@ def apply_convolution_reverb(
     dt = time.perf_counter() - t0
     # print(f"  processing took {dt:.3f}s")
 
-    #make mono (only left channel)
-    reverb_out = reverb_out[0:1,:]
-    #make shape from (1,N) to (N,)
+    # make mono (only left channel)
+    reverb_out = reverb_out[0:1, :]
+    # make shape from (1,N) to (N,)
     reverb_out = reverb_out.reshape(-1)
     reverb_out = reverb_out[0:num_samples_sample]
 
     return reverb_out
 
+
 ir_paths = [
     path.join(dirpath, f)
-    for (dirpath, dirnames, filenames) in walk("H:/thesis-data/impulse_responses")
+    for (dirpath, dirnames, filenames) in walk(os.getenv("IR_FOLDER"))
     for f in filenames
 ]
+
 
 def live_reverberate(sample: np.ndarray, samplerate_sample: int) -> np.ndarray:
     reverb_in = random.choice(ir_paths)
     samplerate_reverb, reverb = wavfile.read(reverb_in)
 
-    return apply_convolution_reverb(sample, samplerate_sample, reverb, samplerate_reverb, samplerate_sample)
+    return apply_convolution_reverb(
+        sample, samplerate_sample, reverb, samplerate_reverb, samplerate_sample
+    )

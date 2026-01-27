@@ -45,7 +45,7 @@ derev_params = {
 }
 
 # ROOT = "" ## put your root directory here
-ROOT = "E:/Github/ba-thesis/baseline/storm/dry-test-data"
+ROOT = "/home/leo/projects/uni/ba-thesis/baseline/storm/dry-test-data"
 assert ROOT != "", "You need to have a root databases directory"
 
 parser = argparse.ArgumentParser()
@@ -172,6 +172,8 @@ os.makedirs(noisy_output_dir, exist_ok=True)
 for i_sample, sample in tqdm(enumerate(glob.glob(f"{ROOT}/*.wav"))):
     speech_basename = os.path.basename(sample)
     speech, sr = sf.read(sample)
+    #mono
+    speech = np.mean(speech, axis=1) if speech.ndim > 1 else speech
     assert sr == args.sr, "Obtained an unexpected Sampling rate"
     original_scale = np.max(np.abs(speech))
     for ic in range(nb_corruptions_per_sample):

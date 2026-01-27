@@ -4,8 +4,11 @@ import glob
 import os
 from pathlib import Path
 
-dir = "E:/Github/ba-thesis/datasets/LibriMix/data/LibriSpeech/train-clean-100"
+dir = "../../datasets/LibriMix/data/LibriSpeech/train-clean-100"
 samples = glob.glob(os.path.join(dir, "**/*.flac"), recursive=True)
+
+os.makedirs("dry-test-data", exist_ok=True)
+
 samples = samples[:100]
 for sample in samples:
     dry_audio, or_sr = sf.read(

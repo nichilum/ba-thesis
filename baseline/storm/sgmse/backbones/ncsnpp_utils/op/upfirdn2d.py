@@ -3,17 +3,39 @@ import os
 import torch
 from torch.nn import functional as F
 from torch.autograd import Function
-from torch.utils.cpp_extension import load
+
+# NOTE: This module uses a custom CUDA/C++ extension for speed.
+# On CPU-only machines (or when CUDA toolkit isn't installed), importing this
+# module should still work. We therefore load/compile the extension only when
+# CUDA is available and fall back to the pure PyTorch implementation.
+
+upfirdn2d_op = None
 
 
-module_path = os.path.dirname(__file__)
-upfirdn2d_op = load(
-    "upfirdn2d",
-    sources=[
-        os.path.join(module_path, "upfirdn2d.cpp"),
-        os.path.join(module_path, "upfirdn2d_kernel.cu"),
-    ],
-)
+def _try_load_upfirdn2d():
+    global upfirdn2d_op
+    if upfirdn2d_op is not None:
+        return upfirdn2d_op
+
+    if not torch.cuda.is_available():
+        upfirdn2d_op = False
+        return upfirdn2d_op
+
+    try:
+        from torch.utils.cpp_extension import load
+
+        module_path = os.path.dirname(__file__)
+        upfirdn2d_op = load(
+            "upfirdn2d",
+            sources=[
+                os.path.join(module_path, "upfirdn2d.cpp"),
+                os.path.join(module_path, "upfirdn2d_kernel.cu"),
+            ],
+        )
+    except Exception:
+        upfirdn2d_op = False
+
+    return upfirdn2d_op
 
 
 class UpFirDn2dBackward(Function):
@@ -22,13 +44,17 @@ class UpFirDn2dBackward(Function):
         ctx, grad_output, kernel, grad_kernel, up, down, pad, g_pad, in_size, out_size
     ):
 
+        op = _try_load_upfirdn2d()
+        if op is False:
+            raise RuntimeError("UpFirDn2d CUDA extension not available")
+
         up_x, up_y = up
         down_x, down_y = down
         g_pad_x0, g_pad_x1, g_pad_y0, g_pad_y1 = g_pad
 
         grad_output = grad_output.reshape(-1, out_size[0], out_size[1], 1)
 
-        grad_input = upfirdn2d_op.upfirdn2d(
+        grad_input = op.upfirdn2d(
             grad_output,
             grad_kernel,
             down_x,
@@ -63,9 +89,13 @@ class UpFirDn2dBackward(Function):
     def backward(ctx, gradgrad_input):
         kernel, = ctx.saved_tensors
 
+        op = _try_load_upfirdn2d()
+        if op is False:
+            raise RuntimeError("UpFirDn2d CUDA extension not available")
+
         gradgrad_input = gradgrad_input.reshape(-1, ctx.in_size[2], ctx.in_size[3], 1)
 
-        gradgrad_out = upfirdn2d_op.upfirdn2d(
+        gradgrad_out = op.upfirdn2d(
             gradgrad_input,
             kernel,
             ctx.up_x,
@@ -88,6 +118,11 @@ class UpFirDn2dBackward(Function):
 class UpFirDn2d(Function):
     @staticmethod
     def forward(ctx, input, kernel, up, down, pad):
+
+        op = _try_load_upfirdn2d()
+        if op is False:
+            raise RuntimeError("UpFirDn2d CUDA extension not available")
+
         up_x, up_y = up
         down_x, down_y = down
         pad_x0, pad_x1, pad_y0, pad_y1 = pad
@@ -115,7 +150,7 @@ class UpFirDn2d(Function):
 
         ctx.g_pad = (g_pad_x0, g_pad_x1, g_pad_y0, g_pad_y1)
 
-        out = upfirdn2d_op.upfirdn2d(
+        out = op.upfirdn2d(
             input, kernel, up_x, up_y, down_x, down_y, pad_x0, pad_x1, pad_y0, pad_y1
         )
         # out = out.view(major, out_h, out_w, minor)
@@ -149,9 +184,15 @@ def upfirdn2d(input, kernel, up=1, down=1, pad=(0, 0)):
         )
 
     else:
-        out = UpFirDn2d.apply(
-            input, kernel, (up, up), (down, down), (pad[0], pad[1], pad[0], pad[1])
-        )
+        # On CUDA, prefer the extension, but fall back if unavailable.
+        if _try_load_upfirdn2d() is False:
+            out = upfirdn2d_native(
+                input, kernel, up, up, down, down, pad[0], pad[1], pad[0], pad[1]
+            )
+        else:
+            out = UpFirDn2d.apply(
+                input, kernel, (up, up), (down, down), (pad[0], pad[1], pad[0], pad[1])
+            )
 
     return out
 

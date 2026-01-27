@@ -136,12 +136,19 @@ def apply_convolution_reverb(
     return reverb_out
 
 
-ir_paths = [
-    path.join(dirpath, f)
-    for (dirpath, dirnames, filenames) in walk(os.getenv("IR_FOLDER"))
-    for f in filenames
-]
+# ir_paths = [
+#     path.join(dirpath, f)
+#     for (dirpath, dirnames, filenames) in walk(os.getenv("IR_FOLDER"))
+#     for f in filenames
+# ]
 
+ir_paths = [
+    path.join(os.getenv("IR_FOLDER"), "air_database", "air_lecture_0_1_6.wav"),
+    path.join(os.getenv("IR_FOLDER"), "air_database", "air_stairway_0_1_2_90_mls.wav"),
+    path.join(os.getenv("IR_FOLDER"), "ableton", "Hybrid_Chambers_and_Large_Rooms_Gregorian Monks Choir Room L.wav"),
+    path.join(os.getenv("IR_FOLDER"), "ableton", "Hybrid_Real_Places_Norlac Abbey R.wav"),
+    path.join(os.getenv("IR_FOLDER"), "ableton", "Hybrid_Real_Places_Temple Chaillevette R.wav"),
+]
 
 def live_reverberate(sample: np.ndarray, samplerate_sample: int) -> np.ndarray:
     reverb_in = random.choice(ir_paths)

@@ -3,7 +3,6 @@ import torch.nn as nn
 from torch.autograd import Variable
 import pytorch_lightning as pl
 from loss import Loss
-from multi_scale_spectral import SingleSrcMultiScaleSpectral
 
 from utility import models
 
@@ -25,7 +24,7 @@ class TasNet(pl.LightningModule):
 
         # loss = Loss()
         # self.loss_fn = loss.compute_loss
-        self.loss_fn = SingleSrcMultiScaleSpectral()
+        self.loss_fn = torch.nn.MSELoss()
 
         # hyper parameters
         self.num_spk = num_spk
@@ -127,18 +126,13 @@ class TasNet(pl.LightningModule):
             print("targets:", targets)
             print("outputs:", outputs)
 
-        # `SingleSrcMultiScaleSpectral` expects (batch, time).
-        # `outputs` is (B, C, T); for single-speaker case C==1.
-        if outputs.dim() != 3:
-            raise RuntimeError(f"Unexpected model output shape: {tuple(outputs.shape)}")
-        if outputs.size(1) != 1:
-            raise RuntimeError(
-                "Multi-speaker output detected (C != 1). "
-                "This training loop currently expects num_spk=1."
-            )
+        # Compute per-example loss, then reduce to a scalar Tensor for Lightning logging.
+        per_example = []
+        for inp, out in zip(targets, outputs):
+            # loss_fn signature: (estimate, reference)
+            per_example.append(self.loss_fn(out.squeeze(0), inp))
 
-        per_example = self.loss_fn(outputs[:, 0, :], targets)
-        loss = per_example.mean()
+        loss = torch.stack(per_example).mean()
 
         self.log("train_loss", loss, prog_bar=True)
         return loss
@@ -147,16 +141,11 @@ class TasNet(pl.LightningModule):
         inputs, targets = batch["wet"], batch["dry"]
         outputs = self(inputs)
 
-        if outputs.dim() != 3:
-            raise RuntimeError(f"Unexpected model output shape: {tuple(outputs.shape)}")
-        if outputs.size(1) != 1:
-            raise RuntimeError(
-                "Multi-speaker output detected (C != 1). "
-                "This validation loop currently expects num_spk=1."
-            )
+        per_example = []
+        for inp, out in zip(targets, outputs):
+            per_example.append(self.loss_fn(out.squeeze(0), inp))
 
-        per_example = self.loss_fn(outputs[:, 0, :], targets)
-        loss = per_example.mean()
+        loss = torch.stack(per_example).mean()
 
         self.log("val_loss", loss, prog_bar=True)
         return loss

@@ -21,8 +21,14 @@ def train():
 
     os.makedirs(os.path.dirname(params["model_out"]), exist_ok=True)
 
-    train_loader = make_dataloader(is_train=True, directories=["../../datasets/LibriMix/data/LibriSpeech/train-clean-100"])
-    val_loader = make_dataloader(is_train=False, directories=["../../datasets/LibriMix/data/LibriSpeech/dev-clean"], )
+    train_loader = make_dataloader(
+        is_train=True,
+        directories=["../../datasets/LibriMix/data/LibriSpeech/train-clean-100"],
+    )
+    val_loader = make_dataloader(
+        is_train=False,
+        directories=["../../datasets/LibriMix/data/LibriSpeech/dev-clean"],
+    )
 
     model = TasNet()
 
@@ -54,8 +60,6 @@ def train():
 
     torch.save(model.state_dict(), params["model_out"])
     print(f"model saved to {params['model_out']}")
-
-
 
 
 if __name__ == "__main__":

@@ -4,10 +4,11 @@ import os
 import csv
 
 gi.require_version("Gst", "1.0")
-from gi.repository import Gst, GLib
+from gi.repository import Gst
 
 REFS_DIRECTORY = "./refs"
 TESTS_DIRECTORY = "./tests"
+EXPORT_DIRECTORY = "./export"
 
 
 def create_branch(filename, pipeline):
@@ -89,6 +90,11 @@ if __name__ == "__main__":
     # write to csv
     filenames = list(intersection)
     filenames.insert(0, "")
-    with open("./export.csv", "w") as export:
+    with open(
+        os.path.join(
+            EXPORT_DIRECTORY, f"export{len(os.listdir(EXPORT_DIRECTORY))}.csv"
+        ),
+        "w",
+    ) as export:
         wr = csv.writer(export, quoting=csv.QUOTE_ALL)
         wr.writerows([filenames, odgs, dis])

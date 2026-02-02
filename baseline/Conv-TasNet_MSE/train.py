@@ -34,7 +34,7 @@ def train():
 
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints",
-        filename="{epoch:02d}-{val_loss:.4f}",
+        filename="{epoch:02d}-{val_loss:.10f}",
         save_top_k=-1,
         every_n_epochs=1,
         # monitor="val_loss",

@@ -2,6 +2,8 @@
 import gi
 import os
 import csv
+import time
+import argparse
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst
@@ -45,17 +47,22 @@ def create_branch(filename, pipeline):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file_name", help="optional file name")
+    file_name = parser.parse_args().file_name
+
     Gst.init(None)
 
     refs_files = set(os.listdir(REFS_DIRECTORY))
     tests_files = set(os.listdir(TESTS_DIRECTORY))
     intersection = refs_files.intersection(tests_files)
+    wav_files = {f for f in intersection if f.lower().endswith(".wav")}
 
     odgs = ["odg"]  # Objective Difference Grade
     dis = ["di"]  # Distortion Index
 
-    print(intersection)
-    for file in intersection:
+    print(wav_files)
+    for file in wav_files:
         pipeline = Gst.Pipeline.new(None)
 
         ref_filepath = os.path.join(REFS_DIRECTORY, file)
@@ -88,13 +95,18 @@ if __name__ == "__main__":
         dis.append(peaq.get_property("di"))
 
     # write to csv
-    filenames = list(intersection)
+    filenames = list(wav_files)
     filenames.insert(0, "")
     with open(
         os.path.join(
-            EXPORT_DIRECTORY, f"export{len(os.listdir(EXPORT_DIRECTORY))}.csv"
+            EXPORT_DIRECTORY,
+            file_name
+            if file_name
+            else f"peaq-export-{time.strftime('%Y%m%d-%H%M%S')}.csv",
         ),
-        "w",
+        "a",
     ) as export:
         wr = csv.writer(export, quoting=csv.QUOTE_ALL)
-        wr.writerows([filenames, odgs, dis])
+        if not file_name:
+            wr.writerow(filenames)
+        wr.writerows([odgs, dis])

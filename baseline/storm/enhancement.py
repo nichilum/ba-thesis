@@ -9,6 +9,7 @@ import os
 from argparse import ArgumentParser
 import time
 # from pypapi import events, papi_high as high
+import soundfile as sf
 
 # PyTorch 2.6+ defaults torch.load(weights_only=True), which can break loading
 # Lightning checkpoints that contain pickled references to project classes.
@@ -144,7 +145,13 @@ noisy_files = sorted(glob.glob(os.path.join(args.test_dir, "*.wav")))
 
 # Loop on files
 for f in tqdm.tqdm(noisy_files):
-    y, sample_sr = torchaudio.load(f)
+    # y, sample_sr = torchaudio.load(f)
+    y, sample_sr = sf.read(f)
+    y = torch.from_numpy(y).float()
+
+
+    if y.ndim == 1:
+        y = y.unsqueeze(0)
 
     resampler = torchaudio.transforms.Resample(sample_sr, model_sr)
     y = resampler(y).to(device)

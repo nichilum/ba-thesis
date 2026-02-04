@@ -4,14 +4,14 @@ import os
 import csv
 import time
 import argparse
+from tqdm import tqdm
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst
 
-REFS_DIRECTORY = "./refs"
+REFS_DIRECTORY = "../datasets/audio-set/output"
 TESTS_DIRECTORY = "./tests"
 EXPORT_DIRECTORY = "./export"
-
 
 def create_branch(filename, pipeline):
     """
@@ -45,6 +45,8 @@ def create_branch(filename, pipeline):
 
     return caps
 
+def get_id(filename):
+    return filename.split(" ", 1)[0]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -53,20 +55,23 @@ if __name__ == "__main__":
 
     Gst.init(None)
 
-    refs_files = set(os.listdir(REFS_DIRECTORY))
-    tests_files = set(os.listdir(TESTS_DIRECTORY))
-    intersection = refs_files.intersection(tests_files)
-    wav_files = {f for f in intersection if f.lower().endswith(".wav")}
+    refs_files = [f for f in os.listdir(REFS_DIRECTORY) if f.lower().endswith(".wav")]
+    tests_files = [f for f in os.listdir(TESTS_DIRECTORY) if f.lower().endswith(".wav")]
+
+    refs_by_id = {get_id(f): f for f in refs_files}
+    tests_by_id = {get_id(f): f for f in tests_files}
+
+    common_ids = sorted(set(refs_by_id.keys()) & set(tests_by_id.keys()))
 
     odgs = ["odg"]  # Objective Difference Grade
     dis = ["di"]  # Distortion Index
 
-    print(wav_files)
-    for file in wav_files:
+    # print(common_ids)
+    for file_id in tqdm(common_ids):
         pipeline = Gst.Pipeline.new(None)
 
-        ref_filepath = os.path.join(REFS_DIRECTORY, file)
-        test_filepath = os.path.join(TESTS_DIRECTORY, file)
+        ref_filepath = os.path.join(REFS_DIRECTORY,  refs_by_id[file_id])
+        test_filepath = os.path.join(TESTS_DIRECTORY,  tests_by_id[file_id])
 
         ref_caps = create_branch(ref_filepath, pipeline)
         test_caps = create_branch(test_filepath, pipeline)
@@ -95,7 +100,7 @@ if __name__ == "__main__":
         dis.append(peaq.get_property("di"))
 
     # write to csv
-    filenames = list(wav_files)
+    filenames = [""] + common_ids
     filenames.insert(0, "")
     with open(
         os.path.join(

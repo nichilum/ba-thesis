@@ -9,5 +9,7 @@ dependencies = [
     "scikit-metrics>=0.1.0",
     "soundfile>=0.13.1",
     "torch>=2.10.0",
+    "torchaudio>=2.10.0",
     "torchmetrics>=1.8.2",
+    "tqdm>=4.67.3",
 ]

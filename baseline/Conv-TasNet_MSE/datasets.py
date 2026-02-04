@@ -61,7 +61,7 @@ class Datasets(Dataset):
 
         self.samples = []
         for dir in directories:
-            self.samples += glob.glob(os.path.join(dir, "**/*.flac"), recursive=True)
+            self.samples += glob.glob(os.path.join(dir, "**/*.wav"), recursive=True)
         # self.samples = self.samples[:4000]  # TODO: remove for prod
         # print(self.samples)
 

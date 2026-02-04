@@ -167,8 +167,10 @@ for f in tqdm.tqdm(noisy_files):
         snr=args.snr,
     )
 
-    save(
+    out = x_hat.detach().cpu().squeeze(0).numpy()  # [T]
+
+    sf.write(
         f"{args.enhanced_dir}/{os.path.basename(f)}",
-        x_hat.type(torch.float32).cpu().squeeze().unsqueeze(0),
+        out,
         model_sr,
     )

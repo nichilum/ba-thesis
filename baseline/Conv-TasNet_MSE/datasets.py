@@ -88,4 +88,5 @@ class Datasets(Dataset):
         return {
             "wet": torch.from_numpy(wet_np).float(),
             "dry": torch.from_numpy(dry_np).float(),
+            "path": os.path.basename(self.samples[index]),
         }

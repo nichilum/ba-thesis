@@ -17,7 +17,7 @@ si_snr = ScaleInvariantSignalNoiseRatio().to(device)
 
 start = time.perf_counter()
 for i, data in enumerate(test_dataset):
-    dry, wet = data["dry"], data["wet"]
+    dry, wet, path = data["dry"], data["wet"], data["path"]
 
     # print(dry.shape, wet.shape)
 
@@ -40,7 +40,7 @@ for i, data in enumerate(test_dataset):
     sr = 8000
     # sf.write(f"output/{i}-dry.wav", dry_np, sr)
     # sf.write(f"output/{i}-wet.wav", wet_np, sr)
-    sf.write(f"output/{i}-out.wav", out_np, sr)
+    sf.write(f"output/{path}", out_np, sr)
 
     # estimated_source_1 = estimated_sources[:, 0:1, :]
     # estimated_source_2 = estimated_sources[:, 1:2, :]

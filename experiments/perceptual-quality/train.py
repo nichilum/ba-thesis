@@ -39,8 +39,6 @@ def main():
         sample_rate=config["sample_rate"],
     )
 
-    print(train_dataset.__getitem__(4))
-
     val_dataset = DereverberationDataset(
         val_files,
         segment_length=config["segment_length"],

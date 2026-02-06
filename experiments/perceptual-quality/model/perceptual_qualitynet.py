@@ -4,7 +4,7 @@ import torch.nn as nn
 
 class PerceptualQualityNet(nn.Module):
     """
-    currently predicts odg odg score, reverb size and wetness, and combined quality score
+    currently predicts odg score, reverb size and wetness, and combined quality score
     """
 
     def __init__(self, n_fft=2048, hop_length=512):

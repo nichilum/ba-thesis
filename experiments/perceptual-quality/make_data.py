@@ -80,7 +80,7 @@ def find_audio_files(data_paths):
             p for p in Path(dir).rglob("*") if p.suffix.lower() in {".flac", ".wav"}
         ]
     logger.info(f"Total audio files found: {len(audio_files)}")
-    return audio_files
+    return audio_files[:100]
 
 
 def reverberate_audio_files(audio_files):
@@ -105,8 +105,6 @@ def reverberate_audio_files(audio_files):
 def main():
     audio_files = find_audio_files(data_paths)
     reverberated_audio_files = reverberate_audio_files(audio_files)
-
-    print(reverberated_audio_files)
 
     train, test_val = train_test_split(
         reverberated_audio_files, test_size=1 - SPLIT["train"], random_state=SEED

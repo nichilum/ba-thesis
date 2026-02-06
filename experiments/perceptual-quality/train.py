@@ -27,10 +27,9 @@ def main():
 
     with open(config["data_split_file"], "rb") as f:
         splits = pickle.load(f)
-        train_files, val_files, test_files = (
+        train_files, val_files = (
             splits["train"],
             splits["val"],
-            splits["test"],
         )
 
     train_dataset = DereverberationDataset(

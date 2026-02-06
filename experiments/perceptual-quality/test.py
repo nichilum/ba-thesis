@@ -1,29 +1,26 @@
 import torch
 from torch.utils.data import DataLoader
-import os
-import glob
+import pickle
 
 from model.perceptual_qualitynet import PerceptualQualityNet, DereverberationLoss
-from data_loader.dereverb_dataset import DereverberationDataset
+from data_loader.dataset import DereverberationDataset
 from utils.metrics import compute_metrics
 
 
 def test_quality_net():
-    """Test the trained quality network."""
     config = {
-        "data_dir": "/path/to/test/audio/files",
+        "data_split_file": "./data/data.pkl",
         "model_path": "checkpoints/quality_net_best.pth",
         "batch_size": 8,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "segment_length": 48000,
-        "sample_rate": 16000,
+        "segment_length": 44100 * 4,
+        "sample_rate": 44100,
     }
 
-    # Load test files
-    test_files = glob.glob(os.path.join(config["data_dir"], "*.wav"))
-    print(f"Testing on {len(test_files)} files")
+    with open(config["data_split_file"], "rb") as f:
+        splits = pickle.load(f)
+        test_files = splits["test"]
 
-    # Create dataset
     test_dataset = DereverberationDataset(
         test_files,
         segment_length=config["segment_length"],
@@ -34,7 +31,6 @@ def test_quality_net():
         test_dataset, batch_size=config["batch_size"], shuffle=False, num_workers=4
     )
 
-    # Load model
     model = PerceptualQualityNet()
     model.load_state_dict(
         torch.load(config["model_path"], map_location=config["device"])
@@ -42,7 +38,6 @@ def test_quality_net():
     model = model.to(config["device"])
     model.eval()
 
-    # Evaluate
     all_predictions = []
     all_targets = []
 
@@ -99,6 +94,6 @@ if __name__ == "__main__":
     print("Testing Quality Network...")
     test_quality_net()
 
-    print("\n" + "=" * 50)
-    print("Testing as Loss Function...")
-    test_as_loss_function()
+    # print("\n" + "=" * 50)
+    # print("Testing as Loss Function...")
+    # test_as_loss_function()

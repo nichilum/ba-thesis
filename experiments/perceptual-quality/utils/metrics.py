@@ -2,16 +2,6 @@ import torch
 
 
 def compute_metrics(predictions, targets):
-    """
-    Compute evaluation metrics.
-
-    Args:
-        predictions: (batch, 1) predicted scores
-        targets: (batch, 1) target scores
-
-    Returns:
-        dict with MSE, MAE, correlation
-    """
     mse = torch.mean((predictions - targets) ** 2).item()
     mae = torch.mean(torch.abs(predictions - targets)).item()
 

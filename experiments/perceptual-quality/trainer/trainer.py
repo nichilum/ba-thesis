@@ -51,10 +51,10 @@ class QualityNetTrainer:
 
             # Weighted combination
             loss = (
-                2.0 * loss_quality  # Main task
-                + 1.0 * loss_odg  # Auxiliary tasks
-                + 0.5 * loss_size
-                + 0.5 * loss_wetness
+                2.0 * loss_quality  # 1.5
+                + 1.0 * loss_odg  # 1.0
+                + 0.75 * loss_size  # 1.0
+                + 0.75 * loss_wetness  # 1.0
             )
 
             # Backward pass

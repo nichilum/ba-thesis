@@ -10,6 +10,9 @@ import random
 import subprocess
 import shutil
 from tqdm import tqdm
+import soundfile as sf
+import pyroomacoustics as pra
+import numpy as np
 
 SEED = 42
 SPLIT = {"train": 0.7, "val": 0.15, "test": 0.15}
@@ -80,7 +83,7 @@ def find_audio_files(data_paths):
             p for p in Path(dir).rglob("*") if p.suffix.lower() in {".flac", ".wav"}
         ]
     logger.info(f"Total audio files found: {len(audio_files)}")
-    return audio_files[:100]
+    return audio_files
 
 
 def reverberate_audio_files(audio_files):
@@ -97,7 +100,10 @@ def reverberate_audio_files(audio_files):
 
     results = []
     for file in tqdm(audio_files):
-        results.append(reverberate(file, output_dir))
+        result = reverberate(file, output_dir)
+        if np.isnan(result["odg"]) or np.isnan(result["di"]):
+            continue
+        results.append(result)
 
     return results
 
@@ -154,3 +160,118 @@ if __name__ == "__main__":
         exit()
 
     main()
+
+
+### PRA ###
+
+
+DEREV_PARAMS = {
+    "t60_range": [0.4, 1.0],
+    "dim_range": [5, 15, 5, 15, 2, 6],
+    "min_distance_to_wall": 1.0,
+    "wetness_range": [0, 1],
+}
+
+
+def reverberate_pra(file, output_dir):
+    """
+    Apply room simulation-based reverb with controllable wetness.
+
+    Returns metadata including normalized t60 (size), wetness, and quality metrics.
+    """
+    out_path = output_dir / file.name
+
+    speech, sr = sf.read(file)
+    speech = np.mean(speech, axis=1) if speech.ndim > 1 else speech
+
+    speech = speech / (np.max(np.abs(speech)) + 1e-8)
+
+    t60 = random.uniform(DEREV_PARAMS["t60_range"][0], DEREV_PARAMS["t60_range"][1])
+    wetness = random.uniform(
+        DEREV_PARAMS["wetness_range"][0], DEREV_PARAMS["wetness_range"][1]
+    )
+
+    room_dim = np.array(
+        [
+            np.random.uniform(
+                DEREV_PARAMS["dim_range"][2 * n], DEREV_PARAMS["dim_range"][2 * n + 1]
+            )
+            for n in range(3)
+        ]
+    )
+
+    center_mic_position = np.array(
+        [
+            np.random.uniform(
+                DEREV_PARAMS["min_distance_to_wall"],
+                room_dim[n] - DEREV_PARAMS["min_distance_to_wall"],
+            )
+            for n in range(3)
+        ]
+    )
+
+    source_position = np.array(
+        [
+            np.random.uniform(
+                DEREV_PARAMS["min_distance_to_wall"],
+                room_dim[n] - DEREV_PARAMS["min_distance_to_wall"],
+            )
+            for n in range(3)
+        ]
+    )
+
+    mic_array_2d = pra.beamforming.circular_2D_array(
+        center_mic_position[:-1],
+        1,
+        phi0=0,
+        radius=0.01,
+    )
+    mic_array = np.pad(
+        mic_array_2d,
+        ((0, 1), (0, 0)),
+        mode="constant",
+        constant_values=center_mic_position[-1],
+    )
+
+    e_absorption, max_order = pra.inverse_sabine(t60, room_dim)
+    reverberant_room = pra.ShoeBox(
+        room_dim,
+        fs=sr,
+        materials=pra.Material(e_absorption),
+        max_order=min(3, max_order),
+        ray_tracing=True,
+    )
+
+    reverberant_room.set_ray_tracing()
+    reverberant_room.add_microphone_array(mic_array)
+    reverberant_room.add_source(source_position, signal=speech)
+    reverberant_room.compute_rir()
+    reverberant_room.simulate()
+
+    reverb_speech = np.squeeze(np.array(reverberant_room.mic_array.signals))[
+        : len(speech)
+    ]
+
+    min_len = min(len(speech), len(reverb_speech))
+    dry_signal = speech[:min_len]
+    wet_signal = reverb_speech[:min_len]
+
+    mixed_signal = (1 - wetness) * dry_signal + wetness * wet_signal
+
+    max_val = np.max(np.abs(mixed_signal))
+    if max_val > 0.99:
+        mixed_signal = mixed_signal * (0.99 / max_val)
+
+    sf.write(file=out_path, data=mixed_signal, samplerate=sr)
+
+    peaq = calc_peaq(ref=file.as_posix(), test=out_path.as_posix())
+
+    return {
+        "original_path": str(file),
+        "reverberant_path": str(out_path),
+        "t60": t60,
+        "size": np.interp(t60, DEREV_PARAMS["t60_range"], [0, 1]),
+        "wetness": np.interp(wetness, DEREV_PARAMS["wetness_range"], [0, 1]),
+        "odg": peaq["odg"],
+        "di": peaq["di"],
+    }

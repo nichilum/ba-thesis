@@ -45,12 +45,7 @@ class PerceptualNetTrainer:
             loss_wetness = self.loss(preds["wetness"], wetness_target)
             loss_quality = self.loss(preds["quality"], quality_target)
 
-            loss = (
-                2.0 * loss_quality  # 1.5
-                + 1.0 * loss_odg  # 1.0
-                + 0.75 * loss_size  # 1.0
-                + 0.75 * loss_wetness  # 1.0
-            )
+            loss = self._loss_mat(loss_quality, loss_odg, loss_size, loss_wetness)
 
             self.optimizer.zero_grad()
             loss.backward()
@@ -90,12 +85,7 @@ class PerceptualNetTrainer:
                 loss_size = self.loss(preds["size"], size_target)
                 loss_wetness = self.loss(preds["wetness"], wetness_target)
 
-                loss = (
-                    2.0 * loss_quality
-                    + 1.0 * loss_odg
-                    + 0.75 * loss_size
-                    + 0.75 * loss_wetness
-                )
+                loss = self._loss_mat(loss_quality, loss_odg, loss_size, loss_wetness)
 
                 total_loss += loss.item()
 
@@ -108,9 +98,9 @@ class PerceptualNetTrainer:
             train_losses, avg_train_loss = self.train_epoch()
             print(f"Train Loss: {avg_train_loss:.4f}")
             print(
-                f"Quality: {train_losses['quality']:.4f},"
-                f"ODG: {train_losses['odg']:.4f},"
-                f"Size: {train_losses['size']:.4f},"
+                f"Quality: {train_losses['quality']:.4f}, "
+                f"ODG: {train_losses['odg']:.4f}, "
+                f"Size: {train_losses['size']:.4f}, "
                 f"Wetness: {train_losses['wetness']:.4f}"
             )
 
@@ -124,3 +114,8 @@ class PerceptualNetTrainer:
                     print(f"Saved best model to {self.save_path}")
             else:
                 torch.save(self.model.state_dict(), self.save_path)
+
+    def _loss_mat(loss_quality, loss_odg, loss_size, loss_wetness):
+        return (
+            2.0 * loss_quality + 1.0 * loss_odg + 0.75 * loss_size + 0.75 * loss_wetness
+        )

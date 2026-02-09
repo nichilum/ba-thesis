@@ -6,13 +6,14 @@ from model.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
 from trainer.perceptual_quality_trainer import PerceptualNetTrainer
 
-import json
 from seed import seed
+from pathlib import Path
+from utils.load_data import load_data
 
 
 def main():
     config = {
-        "data_split_file": "./data/metadata.jsonl",
+        "data_split_file": Path("./data/metadata.jsonl"),
         "batch_size": 16,
         "num_workers": 4,
         "epochs": 50,
@@ -25,27 +26,16 @@ def main():
 
     os.makedirs(config["save_dir"], exist_ok=True)
 
-    train_files = []
-    val_files = []
-
-    with open(config["data_split_file"]) as f:
-        for line in f:
-            line = json.loads(line)
-            if line["split"] == "train":
-                train_files.append(line)
-            if line["split"] == "val":
-                val_files.append(line)
-
-    print(train_files)
+    data = load_data(config["data_split_file"])
 
     train_dataset = PerceptualDereverberationDataset(
-        train_files,
+        data.train_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
     )
 
     val_dataset = PerceptualDereverberationDataset(
-        val_files,
+        data.val_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
     )

@@ -1,10 +1,10 @@
 import torch
 from torch.utils.data import DataLoader
-import json
 
 from model.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
 from utils.metrics import mse_msa_corr
+from utils.load_data import load_data
 import argparse
 from tqdm import tqdm
 from seed import seed
@@ -19,16 +19,10 @@ def test_perceptual_net():
         "sample_rate": 44100,
     }
 
-    test_files = []
-
-    with open(config["data_split_file"]) as f:
-        for line in f:
-            line = json.loads(line)
-            if line["split"] == "test":
-                test_files.append(line)
+    data = load_data(config["data_split_file"])
 
     test_dataset = PerceptualDereverberationDataset(
-        test_files,
+        data.test_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
     )

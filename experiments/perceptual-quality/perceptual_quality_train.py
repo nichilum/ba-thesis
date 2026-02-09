@@ -3,8 +3,8 @@ from torch.utils.data import DataLoader
 import os
 
 from model.perceptual_qualitynet import PerceptualQualityNet
-from data_loader.dataset import DereverberationDataset
-from trainer.trainer import QualityNetTrainer
+from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
+from trainer.perceptual_quality_trainer import PerceptualNetTrainer
 
 import pickle
 from seed import seed
@@ -32,13 +32,13 @@ def main():
             splits["val"],
         )
 
-    train_dataset = DereverberationDataset(
+    train_dataset = PerceptualDereverberationDataset(
         train_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
     )
 
-    val_dataset = DereverberationDataset(
+    val_dataset = PerceptualDereverberationDataset(
         val_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
@@ -63,13 +63,13 @@ def main():
     model = PerceptualQualityNet()
     print(f"Model created with {sum(p.numel() for p in model.parameters())} parameters")
 
-    trainer = QualityNetTrainer(
+    trainer = PerceptualNetTrainer(
         model=model,
         train_loader=train_loader,
         val_loader=val_loader,
         lr=config["lr"],
         device=config["device"],
-        save_path=os.path.join(config["save_dir"], "quality_net_best.pth"),
+        save_path=os.path.join(config["save_dir"], "perceptual_net_best.pth"),
     )
 
     print(f"Training on {config['device']}")

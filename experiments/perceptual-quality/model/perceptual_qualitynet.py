@@ -107,34 +107,34 @@ class PerceptualQualityNet(nn.Module):
 
         # Combined quality prediction
         combined_input = torch.cat([shared, odg_pred, size_pred, wetness_pred], dim=1)
-        quality = self.quality_head(combined_input)
+        quality_pred = self.quality_head(combined_input)
 
         if return_all:
             return {
-                "quality": quality,
+                "quality": quality_pred,
                 "odg": odg_pred,
                 "size": size_pred,
                 "wetness": wetness_pred,
             }
-        return quality
+        return quality_pred
 
 
-class DereverberationLoss(nn.Module):
+class PerceptualLoss(nn.Module):
     """
     Perceptual loss function for dereverberation using trained quality network.
     """
 
-    def __init__(self, quality_net_path, device="cuda"):
+    def __init__(self, perceptual_net_path, device="cuda"):
         super().__init__()
-        self.quality_net = PerceptualQualityNet()
-        self.quality_net.load_state_dict(
-            torch.load(quality_net_path, map_location=device)
+        self.perceptual_net = PerceptualQualityNet()
+        self.perceptual_net.load_state_dict(
+            torch.load(perceptual_net_path, map_location=device)
         )
-        self.quality_net.eval()
-        self.quality_net.to(device)
+        self.perceptual_net.eval()
+        self.perceptual_net.to(device)
 
         # Freeze quality network
-        for param in self.quality_net.parameters():
+        for param in self.perceptual_net.parameters():
             param.requires_grad = False
 
     def forward(self, output_audio, target_audio=None, alpha=0.1):
@@ -149,14 +149,11 @@ class DereverberationLoss(nn.Module):
         Returns:
             loss: scalar loss value
         """
-        # Compute perceptual quality (no gradients needed)
         with torch.no_grad():
-            quality_score = self.quality_net(output_audio)
+            quality = self.perceptual_net(output_audio)
 
-        # Loss is inverse of quality (maximize quality = minimize loss)
-        perceptual_loss = 1.0 - quality_score.mean()
+        perceptual_loss = 1.0 - quality.mean()
 
-        # Optional: combine with MSE for training stability
         if target_audio is not None:
             mse_loss = nn.functional.mse_loss(output_audio, target_audio)
             return perceptual_loss + alpha * mse_loss

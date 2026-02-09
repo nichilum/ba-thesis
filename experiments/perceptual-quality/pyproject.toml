@@ -1,0 +1,16 @@
+[project]
+name = "perceptual-quality"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pedalboard>=0.9.22",
+    "scikit-learn>=1.8.0",
+    "soundfile>=0.13.1",
+    "torch>=2.10.0",
+    "torchaudio>=2.10.0",
+    "tqdm>=4.67.3",
+    "matplotlib>=3.10.8",
+    "pyroomacoustics>=0.9.0",
+]

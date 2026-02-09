@@ -8,11 +8,16 @@ from utils.load_data import load_data
 import argparse
 from tqdm import tqdm
 from seed import seed
+import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
+from pathlib import Path
+
+import numpy as np
 
 
 def test_perceptual_net():
     config = {
-        "data_split_file": "./data/metadata.jsonl",
+        "data_split_file": Path("./data/metadata.jsonl"),
         "batch_size": 8,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
         "segment_length": 44100 * 4,
@@ -55,13 +60,25 @@ def test_perceptual_net():
             preds = model(reverb_audio, return_all=True)
             all_predictions.append(preds)
 
-    for key in ["quality", "odg", "size", "wetness"]:
+    for i, key in enumerate(["quality", "odg", "size", "wetness"]):
         preds = torch.cat(list(map(lambda dict: dict[key], all_predictions)), dim=0)
         targets = torch.cat(list(map(lambda dict: dict[key], all_targets)), dim=0)
         metrics = mse_msa_corr(preds, targets)
         print(f"{key} MSE: {metrics['mse']:.4f}")
         print(f"{key} MAE: {metrics['mae']:.4f}")
         print(f"{key} Correlation: {metrics['correlation']:.4f} \n")
+
+        x = preds.squeeze(1).cpu().numpy()
+        y = targets.squeeze(1).cpu().numpy()
+        plt.subplot(2, 2, i + 1)
+        # plt.axes().add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
+        coef = np.polyfit(x, y, 1)
+        poly1d_fn = np.poly1d(coef)
+        plt.plot(x, y, "bo", x, poly1d_fn(x), "--k")
+        plt.xlabel(f"{key}-pred")
+        plt.ylabel(f"{key}-target")
+
+    plt.show()
 
 
 if __name__ == "__main__":

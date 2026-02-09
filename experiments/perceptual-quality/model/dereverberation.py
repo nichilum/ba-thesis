@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import lightning.pytorch as pl
 from pytorch_tcn import TCN
+from model.perceptual_qualitynet import PerceptualLoss
 
 
 class DereverberationModel(nn.Module):
@@ -93,7 +94,7 @@ class DereverberationLightningModule(pl.LightningModule):
             loss = PerceptualLoss(perceptual_loss_model_path, device=self.device)
             self.criterion = loss
         else:
-            raise ValueError("loss must be 'l1' or 'mse'")
+            raise ValueError("Unknown loss type: {}".format(loss))
         
     def sisnr_loss(self, y_hat: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Scale-Invariant Signal-to-Noise Ratio (SI-SNR) loss."""

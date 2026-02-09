@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-import pickle
+import json
 
 from model.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
@@ -12,16 +12,20 @@ from seed import seed
 
 def test_perceptual_net():
     config = {
-        "data_split_file": "./data/data.pkl",
+        "data_split_file": "./data/metadata.jsonl",
         "batch_size": 8,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
         "segment_length": 44100 * 4,
         "sample_rate": 44100,
     }
 
-    with open(config["data_split_file"], "rb") as f:
-        splits = pickle.load(f)
-        test_files = splits["test"]
+    test_files = []
+
+    with open(config["data_split_file"]) as f:
+        for line in f:
+            line = json.loads(line)
+            if line["split"] == "test":
+                test_files.append(line)
 
     test_dataset = PerceptualDereverberationDataset(
         test_files,

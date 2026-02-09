@@ -131,7 +131,6 @@ if __name__ == "__main__":
 
     # write to csv
     filenames = [""] + common_ids
-    filenames.insert(0, "")
     export_file_name = f"export{time.strftime('%Y%m%d-%H%M%S')}.csv"
     with open(
         os.path.join(EXPORT_DIRECTORY, export_file_name),

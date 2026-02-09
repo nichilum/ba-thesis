@@ -3,7 +3,7 @@ import torch.nn as nn
 from tqdm import tqdm
 
 
-class QualityNetTrainer:
+class PerceptualNetTrainer:
     def __init__(
         self,
         model,
@@ -11,7 +11,7 @@ class QualityNetTrainer:
         val_loader=None,
         lr=1e-3,
         device="cuda",
-        save_path="checkpoints/quality_net.pth",
+        save_path="checkpoints/perceptual_net.pth",
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -25,7 +25,6 @@ class QualityNetTrainer:
         self.best_val_loss = float("inf")
 
     def train_epoch(self):
-        """Train for one epoch."""
         self.model.train()
         total_loss = 0
         losses = {"quality": 0, "odg": 0, "size": 0, "wetness": 0}
@@ -38,7 +37,7 @@ class QualityNetTrainer:
             odg_target = batch["odg"].to(self.device).unsqueeze(1)
             size_target = batch["size"].to(self.device).unsqueeze(1)
             wetness_target = batch["wetness"].to(self.device).unsqueeze(1)
-            quality_target = batch["quality_score"].to(self.device).unsqueeze(1)
+            quality_target = batch["quality"].to(self.device).unsqueeze(1)
 
             # Forward pass
             preds = self.model(reverb_audio, return_all=True)
@@ -76,7 +75,7 @@ class QualityNetTrainer:
         return {k: v / n_batches for k, v in losses.items()}, total_loss / n_batches
 
     def validate(self):
-        """Validate the model."""
+        # TODO: validate using size, wetness and odg
         if self.val_loader is None:
             return None
 
@@ -86,7 +85,7 @@ class QualityNetTrainer:
         with torch.no_grad():
             for batch in tqdm(self.val_loader, desc="Validation"):
                 reverb_audio = batch["reverb_audio"].to(self.device)
-                quality_target = batch["quality_score"].to(self.device).unsqueeze(1)
+                quality_target = batch["quality"].to(self.device).unsqueeze(1)
 
                 preds = self.model(reverb_audio, return_all=True)
                 loss = self.mse_loss(preds["quality"], quality_target)

@@ -1,7 +1,7 @@
 import torch
 
 
-def compute_metrics(predictions, targets):
+def mse_msa_corr(predictions, targets):
     mse = torch.mean((predictions - targets) ** 2).item()
     mae = torch.mean(torch.abs(predictions - targets)).item()
 

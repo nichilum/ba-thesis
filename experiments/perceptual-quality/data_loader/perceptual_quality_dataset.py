@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import torchaudio
 
 
-class DereverberationDataset(Dataset):
+class PerceptualDereverberationDataset(Dataset):
     def __init__(
         self,
         data,
@@ -34,12 +34,12 @@ class DereverberationDataset(Dataset):
 
         odg_normalized = np.clip((odg + 4.0) / 4.0, 0, 1)
 
-        quality_score = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
-        quality_score = np.clip(quality_score, 0, 1)
+        quality = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
+        quality = np.clip(quality, 0, 1)
 
         return {
             "reverb_audio": reverb_audio,
-            "quality_score": torch.tensor(quality_score, dtype=torch.float32),
+            "quality": torch.tensor(quality, dtype=torch.float32),
             "odg": torch.tensor(odg_normalized, dtype=torch.float32),
             "size": torch.tensor(size, dtype=torch.float32),
             "wetness": torch.tensor(wetness, dtype=torch.float32),

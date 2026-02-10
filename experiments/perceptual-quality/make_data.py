@@ -11,6 +11,8 @@ import numpy as np
 from pedalboard import Reverb
 
 SEED = 42
+SIZE_RANGE = [0, 0.8]
+WET_RANGE = [0, 0.8]
 random.seed(SEED)
 
 SPLIT = {"train": 0.7, "val": 0.15, "test": 0.15}
@@ -33,15 +35,12 @@ def shard_path(base: Path, filename: str):
     sub = h[:2]
     out = base / sub
     out.mkdir(parents=True, exist_ok=True)
-    return out / filename
+    return (out / filename).with_suffix(".wav")
 
 
 def find_audio_files(paths):
     for p in paths:
-        files = (
-            f for f in Path(p).rglob("*")
-            if f.suffix.lower() in {".wav", ".flac"}
-        )
+        files = (f for f in Path(p).rglob("*") if f.suffix.lower() in {".wav", ".flac"})
         yield from sorted(files, key=lambda f: str(f).lower())
 
 
@@ -112,8 +111,8 @@ def main():
             if str(file) in processed:
                 continue
 
-            size = random.uniform(0, 0.8)
-            wet = random.uniform(0, 0.8)
+            size = random.uniform(SIZE_RANGE[0], SIZE_RANGE[1])
+            wet = random.uniform(WET_RANGE[0], WET_RANGE[1])
 
             out_path = shard_path(audio_dir, file.name)
 
@@ -137,9 +136,9 @@ def main():
             record = {
                 "original_path": str(file),
                 "reverberant_path": str(out_path),
-                "size": size,
-                "wetness": wet,
-                "odg": odg,
+                "size": np.interp(size, SIZE_RANGE, [0, 1]),
+                "wetness": np.interp(size, WET_RANGE, [0, 1]),
+                "odg": odg,  # TODO: norm here instead of get item?
                 "di": di,
                 "split": assign_split(file),
             }

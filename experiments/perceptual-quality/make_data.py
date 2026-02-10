@@ -38,9 +38,11 @@ def shard_path(base: Path, filename: str):
 
 def find_audio_files(paths):
     for p in paths:
-        yield from (
-            f for f in Path(p).rglob("*") if f.suffix.lower() in {".wav", ".flac"}
+        files = (
+            f for f in Path(p).rglob("*")
+            if f.suffix.lower() in {".wav", ".flac"}
         )
+        yield from sorted(files, key=lambda f: str(f).lower())
 
 
 def reverberate_file(

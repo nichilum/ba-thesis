@@ -7,7 +7,7 @@ from utils.metrics import mse_msa_corr
 from utils.load_data import load_data
 import argparse
 from tqdm import tqdm
-from seed import seed
+from utils.seed import seed
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from pathlib import Path

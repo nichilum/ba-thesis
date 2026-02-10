@@ -6,7 +6,7 @@ from model.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
 from trainer.perceptual_quality_trainer import PerceptualNetTrainer
 
-from seed import seed
+from utils.seed import seed
 from pathlib import Path
 from utils.load_data import load_data
 

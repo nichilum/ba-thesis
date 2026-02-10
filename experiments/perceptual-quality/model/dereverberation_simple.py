@@ -23,6 +23,7 @@ class DereverberationModel(nn.Module):
         activation: str = "relu",
         lookahead: int = 0,
         use_skip_connections: bool = False,
+        dilations: Optional[Sequence[int]] = None,
     ):
         super().__init__()
 
@@ -40,6 +41,7 @@ class DereverberationModel(nn.Module):
             input_shape="NCL",
             lookahead=int(lookahead),
             output_projection=int(encoder_channels),
+            dilations=dilations or [2**i for i in range(len(tcn_channels))],
         )
 
         self.decoder = nn.Conv1d(int(encoder_channels), 1, kernel_size=1)
@@ -63,6 +65,7 @@ class DereverberationModel(nn.Module):
 
         x = x.squeeze(1)
         return x
+
 
 class DereverberationLightningModule(pl.LightningModule):
     """Minimal Lightning wrapper.
@@ -95,16 +98,22 @@ class DereverberationLightningModule(pl.LightningModule):
             self.criterion = loss
         else:
             raise ValueError("Unknown loss type: {}".format(loss))
-        
+
     def sisnr_loss(self, y_hat: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         """Scale-Invariant Signal-to-Noise Ratio (SI-SNR) loss."""
         y_hat = y_hat - y_hat.mean(dim=-1, keepdim=True)
         y = y - y.mean(dim=-1, keepdim=True)
 
-        s_target = (y_hat * y).sum(dim=-1, keepdim=True) / (y.norm(dim=-1, keepdim=True) ** 2 + 1e-8) * y
+        s_target = (
+            (y_hat * y).sum(dim=-1, keepdim=True)
+            / (y.norm(dim=-1, keepdim=True) ** 2 + 1e-8)
+            * y
+        )
         e_noise = y_hat - s_target
 
-        si_snr = 10 * torch.log10((s_target.norm(dim=-1) ** 2 + 1e-8) / (e_noise.norm(dim=-1) ** 2 + 1e-8))
+        si_snr = 10 * torch.log10(
+            (s_target.norm(dim=-1) ** 2 + 1e-8) / (e_noise.norm(dim=-1) ** 2 + 1e-8)
+        )
         return -si_snr.mean()
 
     def forward(self, audio: torch.Tensor) -> torch.Tensor:
@@ -117,7 +126,9 @@ class DereverberationLightningModule(pl.LightningModule):
             x = batch["reverb_audio"]
             y = batch.get("clean_audio", batch.get("target_audio"))
             if y is None:
-                raise KeyError("Batch dict must include 'clean_audio' or 'target_audio'")
+                raise KeyError(
+                    "Batch dict must include 'clean_audio' or 'target_audio'"
+                )
             return x, y
         raise TypeError("Unsupported batch format")
 
@@ -139,4 +150,3 @@ class DereverberationLightningModule(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
-

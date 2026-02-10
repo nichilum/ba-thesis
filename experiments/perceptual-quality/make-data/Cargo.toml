@@ -1,0 +1,15 @@
+[package]
+name = "make-data"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.101"
+freeverb = "0.2.0"
+glob = "0.3.3"
+kdam = "0.6.4"
+rand = "0.10.0"
+rayon = "1.10.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde-pickle = "1.2.0"
+wavers = "1.5.1"

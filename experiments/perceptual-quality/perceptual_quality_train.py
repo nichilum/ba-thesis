@@ -9,6 +9,7 @@ from trainer.perceptual_quality_trainer import PerceptualNetTrainer
 from utils.seed import seed
 from pathlib import Path
 from utils.load_data import load_data
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -16,8 +17,11 @@ def main():
         "data_split_file": Path("./data/metadata.jsonl"),
         "batch_size": 16,
         "num_workers": 4,
-        "epochs": 50,
+        "epochs": 100,
         "lr": 1e-3,
+        "earlystopping": True,
+        "patience": 10,
+        "delta": 1e-5,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
         "save_dir": "checkpoints",
         "segment_length": 44100 * 4,
@@ -64,6 +68,9 @@ def main():
         train_loader=train_loader,
         val_loader=val_loader,
         lr=config["lr"],
+        es=config["earlystopping"],
+        patience=config["patience"],
+        delta=config["delta"],
         device=config["device"],
         save_path=os.path.join(config["save_dir"], "perceptual_net_best.pth"),
     )
@@ -71,7 +78,26 @@ def main():
     print(f"Training on {config['device']}")
     trainer.train(epochs=config["epochs"])
 
-    print("Training complete!")
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(trainer.plots["test_loss_full"], label="Train Loss (Total)")
+    plt.plot(trainer.plots["test_loss_quality"], label="Train Loss (Quality)")
+    plt.plot(trainer.plots["test_loss_size"], label="Train Loss (Size)")
+    plt.plot(trainer.plots["test_loss_odg"], label="Train Loss (ODG)")
+    plt.plot(trainer.plots["test_loss_wetness"], label="Train Loss (Wetness)")
+    plt.plot(trainer.plots["val_loss"], label="Validation Loss", linestyle="--")
+
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training & Validation Losses")
+
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    svg_out = Path("plots").resolve()
+    svg_out.mkdir(exist_ok=True)
+    plt.savefig(svg_out / "losses.svg")
 
 
 if __name__ == "__main__":

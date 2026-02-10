@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 import random
 import soundfile as sf
 import numpy as np
-import matplotlib.pyplot as plt
 import torchaudio
 
 
@@ -28,9 +27,6 @@ class PerceptualDereverberationDataset(Dataset):
         wetness = self.data[idx]["wetness"]
         odg = self.data[idx]["odg"]
         di = self.data[idx]["di"]
-
-        # plt.plot(reverb_audio.cpu().numpy())
-        # plt.show()
 
         odg_normalized = np.clip((odg + 4.0) / 4.0, 0, 1)
 

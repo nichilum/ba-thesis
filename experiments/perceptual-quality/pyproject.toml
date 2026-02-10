@@ -15,4 +15,5 @@ dependencies = [
     "pyroomacoustics>=0.9.0",
     "pytorch-tcn>=1.2.3",
     "lightning>=2.6.1",
+    "seaborn>=0.13.2",
 ]

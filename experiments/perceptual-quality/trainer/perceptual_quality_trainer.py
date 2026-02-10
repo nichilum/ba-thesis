@@ -10,6 +10,9 @@ class PerceptualNetTrainer:
         train_loader,
         val_loader=None,
         lr=1e-3,
+        patience=5,
+        delta=0,
+        es=True,
         device="cuda",
         save_path="checkpoints/perceptual_net.pth",
     ):
@@ -23,6 +26,20 @@ class PerceptualNetTrainer:
         self.loss = nn.MSELoss()
 
         self.best_val_loss = float("inf")
+
+        self.patience = patience
+        self.delta = delta
+
+        self.es = es
+
+        self.plots = {
+            "test_loss_full": [],
+            "test_loss_quality": [],
+            "test_loss_size": [],
+            "test_loss_wetness": [],
+            "test_loss_odg": [],
+            "val_loss": [],
+        }
 
     def train_epoch(self):
         self.model.train()
@@ -92,6 +109,10 @@ class PerceptualNetTrainer:
         return total_loss / len(self.val_loader)
 
     def train(self, epochs):
+        early_stopping = EarlyStopping(
+            patience=self.patience, delta=self.delta, verbose=True
+        )
+
         for epoch in range(epochs):
             print(f"\nEpoch {epoch + 1}/{epochs}")
 
@@ -104,9 +125,16 @@ class PerceptualNetTrainer:
                 f"Wetness: {train_losses['wetness']:.4f}"
             )
 
+            self.plots["test_loss_full"].append(avg_train_loss)
+            self.plots["test_loss_quality"].append(train_losses["quality"])
+            self.plots["test_loss_size"].append(train_losses["size"])
+            self.plots["test_loss_odg"].append(train_losses["odg"])
+            self.plots["test_loss_wetness"].append(train_losses["wetness"])
+
             if self.val_loader is not None:
                 val_loss = self.validate()
                 print(f"Val Loss: {val_loss:.4f}")
+                self.plots["val_loss"].append(val_loss)
 
                 if val_loss < self.best_val_loss:
                     self.best_val_loss = val_loss
@@ -115,7 +143,35 @@ class PerceptualNetTrainer:
             else:
                 torch.save(self.model.state_dict(), self.save_path)
 
+            early_stopping.check_early_stop(val_loss)
+
+            if early_stopping.stop_training and self.es:
+                print(f"Early stopping at epoch {epoch}")
+                break
+
+    @staticmethod
     def _loss_mat(loss_quality, loss_odg, loss_size, loss_wetness):
         return (
             2.0 * loss_quality + 1.0 * loss_odg + 0.75 * loss_size + 0.75 * loss_wetness
         )
+
+
+class EarlyStopping:
+    def __init__(self, patience=5, delta=0, verbose=False):
+        self.patience = patience
+        self.delta = delta
+        self.verbose = verbose
+        self.best_loss = None
+        self.no_improvement_count = 0
+        self.stop_training = False
+
+    def check_early_stop(self, val_loss):
+        if self.best_loss is None or val_loss < self.best_loss - self.delta:
+            self.best_loss = val_loss
+            self.no_improvement_count = 0
+        else:
+            self.no_improvement_count += 1
+            if self.no_improvement_count >= self.patience:
+                self.stop_training = True
+                if self.verbose:
+                    print("Stopping early as no improvement has been observed.")

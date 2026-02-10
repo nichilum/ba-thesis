@@ -20,7 +20,7 @@ class PerceptualNetTrainer:
         self.save_path = save_path
 
         self.optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-        self.mse_loss = nn.MSELoss()
+        self.loss = nn.MSELoss()
 
         self.best_val_loss = float("inf")
 
@@ -33,35 +33,24 @@ class PerceptualNetTrainer:
         for batch in pbar:
             reverb_audio = batch["reverb_audio"].to(self.device)
 
-            # Ground truth targets
             odg_target = batch["odg"].to(self.device).unsqueeze(1)
             size_target = batch["size"].to(self.device).unsqueeze(1)
             wetness_target = batch["wetness"].to(self.device).unsqueeze(1)
             quality_target = batch["quality"].to(self.device).unsqueeze(1)
 
-            # Forward pass
             preds = self.model(reverb_audio, return_all=True)
 
-            # Multi-task loss
-            loss_odg = self.mse_loss(preds["odg"], odg_target)
-            loss_size = self.mse_loss(preds["size"], size_target)
-            loss_wetness = self.mse_loss(preds["wetness"], wetness_target)
-            loss_quality = self.mse_loss(preds["quality"], quality_target)
+            loss_odg = self.loss(preds["odg"], odg_target)
+            loss_size = self.loss(preds["size"], size_target)
+            loss_wetness = self.loss(preds["wetness"], wetness_target)
+            loss_quality = self.loss(preds["quality"], quality_target)
 
-            # Weighted combination
-            loss = (
-                2.0 * loss_quality  # 1.5
-                + 1.0 * loss_odg  # 1.0
-                + 0.75 * loss_size  # 1.0
-                + 0.75 * loss_wetness  # 1.0
-            )
+            loss = self._loss_mat(loss_quality, loss_odg, loss_size, loss_wetness)
 
-            # Backward pass
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
 
-            # Track losses
             total_loss += loss.item()
             losses["quality"] += loss_quality.item()
             losses["odg"] += loss_odg.item()
@@ -70,25 +59,34 @@ class PerceptualNetTrainer:
 
             pbar.set_postfix({"loss": f"{loss.item():.4f}"})
 
-        # Average losses
         n_batches = len(self.train_loader)
         return {k: v / n_batches for k, v in losses.items()}, total_loss / n_batches
 
     def validate(self):
-        # TODO: validate using size, wetness and odg
         if self.val_loader is None:
             return None
 
         self.model.eval()
-        total_loss = 0
+        total_loss = 0.0
 
         with torch.no_grad():
             for batch in tqdm(self.val_loader, desc="Validation"):
                 reverb_audio = batch["reverb_audio"].to(self.device)
+
                 quality_target = batch["quality"].to(self.device).unsqueeze(1)
+                odg_target = batch["odg"].to(self.device).unsqueeze(1)
+                size_target = batch["size"].to(self.device).unsqueeze(1)
+                wetness_target = batch["wetness"].to(self.device).unsqueeze(1)
 
                 preds = self.model(reverb_audio, return_all=True)
-                loss = self.mse_loss(preds["quality"], quality_target)
+
+                loss_quality = self.loss(preds["quality"], quality_target)
+                loss_odg = self.loss(preds["odg"], odg_target)
+                loss_size = self.loss(preds["size"], size_target)
+                loss_wetness = self.loss(preds["wetness"], wetness_target)
+
+                loss = self._loss_mat(loss_quality, loss_odg, loss_size, loss_wetness)
+
                 total_loss += loss.item()
 
         return total_loss / len(self.val_loader)
@@ -100,7 +98,7 @@ class PerceptualNetTrainer:
             train_losses, avg_train_loss = self.train_epoch()
             print(f"Train Loss: {avg_train_loss:.4f}")
             print(
-                f"  Quality: {train_losses['quality']:.4f}, "
+                f"Quality: {train_losses['quality']:.4f}, "
                 f"ODG: {train_losses['odg']:.4f}, "
                 f"Size: {train_losses['size']:.4f}, "
                 f"Wetness: {train_losses['wetness']:.4f}"
@@ -116,3 +114,8 @@ class PerceptualNetTrainer:
                     print(f"Saved best model to {self.save_path}")
             else:
                 torch.save(self.model.state_dict(), self.save_path)
+
+    def _loss_mat(loss_quality, loss_odg, loss_size, loss_wetness):
+        return (
+            2.0 * loss_quality + 1.0 * loss_odg + 0.75 * loss_size + 0.75 * loss_wetness
+        )

@@ -1,5 +1,5 @@
 from data_loader.dereverberation_dataset import DereverberationDataset
-from model.dereverberation import DereverberationLightningModule
+from model.dereverberation_simple import DereverberationLightningModule
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping

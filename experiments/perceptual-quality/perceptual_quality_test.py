@@ -60,7 +60,14 @@ def test_perceptual_net():
             preds = model(reverb_audio, return_all=True)
             all_predictions.append(preds)
 
-    for i, key in enumerate(["quality", "odg", "size", "wetness"]):
+    fig, axs = plt.subplots(2, 2)
+
+    for i, key in [
+        ((0, 0), "quality"),
+        ((0, 1), "odg"),
+        ((1, 0), "size"),
+        ((1, 1), "wetness"),
+    ]:
         preds = torch.cat(list(map(lambda dict: dict[key], all_predictions)), dim=0)
         targets = torch.cat(list(map(lambda dict: dict[key], all_targets)), dim=0)
         metrics = mse_msa_corr(preds, targets)
@@ -70,13 +77,15 @@ def test_perceptual_net():
 
         x = preds.squeeze(1).cpu().numpy()
         y = targets.squeeze(1).cpu().numpy()
-        plt.subplot(2, 2, i + 1)
-        # plt.axes().add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
+
         coef = np.polyfit(x, y, 1)
         poly1d_fn = np.poly1d(coef)
-        plt.plot(x, y, "bo", x, poly1d_fn(x), "--k")
-        plt.xlabel(f"{key}-pred")
-        plt.ylabel(f"{key}-target")
+        axs[i].scatter(x, y, s=1)
+        axs[i].plot(x, poly1d_fn(x), "--")
+        axs[i].add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
+        axs[i].set(xlabel=f"{key}-pred", ylabel=f"{key}-target")
+        axs[i].set_xlim(0, 1)
+        axs[i].set_ylim(0, 1)
 
     plt.show()
 

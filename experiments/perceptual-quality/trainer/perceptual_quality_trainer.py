@@ -175,3 +175,8 @@ class EarlyStopping:
                 self.stop_training = True
                 if self.verbose:
                     print("Stopping early as no improvement has been observed.")
+
+
+# TODO: individual val loss as well as checkpoint saving
+# investigate early stopping based on individual losses
+# add learning rate schedulers

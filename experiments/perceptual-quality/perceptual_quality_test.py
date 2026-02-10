@@ -13,6 +13,7 @@ import matplotlib.lines as mlines
 from pathlib import Path
 
 import numpy as np
+import seaborn as sns
 
 
 def test_perceptual_net():
@@ -61,6 +62,7 @@ def test_perceptual_net():
             all_predictions.append(preds)
 
     fig, axs = plt.subplots(2, 2)
+    sns.set_theme(style="white")
 
     for i, key in [
         ((0, 0), "quality"),
@@ -77,6 +79,20 @@ def test_perceptual_net():
 
         x = preds.squeeze(1).cpu().numpy()
         y = targets.squeeze(1).cpu().numpy()
+
+        cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
+
+        sns.kdeplot(
+            x=x,
+            y=y,
+            cmap=cmap,
+            fill=True,
+            clip=(-5, 5),
+            cut=10,
+            thresh=0,
+            levels=15,
+            ax=axs[i],
+        )
 
         coef = np.polyfit(x, y, 1)
         poly1d_fn = np.poly1d(coef)

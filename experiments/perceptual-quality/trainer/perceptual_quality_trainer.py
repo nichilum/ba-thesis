@@ -12,6 +12,7 @@ class PerceptualNetTrainer:
         lr=1e-3,
         patience=5,
         delta=0,
+        es=True,
         device="cuda",
         save_path="checkpoints/perceptual_net.pth",
     ):
@@ -28,6 +29,8 @@ class PerceptualNetTrainer:
 
         self.patience = patience
         self.delta = delta
+
+        self.es = es
 
         self.plots = {
             "test_loss_full": [],
@@ -142,7 +145,7 @@ class PerceptualNetTrainer:
 
             early_stopping.check_early_stop(val_loss)
 
-            if early_stopping.stop_training:
+            if early_stopping.stop_training and self.es:
                 print(f"Early stopping at epoch {epoch}")
                 break
 

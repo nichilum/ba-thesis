@@ -14,7 +14,9 @@ class PerceptualNetTrainer:
         delta=0,
         es=False,
         device="cuda",
-        save_path=lambda loss_type: f"checkpoints/{loss_type}-perceptual_net.pth",
+        save_path=lambda loss_type, epoch: (
+            f"checkpoints/epoch_{epoch}-{loss_type}-perceptual_net.pth"
+        ),
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -155,7 +157,7 @@ class PerceptualNetTrainer:
                 for k, v in val_losses.items():
                     if v < self.best_val_losses[k]:
                         self.best_val_losses[k] = v
-                        out_path = self.save_path(k)
+                        out_path = self.save_path(k, epoch + 1)
                         torch.save(self.model.state_dict(), out_path)
                         print(f"Saved best model to {out_path}")
             else:
@@ -165,7 +167,7 @@ class PerceptualNetTrainer:
             early_stopping.check_early_stop(val_losses["full"])
 
             if early_stopping.stop_training and self.es:
-                print(f"Early stopping at epoch {epoch}")
+                print(f"Early stopping at epoch {epoch + 1}")
                 break
 
     @staticmethod
@@ -191,8 +193,3 @@ class EarlyStopping:
             self.no_improvement_count += 1
             if self.no_improvement_count >= self.patience:
                 self.stop_training = True
-
-
-# TODO: individual val loss as well as checkpoint saving
-# investigate early stopping based on individual losses
-# add learning rate schedulers

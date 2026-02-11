@@ -76,8 +76,8 @@ def main():
         patience=config["patience"],
         delta=config["delta"],
         device=config["device"],
-        save_path=lambda loss_type: os.path.join(
-            config["save_dir"], f"{loss_type}-perceptual_net_best.pth"
+        save_path=lambda loss_type, epoch: os.path.join(
+            config["save_dir"], f"epoch_{epoch}-{loss_type}-perceptual_net_best.pth"
         ),
     )
 

@@ -3,7 +3,7 @@ perceptual_1:
   data_split_file: "./data/metadata.jsonl"
   batch_size: 16
   num_workers: 4
-  epochs: 1
+  epochs: 100
   lr: 0.001
   earlystopping: true
   patience: 10

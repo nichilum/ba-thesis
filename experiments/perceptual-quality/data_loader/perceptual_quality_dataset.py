@@ -6,7 +6,7 @@ import numpy as np
 import torchaudio
 
 
-class PerceptualDereverberationDataset(Dataset):
+class PerceptualDataset(Dataset):
     def __init__(
         self,
         data,

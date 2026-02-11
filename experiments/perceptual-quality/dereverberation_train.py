@@ -10,22 +10,29 @@ from utils.load_data import load_data
 from pathlib import Path
 
 from utils.seed import seed
+import yaml
+import sys
 
 
 def train():
     seed(42)
-
+    with open("config.yaml", "r") as f:
+        cfg = yaml.safe_load(f)[sys.argv[1]]
     config = {
-        "data_split_file": Path("./data/data.pkl"),
-        "batch_size": 16,
-        "num_workers": 4,
-        "epochs": 100,
-        "lr": 1e-3,
+        "data_split_file": Path(cfg.get("data_split_file", "./data/metadata.jsonl")),
+        "batch_size": cfg.get("batch_size", 16),
+        "num_workers": cfg.get("num_workers", 4),
+        "epochs": cfg.get("epochs", 100),
+        "lr": cfg.get("lr", 1e-3),
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "save_dir": "checkpoints",
-        "model_out": "output/tasnet.pt",
-        "segment_length": 44100 * 4,
-        "sample_rate": 44100,
+        "save_dir": cfg.get("save_dir", "checkpoints"),
+        "model_out": cfg.get("model_out", "output/derevnet.pt"),
+        "segment_length": cfg.get("segment_length", 44100 * 4),
+        "sample_rate": cfg.get("sample_rate", 44100),
+        "perceptual_loss_model_path": cfg.get(
+            "perceptual_loss_model_path",
+            "checkpoints/7358_100ep_perceptual_net_best.pth",
+        ),
     }
 
     os.makedirs(os.path.dirname(config["model_out"]), exist_ok=True)
@@ -58,7 +65,10 @@ def train():
         pin_memory=True,
     )
 
-    model = DereverberationLightningModule()
+    model = DereverberationLightningModule(
+        loss="perceptual",
+        perceptual_loss_model_path=config["perceptual_loss_model_path"],
+    )
 
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints",

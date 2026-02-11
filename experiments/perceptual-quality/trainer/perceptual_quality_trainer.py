@@ -12,9 +12,9 @@ class PerceptualNetTrainer:
         lr=1e-3,
         patience=5,
         delta=0,
-        es=True,
+        es=False,
         device="cuda",
-        save_path="checkpoints/perceptual_net.pth",
+        save_path=lambda loss_type: f"checkpoints/{loss_type}-perceptual_net.pth",
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -25,7 +25,13 @@ class PerceptualNetTrainer:
         self.optimizer = torch.optim.Adam(model.parameters(), lr=lr)
         self.loss = nn.MSELoss()
 
-        self.best_val_loss = float("inf")
+        self.best_val_losses = {
+            "full": float("inf"),
+            "quality": float("inf"),
+            "odg": float("inf"),
+            "size": float("inf"),
+            "wetness": float("inf"),
+        }
 
         self.patience = patience
         self.delta = delta
@@ -38,7 +44,11 @@ class PerceptualNetTrainer:
             "test_loss_size": [],
             "test_loss_wetness": [],
             "test_loss_odg": [],
-            "val_loss": [],
+            "val_loss_full": [],
+            "val_loss_quality": [],
+            "val_loss_size": [],
+            "val_loss_wetness": [],
+            "val_loss_odg": [],
         }
 
     def train_epoch(self):
@@ -84,7 +94,7 @@ class PerceptualNetTrainer:
             return None
 
         self.model.eval()
-        total_loss = 0.0
+        losses = {"full": 0, "quality": 0, "odg": 0, "size": 0, "wetness": 0}
 
         with torch.no_grad():
             for batch in tqdm(self.val_loader, desc="Validation"):
@@ -104,14 +114,17 @@ class PerceptualNetTrainer:
 
                 loss = self._loss_mat(loss_quality, loss_odg, loss_size, loss_wetness)
 
-                total_loss += loss.item()
+                losses["full"] += loss.item()
+                losses["quality"] += loss_quality.item()
+                losses["odg"] += loss_odg.item()
+                losses["size"] += loss_size.item()
+                losses["wetness"] += loss_wetness.item()
 
-        return total_loss / len(self.val_loader)
+        n_batches = len(self.val_loader)
+        return {k: v / n_batches for k, v in losses.items()}
 
     def train(self, epochs):
-        early_stopping = EarlyStopping(
-            patience=self.patience, delta=self.delta, verbose=True
-        )
+        early_stopping = EarlyStopping(patience=self.patience, delta=self.delta)
 
         for epoch in range(epochs):
             print(f"\nEpoch {epoch + 1}/{epochs}")
@@ -132,18 +145,24 @@ class PerceptualNetTrainer:
             self.plots["test_loss_wetness"].append(train_losses["wetness"])
 
             if self.val_loader is not None:
-                val_loss = self.validate()
-                print(f"Val Loss: {val_loss:.4f}")
-                self.plots["val_loss"].append(val_loss)
+                val_losses = self.validate()
+                self.plots["val_loss_full"].append(val_losses["full"])
+                self.plots["val_loss_quality"].append(val_losses["quality"])
+                self.plots["val_loss_size"].append(val_losses["size"])
+                self.plots["val_loss_odg"].append(val_losses["odg"])
+                self.plots["val_loss_wetness"].append(val_losses["wetness"])
 
-                if val_loss < self.best_val_loss:
-                    self.best_val_loss = val_loss
-                    torch.save(self.model.state_dict(), self.save_path)
-                    print(f"Saved best model to {self.save_path}")
+                for k, v in val_losses.items():
+                    if v < self.best_val_losses[k]:
+                        self.best_val_losses[k] = v
+                        out_path = self.save_path(k)
+                        torch.save(self.model.state_dict(), out_path)
+                        print(f"Saved best model to {out_path}")
             else:
                 torch.save(self.model.state_dict(), self.save_path)
+                print(f"Saved latest model to {self.save_path}")
 
-            early_stopping.check_early_stop(val_loss)
+            early_stopping.check_early_stop(val_losses["full"])
 
             if early_stopping.stop_training and self.es:
                 print(f"Early stopping at epoch {epoch}")
@@ -157,10 +176,9 @@ class PerceptualNetTrainer:
 
 
 class EarlyStopping:
-    def __init__(self, patience=5, delta=0, verbose=False):
+    def __init__(self, patience=5, delta=0):
         self.patience = patience
         self.delta = delta
-        self.verbose = verbose
         self.best_loss = None
         self.no_improvement_count = 0
         self.stop_training = False
@@ -173,8 +191,6 @@ class EarlyStopping:
             self.no_improvement_count += 1
             if self.no_improvement_count >= self.patience:
                 self.stop_training = True
-                if self.verbose:
-                    print("Stopping early as no improvement has been observed.")
 
 
 # TODO: individual val loss as well as checkpoint saving

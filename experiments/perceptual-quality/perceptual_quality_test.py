@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from model.perceptual_qualitynet import PerceptualQualityNet
-from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
+from data_loader.perceptual_quality_dataset import PerceptualDataset
 from utils.metrics import mse_msa_corr
 from utils.load_data import load_data
 import argparse
@@ -27,7 +27,7 @@ def test_perceptual_net():
 
     data = load_data(config["data_split_file"])
 
-    test_dataset = PerceptualDereverberationDataset(
+    test_dataset = PerceptualDataset(
         data.test_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],

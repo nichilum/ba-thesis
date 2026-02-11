@@ -23,26 +23,12 @@ class DereverberationDataset(Dataset):
     def __getitem__(self, idx):
         reverb_audio = self.load_audio(self.data[idx]["reverberant_path"])
         original_audio = self.load_audio(self.data[idx]["original_path"])
-        # size = self.data[idx]["size"]
-        # wetness = self.data[idx]["wetness"]
-        # odg = self.data[idx]["odg"]
-        # di = self.data[idx]["di"]
 
-        # plt.plot(reverb_audio.cpu().numpy())
-        # plt.show()
-
-        # odg_normalized = np.clip((odg + 4.0) / 4.0, 0, 1)
-
-        # quality = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
-        # quality = np.clip(quality, 0, 1)
+        # TODO: live reverberate using RIRs
 
         return {
             "reverb_audio": reverb_audio,
             "original_audio": original_audio,
-            # "quality": torch.tensor(quality, dtype=torch.float32),
-            # "odg": torch.tensor(odg_normalized, dtype=torch.float32),
-            # "size": torch.tensor(size, dtype=torch.float32),
-            # "wetness": torch.tensor(wetness, dtype=torch.float32),
         }
 
     def load_audio(self, path):

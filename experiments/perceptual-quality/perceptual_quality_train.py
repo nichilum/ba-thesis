@@ -3,42 +3,46 @@ from torch.utils.data import DataLoader
 import os
 
 from model.perceptual_qualitynet import PerceptualQualityNet
-from data_loader.perceptual_quality_dataset import PerceptualDereverberationDataset
+from data_loader.perceptual_quality_dataset import PerceptualDataset
 from trainer.perceptual_quality_trainer import PerceptualNetTrainer
 
 from utils.seed import seed
 from pathlib import Path
 from utils.load_data import load_data
 import matplotlib.pyplot as plt
+import yaml
+import sys
 
 
 def main():
+    with open("config.yaml", "r") as f:
+        cfg = yaml.safe_load(f)[sys.argv[1]]
     config = {
-        "data_split_file": Path("./data/metadata.jsonl"),
-        "batch_size": 16,
-        "num_workers": 4,
-        "epochs": 100,
-        "lr": 1e-3,
-        "earlystopping": False,
-        "patience": 10,
-        "delta": 1e-5,
+        "data_split_file": Path(cfg.get("data_split_file", "./data/metadata.jsonl")),
+        "batch_size": cfg.get("batch_size", 16),
+        "num_workers": cfg.get("num_workers", 4),
+        "epochs": cfg.get("epochs", 100),
+        "lr": cfg.get("lr", 1e-3),
+        "earlystopping": cfg.get("earlystopping", True),
+        "patience": cfg.get("patience", 10),
+        "delta": cfg.get("delta", 1e-5),
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "save_dir": "checkpoints",
-        "segment_length": 44100 * 4,
-        "sample_rate": 44100,
+        "save_dir": cfg.get("save_dir", "checkpoints"),
+        "segment_length": cfg.get("segment_length", 44100 * 4),
+        "sample_rate": cfg.get("sample_rate", 44100),
     }
 
     os.makedirs(config["save_dir"], exist_ok=True)
 
     data = load_data(config["data_split_file"])
 
-    train_dataset = PerceptualDereverberationDataset(
+    train_dataset = PerceptualDataset(
         data.train_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
     )
 
-    val_dataset = PerceptualDereverberationDataset(
+    val_dataset = PerceptualDataset(
         data.val_files,
         segment_length=config["segment_length"],
         sample_rate=config["sample_rate"],
@@ -72,7 +76,9 @@ def main():
         patience=config["patience"],
         delta=config["delta"],
         device=config["device"],
-        save_path=os.path.join(config["save_dir"], "perceptual_net_best.pth"),
+        save_path=lambda loss_type: os.path.join(
+            config["save_dir"], f"{loss_type}-perceptual_net_best.pth"
+        ),
     )
 
     print(f"Training on {config['device']}")
@@ -80,12 +86,22 @@ def main():
 
     plt.figure(figsize=(10, 6))
 
-    plt.plot(trainer.plots["test_loss_full"], label="Train Loss (Total)")
+    plt.plot(trainer.plots["test_loss_full"], label="Train Loss (Total)", lw=2)
     plt.plot(trainer.plots["test_loss_quality"], label="Train Loss (Quality)")
     plt.plot(trainer.plots["test_loss_size"], label="Train Loss (Size)")
     plt.plot(trainer.plots["test_loss_odg"], label="Train Loss (ODG)")
     plt.plot(trainer.plots["test_loss_wetness"], label="Train Loss (Wetness)")
-    plt.plot(trainer.plots["val_loss"], label="Validation Loss", linestyle="--")
+    plt.plot(
+        trainer.plots["val_loss_full"], label="Val Loss (Total)", linestyle="--", lw=2
+    )
+    plt.plot(
+        trainer.plots["val_loss_quality"], label="Val Loss (Quality)", linestyle="--"
+    )
+    plt.plot(trainer.plots["val_loss_size"], label="Val Loss (Size)", linestyle="--")
+    plt.plot(trainer.plots["val_loss_odg"], label="Val Loss (ODG)", linestyle="--")
+    plt.plot(
+        trainer.plots["val_loss_wetness"], label="Val Loss (Wetness)", linestyle="--"
+    )
 
     plt.xlabel("Epoch")
     plt.ylabel("Loss")

@@ -22,7 +22,7 @@ class PerceptualNetTrainer:
         self.device = device
         self.save_path = save_path
 
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        self.optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
         self.loss = nn.MSELoss()
 
         self.best_val_losses = {

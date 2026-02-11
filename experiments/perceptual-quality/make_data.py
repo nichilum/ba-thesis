@@ -1,7 +1,6 @@
 import argparse
 import json
 import math
-import random
 import subprocess
 from pathlib import Path
 from tqdm import tqdm
@@ -13,14 +12,14 @@ from pedalboard import Reverb
 SEED = 42
 SIZE_RANGE = [0, 0.8]
 WET_RANGE = [0, 0.8]
-random.seed(SEED)
 
 SPLIT = {"train": 0.7, "val": 0.15, "test": 0.15}
 assert math.isclose(sum(SPLIT.values()), 1.0)
 
 
 def assign_split(path: Path):
-    h = hashlib.md5(str(path).encode()).digest()
+    name = path.name
+    h = hashlib.md5(name.encode()).digest()
     r = int.from_bytes(h[:4], "little") / 0xFFFFFFFF
     if r < SPLIT["train"]:
         return "train"
@@ -28,6 +27,13 @@ def assign_split(path: Path):
         return "val"
     else:
         return "test"
+
+
+def hash_to_random(filename: str, seed_offset: int = 0) -> float:
+    """Generate reproducible random value [0, 1) from filename hash"""
+    name = Path(filename).name
+    h = hashlib.md5(f"{name}{seed_offset}".encode()).digest()
+    return int.from_bytes(h[:4], "little") / 0xFFFFFFFF
 
 
 def shard_path(base: Path, filename: str):
@@ -84,6 +90,9 @@ def main():
     parser.add_argument("-dp", "--data-paths", nargs="+", required=True)
     parser.add_argument("-o", "--out", default="data")
     parser.add_argument("-r", "--resume", action="store_true")
+    parser.add_argument(
+        "--use-peaq", action="store_true", help="Enable PEAQ quality metrics"
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out).resolve()
@@ -98,21 +107,26 @@ def main():
             for line in f:
                 processed.add(json.loads(line)["original_path"])
 
-    peaq = subprocess.Popen(
-        ["/usr/bin/python", "utils/peaq.py"],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        text=True,
-        bufsize=1,
-    )
+    peaq = None
+    if args.use_peaq:
+        peaq = subprocess.Popen(
+            ["/usr/bin/python", "utils/peaq.py"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+        )
 
     with open(meta_path, "a") as meta:
         for file in tqdm(find_audio_files(args.data_paths)):
             if str(file) in processed:
                 continue
 
-            size = random.uniform(SIZE_RANGE[0], SIZE_RANGE[1])
-            wet = random.uniform(WET_RANGE[0], WET_RANGE[1])
+            size = hash_to_random(file.name, seed_offset=0)
+            size = np.interp(size, [0, 1], SIZE_RANGE)
+
+            wet = hash_to_random(file.name, seed_offset=1)
+            wet = np.interp(wet, [0, 1], WET_RANGE)
 
             out_path = shard_path(audio_dir, file.name)
 
@@ -123,22 +137,26 @@ def main():
                 wetness=wet,
             )
 
-            peaq.stdin.write(f"{file}\t{out_path}\n")
-            peaq.stdin.flush()
+            if args.use_peaq:
+                peaq.stdin.write(f"{file}\t{out_path}\n")
+                peaq.stdin.flush()
 
-            odg, di = peaq.stdout.readline().strip().split("\t")
-            odg = float(odg)
-            di = float(di)
+                odg, di = peaq.stdout.readline().strip().split("\t")
+                odg = float(odg)
+                di = float(di)
 
-            if np.isnan(odg) or np.isnan(di):
-                continue
+                if np.isnan(odg) or np.isnan(di):
+                    continue
+            else:
+                odg = 0.0
+                di = 0.0
 
             record = {
                 "original_path": str(file),
                 "reverberant_path": str(out_path),
                 "size": np.interp(size, SIZE_RANGE, [0, 1]),
-                "wetness": np.interp(size, WET_RANGE, [0, 1]),
-                "odg": odg,  # TODO: norm here instead of get item?
+                "wetness": np.interp(wet, WET_RANGE, [0, 1]),
+                "odg": odg,
                 "di": di,
                 "split": assign_split(file),
             }
@@ -147,9 +165,10 @@ def main():
             meta.write("\n")
             meta.flush()
 
-    peaq.stdin.write("QUIT\n")
-    peaq.stdin.flush()
-    peaq.wait()
+    if args.use_peaq:
+        peaq.stdin.write("QUIT\n")
+        peaq.stdin.flush()
+        peaq.wait()
 
 
 if __name__ == "__main__":

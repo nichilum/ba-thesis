@@ -23,7 +23,7 @@ def main():
         "num_workers": cfg.get("num_workers", 4),
         "epochs": cfg.get("epochs", 100),
         "lr": cfg.get("lr", 1e-3),
-        "earlystopping": cfg.get("earlystopping", True),
+        "earlystopping": cfg.get("earlystopping", False),
         "patience": cfg.get("patience", 10),
         "delta": cfg.get("delta", 1e-5),
         "device": "cuda" if torch.cuda.is_available() else "cpu",
@@ -86,11 +86,11 @@ def main():
 
     plt.figure(figsize=(10, 6))
 
-    plt.plot(trainer.plots["test_loss_full"], label="Train Loss (Total)", lw=2)
-    plt.plot(trainer.plots["test_loss_quality"], label="Train Loss (Quality)")
-    plt.plot(trainer.plots["test_loss_size"], label="Train Loss (Size)")
-    plt.plot(trainer.plots["test_loss_odg"], label="Train Loss (ODG)")
-    plt.plot(trainer.plots["test_loss_wetness"], label="Train Loss (Wetness)")
+    plt.plot(trainer.plots["train_loss_full"], label="Train Loss (Total)", lw=2)
+    plt.plot(trainer.plots["train_loss_quality"], label="Train Loss (Quality)")
+    plt.plot(trainer.plots["train_loss_size"], label="Train Loss (Size)")
+    plt.plot(trainer.plots["train_loss_odg"], label="Train Loss (ODG)")
+    plt.plot(trainer.plots["train_loss_wetness"], label="Train Loss (Wetness)")
     plt.plot(
         trainer.plots["val_loss_full"], label="Val Loss (Total)", linestyle="--", lw=2
     )

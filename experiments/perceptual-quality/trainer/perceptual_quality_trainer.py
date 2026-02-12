@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+from torch.utils.tensorboard import SummaryWriter
 
 
 class PerceptualNetTrainer:
@@ -41,11 +42,11 @@ class PerceptualNetTrainer:
         self.es = es
 
         self.plots = {
-            "test_loss_full": [],
-            "test_loss_quality": [],
-            "test_loss_size": [],
-            "test_loss_wetness": [],
-            "test_loss_odg": [],
+            "train_loss_full": [],
+            "train_loss_quality": [],
+            "train_loss_size": [],
+            "train_loss_wetness": [],
+            "train_loss_odg": [],
             "val_loss_full": [],
             "val_loss_quality": [],
             "val_loss_size": [],
@@ -53,10 +54,11 @@ class PerceptualNetTrainer:
             "val_loss_odg": [],
         }
 
+        self.writer = SummaryWriter()
+
     def train_epoch(self):
         self.model.train()
-        total_loss = 0
-        losses = {"quality": 0, "odg": 0, "size": 0, "wetness": 0}
+        losses = {"full": 0, "quality": 0, "odg": 0, "size": 0, "wetness": 0}
 
         pbar = tqdm(self.train_loader, desc="Training")
         for batch in pbar:
@@ -80,7 +82,7 @@ class PerceptualNetTrainer:
             loss.backward()
             self.optimizer.step()
 
-            total_loss += loss.item()
+            losses["full"] += loss.item()
             losses["quality"] += loss_quality.item()
             losses["odg"] += loss_odg.item()
             losses["size"] += loss_size.item()
@@ -89,7 +91,7 @@ class PerceptualNetTrainer:
             pbar.set_postfix({"loss": f"{loss.item():.4f}"})
 
         n_batches = len(self.train_loader)
-        return {k: v / n_batches for k, v in losses.items()}, total_loss / n_batches
+        return {k: v / n_batches for k, v in losses.items()}
 
     def validate(self):
         if self.val_loader is None:
@@ -131,28 +133,40 @@ class PerceptualNetTrainer:
         for epoch in range(epochs):
             print(f"\nEpoch {epoch + 1}/{epochs}")
 
-            train_losses, avg_train_loss = self.train_epoch()
-            print(f"Train Loss: {avg_train_loss:.4f}")
+            train_losses = self.train_epoch()
             print(
+                f"Full: {train_losses['full']:.4f}, "
                 f"Quality: {train_losses['quality']:.4f}, "
                 f"ODG: {train_losses['odg']:.4f}, "
                 f"Size: {train_losses['size']:.4f}, "
                 f"Wetness: {train_losses['wetness']:.4f}"
             )
 
-            self.plots["test_loss_full"].append(avg_train_loss)
-            self.plots["test_loss_quality"].append(train_losses["quality"])
-            self.plots["test_loss_size"].append(train_losses["size"])
-            self.plots["test_loss_odg"].append(train_losses["odg"])
-            self.plots["test_loss_wetness"].append(train_losses["wetness"])
+            self.plots["train_loss_full"].append(train_losses["full"])
+            self.plots["train_loss_quality"].append(train_losses["quality"])
+            self.plots["train_loss_size"].append(train_losses["size"])
+            self.plots["train_loss_odg"].append(train_losses["odg"])
+            self.plots["train_loss_wetness"].append(train_losses["wetness"])
+
+            self.writer.add_scalars("Train Losses", train_losses, epoch)
 
             if self.val_loader is not None:
                 val_losses = self.validate()
+                print(
+                    f"Full: {val_losses['full']:.4f}, "
+                    f"Quality: {val_losses['quality']:.4f}, "
+                    f"ODG: {val_losses['odg']:.4f}, "
+                    f"Size: {val_losses['size']:.4f}, "
+                    f"Wetness: {val_losses['wetness']:.4f}"
+                )
+
                 self.plots["val_loss_full"].append(val_losses["full"])
                 self.plots["val_loss_quality"].append(val_losses["quality"])
                 self.plots["val_loss_size"].append(val_losses["size"])
                 self.plots["val_loss_odg"].append(val_losses["odg"])
                 self.plots["val_loss_wetness"].append(val_losses["wetness"])
+
+                self.writer.add_scalars("Val Losses", val_losses, epoch)
 
                 for k, v in val_losses.items():
                     if v < self.best_val_losses[k]:
@@ -169,6 +183,8 @@ class PerceptualNetTrainer:
             if early_stopping.stop_training and self.es:
                 print(f"Early stopping at epoch {epoch + 1}")
                 break
+
+        self.writer.close()
 
     @staticmethod
     def _loss_mat(loss_quality, loss_odg, loss_size, loss_wetness):

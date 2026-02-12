@@ -83,7 +83,7 @@ def train():
     #     monitor="val_loss", patience=5, mode="min"
     # )
 
-    logger = TensorBoardLogger("logs", name="tasnet")
+    logger = TensorBoardLogger("logs", name="derevnet")
 
     trainer = pl.Trainer(
         max_epochs=config["epochs"],

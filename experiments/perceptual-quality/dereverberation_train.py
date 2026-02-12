@@ -73,7 +73,7 @@ def train():
 
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints",
-        filename="{epoch:02d}-{val_loss:.4f}",
+        filename=sys.argv[1] + "-{epoch:02d}-{val_loss:.4f}",
         save_top_k=-1,
         every_n_epochs=1,
         # monitor="val_loss",
@@ -84,7 +84,7 @@ def train():
     #     monitor="val_loss", patience=5, mode="min"
     # )
 
-    logger = TensorBoardLogger("logs", name="derevnet")
+    logger = TensorBoardLogger("logs", name=f"derevnet-{sys.argv[1]}")
 
     trainer = pl.Trainer(
         max_epochs=config["epochs"],

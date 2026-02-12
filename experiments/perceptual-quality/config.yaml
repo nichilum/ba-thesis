@@ -22,4 +22,5 @@ derev_1:
   model_out: "output/derevnet.pt"
   segment_length: 176400 # 44100 * 4
   sample_rate: 44100
+  loss: "l1"
   perceptual_loss_model_path: "checkpoints/7358_100ep_perceptual_net_best.pth"

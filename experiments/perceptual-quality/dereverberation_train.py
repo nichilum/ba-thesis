@@ -29,6 +29,7 @@ def train():
         "model_out": cfg.get("model_out", "output/derevnet.pt"),
         "segment_length": cfg.get("segment_length", 44100 * 4),
         "sample_rate": cfg.get("sample_rate", 44100),
+        "loss": cfg.get("loss", "l1"),
         "perceptual_loss_model_path": cfg.get(
             "perceptual_loss_model_path",
             "checkpoints/7358_100ep_perceptual_net_best.pth",
@@ -66,7 +67,7 @@ def train():
     )
 
     model = DereverberationLightningModule(
-        loss="perceptual",
+        loss=config["loss"],
         perceptual_loss_model_path=config["perceptual_loss_model_path"],
     )
 

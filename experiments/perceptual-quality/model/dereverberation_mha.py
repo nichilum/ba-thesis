@@ -5,7 +5,7 @@ from typing import Optional, Sequence
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import lightning.pytorch as pl
+import pytorch_lightning as pl
 from pytorch_tcn import TCN
 from model.perceptual_qualitynet import PerceptualLoss
 
@@ -68,9 +68,9 @@ def _unpad_2d(x: torch.Tensor, pad: tuple[int, int, int, int]) -> torch.Tensor:
     if pad_left_t != 0 or pad_left_f != 0:
         raise ValueError("This helper assumes only right-padding was used")
     if pad_right_t:
-        x = x[..., : -pad_right_t]
+        x = x[..., :-pad_right_t]
     if pad_right_f:
-        x = x[..., : -pad_right_f, :]
+        x = x[..., :-pad_right_f, :]
     return x
 
 
@@ -136,8 +136,7 @@ class DereverberationModel(nn.Module):
             input_shape="NCL",
             lookahead=int(tcn_lookahead),
             output_projection=c3,
-            dilations=tcn_dilations
-            or [2**i for i in range(len(tcn_channels))],
+            dilations=tcn_dilations or [2**i for i in range(len(tcn_channels))],
         )
 
         embed_dim = int(mha_heads) * int(mha_key_dim)
@@ -313,14 +312,9 @@ class DereverberationLightningModule(pl.LightningModule):
             return batch[0], batch[1]
         if isinstance(batch, dict):
             x = batch["reverb_audio"]
-            y = batch.get(
-                "clean_audio",
-                batch.get("target_audio", batch.get("original_audio")),
-            )
+            y = batch["original_audio"]
             if y is None:
-                raise KeyError(
-                    "Batch dict must include 'clean_audio', 'target_audio', or 'original_audio'"
-                )
+                raise KeyError("Batch dict must include 'original_audio'")
             return x, y
         raise TypeError("Unsupported batch format")
 

@@ -4,7 +4,7 @@ from typing import Optional, Sequence
 
 import torch
 import torch.nn as nn
-import lightning.pytorch as pl
+import pytorch_lightning as pl
 from pytorch_tcn import TCN
 from model.perceptual_qualitynet import PerceptualLoss
 
@@ -124,11 +124,9 @@ class DereverberationLightningModule(pl.LightningModule):
             return batch[0], batch[1]
         if isinstance(batch, dict):
             x = batch["reverb_audio"]
-            y = batch.get("clean_audio", batch.get("target_audio"))
+            y = batch["original_audio"]
             if y is None:
-                raise KeyError(
-                    "Batch dict must include 'clean_audio' or 'target_audio'"
-                )
+                raise KeyError("Batch dict must include 'original_audio'")
             return x, y
         raise TypeError("Unsupported batch format")
 

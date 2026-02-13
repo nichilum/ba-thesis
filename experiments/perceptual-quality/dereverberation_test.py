@@ -72,10 +72,22 @@ def test_dereverb_net():
                 si_snr_value = si_snr(preds, targets)
                 if metrics["mse"] < best_mse:
                     best_mse = metrics["mse"]
-                    for i in preds:
+                    for i, audio in enumerate(preds):
                         sf.write(
-                            f"output/{Path(args.checkpoint).stem}_{i}.wav",
-                            i.cpu().numpy(),
+                            f"output/{Path(args.checkpoint).stem}_{i}_pred.wav",
+                            audio.cpu().numpy(),
+                            config["sample_rate"],
+                        )
+                    for i, audio in enumerate(targets):
+                        sf.write(
+                            f"output/{Path(args.checkpoint).stem}_{i}_target.wav",
+                            audio.squeeze().cpu().numpy(),
+                            config["sample_rate"],
+                        )
+                    for i, audio in enumerate(reverb_audio):
+                        sf.write(
+                            f"output/{Path(args.checkpoint).stem}_{i}_input.wav",
+                            audio.cpu().numpy(),
                             config["sample_rate"],
                         )
 

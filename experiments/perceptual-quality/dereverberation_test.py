@@ -46,51 +46,42 @@ def test_dereverb_net():
         state_dict = checkpoint_obj
 
     # PyTorch Lightning checkpoints typically prefix parameters with "model.".
-    if isinstance(state_dict, dict) and all(str(k).startswith("model.") for k in state_dict.keys()):
+    if isinstance(state_dict, dict) and all(
+        str(k).startswith("model.") for k in state_dict.keys()
+    ):
         state_dict = {str(k)[len("model.") :]: v for k, v in state_dict.items()}
 
     model.load_state_dict(state_dict)
     model = model.to(config["device"])
     model.eval()
 
-    all_predictions = []
-    all_targets = []
-
-    with torch.no_grad():
-        for batch in tqdm(test_loader):
-            reverb_audio = batch["reverb_audio"].to(config["device"])
-
-            all_targets.append(
-                batch["original_audio"].to(config["device"]).unsqueeze(1),
-            )
-
-            preds = model(reverb_audio)
-            all_predictions.append(preds)
-
     with open(f"plots/{Path(args.checkpoint).stem}.csv", "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(["MSE", "MAE", "SISNR", "Correlation"])
+        with torch.no_grad():
+            for batch in tqdm(test_loader):
+                reverb_audio = batch["reverb_audio"].to(config["device"])
 
-       
-        preds = torch.cat(all_predictions, dim=0)
-        targets = torch.cat(all_targets, dim=0)
-        metrics = mse_msa_corr(preds, targets)
-        si_snr_value = si_snr(preds, targets)
-        print(f"MSE: {metrics['mse']:.4f}")
-        print(f"MAE: {metrics['mae']:.4f}")
-        print(f"SI-SNR: {si_snr_value:.4f}")
-        print(f"Correlation: {metrics['correlation']:.4f} \n")
+                targets = (batch["original_audio"].to(config["device"]).unsqueeze(1),)
 
-        csv_writer.writerow(
-            [
-                f"{metrics['mse']}",
-                f"{metrics['mae']}",
-                f"{si_snr_value}",
-                f"{metrics['correlation']}",
-            ]
-        )
+                preds = model(reverb_audio)
 
-           
+                metrics = mse_msa_corr(preds, targets)
+                si_snr_value = si_snr(preds, targets)
+                print(f"MSE: {metrics['mse']:.4f}")
+                print(f"MAE: {metrics['mae']:.4f}")
+                print(f"SI-SNR: {si_snr_value:.4f}")
+                print(f"Correlation: {metrics['correlation']:.4f} \n")
+
+                csv_writer.writerow(
+                    [
+                        f"{metrics['mse']}",
+                        f"{metrics['mae']}",
+                        f"{si_snr_value}",
+                        f"{metrics['correlation']}",
+                    ]
+                )
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

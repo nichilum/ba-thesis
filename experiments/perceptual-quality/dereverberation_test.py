@@ -62,16 +62,16 @@ def test_dereverb_net():
             for batch in tqdm(test_loader):
                 reverb_audio = batch["reverb_audio"].to(config["device"])
 
-                targets = (batch["original_audio"].to(config["device"]).unsqueeze(1),)
+                targets = batch["original_audio"].to(config["device"]).unsqueeze(1)
 
                 preds = model(reverb_audio)
 
                 metrics = mse_msa_corr(preds, targets)
                 si_snr_value = si_snr(preds, targets)
-                print(f"MSE: {metrics['mse']:.4f}")
-                print(f"MAE: {metrics['mae']:.4f}")
-                print(f"SI-SNR: {si_snr_value:.4f}")
-                print(f"Correlation: {metrics['correlation']:.4f} \n")
+                # print(f"MSE: {metrics['mse']:.4f}")
+                # print(f"MAE: {metrics['mae']:.4f}")
+                # print(f"SI-SNR: {si_snr_value:.4f}")
+                # print(f"Correlation: {metrics['correlation']:.4f} \n")
 
                 csv_writer.writerow(
                     [

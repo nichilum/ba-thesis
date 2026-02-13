@@ -11,6 +11,7 @@ from utils.seed import seed
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from pathlib import Path
+import csv
 
 import numpy as np
 import seaborn as sns
@@ -64,46 +65,53 @@ def test_perceptual_net():
     fig, axs = plt.subplots(2, 2)
     sns.set_theme(style="white")
 
-    for i, key in [
-        ((0, 0), "quality"),
-        ((0, 1), "odg"),
-        ((1, 0), "size"),
-        ((1, 1), "wetness"),
-    ]:
-        preds = torch.cat(list(map(lambda dict: dict[key], all_predictions)), dim=0)
-        targets = torch.cat(list(map(lambda dict: dict[key], all_targets)), dim=0)
-        metrics = mse_msa_corr(preds, targets)
-        print(f"{key} MSE: {metrics['mse']:.4f}")
-        print(f"{key} MAE: {metrics['mae']:.4f}")
-        print(f"{key} Correlation: {metrics['correlation']:.4f} \n")
+    with open(f"plots/{args.checkpoint.stem}.csv", "w", newline="") as csvfile:
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerow(["Type", "MSE", "MAE", "Correlation"])
+        
+        for i, key in [
+            ((0, 0), "quality"),
+            ((0, 1), "odg"),
+            ((1, 0), "size"),
+            ((1, 1), "wetness"),
+        ]:
+            preds = torch.cat(list(map(lambda dict: dict[key], all_predictions)), dim=0)
+            targets = torch.cat(list(map(lambda dict: dict[key], all_targets)), dim=0)
+            metrics = mse_msa_corr(preds, targets)
+            print(f"{key} MSE: {metrics['mse']:.4f}")
+            print(f"{key} MAE: {metrics['mae']:.4f}")
+            print(f"{key} Correlation: {metrics['correlation']:.4f} \n")
+            
+            csv_writer.writerow([f"{key}", f"{metrics['mse']}", f"{metrics['mae']}", f"{metrics['correlation']}"])
 
-        x = preds.squeeze(1).cpu().numpy()
-        y = targets.squeeze(1).cpu().numpy()
+            x = preds.squeeze(1).cpu().numpy()
+            y = targets.squeeze(1).cpu().numpy()
 
-        cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
+            cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
 
-        sns.kdeplot(
-            x=x,
-            y=y,
-            cmap=cmap,
-            fill=True,
-            clip=(-5, 5),
-            cut=10,
-            thresh=0,
-            levels=15,
-            ax=axs[i],
-        )
+            sns.kdeplot(
+                x=x,
+                y=y,
+                cmap=cmap,
+                fill=True,
+                clip=(-5, 5),
+                cut=10,
+                thresh=0,
+                levels=15,
+                ax=axs[i],
+            )
 
-        coef = np.polyfit(x, y, 1)
-        poly1d_fn = np.poly1d(coef)
-        axs[i].scatter(x, y, s=1)
-        axs[i].plot(x, poly1d_fn(x), "--")
-        axs[i].add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
-        axs[i].set(xlabel=f"{key}-pred", ylabel=f"{key}-target")
-        axs[i].set_xlim(0, 1)
-        axs[i].set_ylim(0, 1)
+            coef = np.polyfit(x, y, 1)
+            poly1d_fn = np.poly1d(coef)
+            axs[i].scatter(x, y, s=1)
+            axs[i].plot(x, poly1d_fn(x), "--")
+            axs[i].add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
+            axs[i].set(xlabel=f"{key}-pred", ylabel=f"{key}-target")
+            axs[i].set_xlim(0, 1)
+            axs[i].set_ylim(0, 1)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(f"plots/{args.checkpoint.stem}.svg")
 
 
 if __name__ == "__main__":

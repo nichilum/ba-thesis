@@ -66,7 +66,7 @@ def test_perceptual_net():
     sns.set_theme(style="white")
 
     with open(f"plots/{args.checkpoint.stem}.csv", "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(["Type", "MSE", "MAE", "Correlation"])
         
         for i, key in [

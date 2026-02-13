@@ -9,7 +9,6 @@ import argparse
 from tqdm import tqdm
 from utils.seed import seed
 import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
 from pathlib import Path
 import csv
 
@@ -62,10 +61,10 @@ def test_perceptual_net():
             preds = model(reverb_audio, return_all=True)
             all_predictions.append(preds)
 
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
     sns.set_theme(style="white")
 
-    with open(f"plots/{args.checkpoint.stem}.csv", "w", newline="") as csvfile:
+    with open(f"plots/{Path(args.checkpoint).stem}.csv", "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(["Type", "MSE", "MAE", "Correlation"])
         
@@ -94,7 +93,7 @@ def test_perceptual_net():
                 y=y,
                 cmap=cmap,
                 fill=True,
-                clip=(-5, 5),
+                clip=(0, 1),
                 cut=10,
                 thresh=0,
                 levels=15,
@@ -105,13 +104,14 @@ def test_perceptual_net():
             poly1d_fn = np.poly1d(coef)
             axs[i].scatter(x, y, s=1)
             axs[i].plot(x, poly1d_fn(x), "--")
-            axs[i].add_line(mlines.Line2D([0, 1], [0, 1], color="red"))
+            axs[i].plot([0, 1], [0, 1], color="red")
             axs[i].set(xlabel=f"{key}-pred", ylabel=f"{key}-target")
             axs[i].set_xlim(0, 1)
             axs[i].set_ylim(0, 1)
+            axs[i].set_aspect("equal", adjustable="box")
 
     # plt.show()
-    plt.savefig(f"plots/{args.checkpoint.stem}.svg")
+    plt.savefig(f"plots/{Path(args.checkpoint).stem}.svg", bbox_inches="tight")
 
 
 if __name__ == "__main__":

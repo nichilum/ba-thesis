@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import csv
 from utils.metrics import si_snr
-
+import soundfile as sf
 import seaborn as sns
 
 
@@ -55,6 +55,8 @@ def test_dereverb_net():
     model = model.to(config["device"])
     model.eval()
 
+    best_mse = float("inf")
+
     with open(f"plots/{Path(args.checkpoint).stem}.csv", "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(["MSE", "MAE", "SISNR", "Correlation"])
@@ -68,6 +70,15 @@ def test_dereverb_net():
 
                 metrics = mse_msa_corr(preds, targets)
                 si_snr_value = si_snr(preds, targets)
+                if metrics["mse"] < best_mse:
+                    best_mse = metrics["mse"]
+                    for i in preds:
+                        sf.write(
+                            f"output/{Path(args.checkpoint).stem}_{i}.wav",
+                            i.cpu().numpy(),
+                            config["sample_rate"],
+                        )
+
                 # print(f"MSE: {metrics['mse']:.4f}")
                 # print(f"MAE: {metrics['mae']:.4f}")
                 # print(f"SI-SNR: {si_snr_value:.4f}")

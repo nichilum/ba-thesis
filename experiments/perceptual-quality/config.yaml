@@ -24,3 +24,16 @@ derev_1:
   sample_rate: 44100
   loss: "l1"
   perceptual_loss_model_path: "checkpoints/7358_100ep_perceptual_net_best.pth"
+
+perceptual_compare_1:
+  data_split_file: "./data/metadata.jsonl"
+  batch_size: 16
+  num_workers: 4
+  epochs: 10
+  lr: 0.001
+  earlystopping: false
+  patience: 10
+  delta: 0.00001
+  save_dir: "checkpoints"
+  segment_length: 176400 # 44100 * 4
+  sample_rate: 44100

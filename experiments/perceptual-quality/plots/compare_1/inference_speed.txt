@@ -1,0 +1,2 @@
+ORG: 28sec, 28sec, 27sec: 780 batches * 8 batch size * 4 sec clip length
+NEW: 28sec, 23sec, 25sec: 780 batches * 8 batch size * 4 sec clip length

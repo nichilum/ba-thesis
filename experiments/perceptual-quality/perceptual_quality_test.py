@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import DataLoader
 
 from model.perceptual_qualitynet import PerceptualQualityNet
+
+# from model.old.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDataset
 from utils.metrics import mse_msa_corr
 from utils.load_data import load_data
@@ -67,7 +69,7 @@ def test_perceptual_net():
     with open(f"plots/{Path(args.checkpoint).stem}.csv", "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(["Type", "MSE", "MAE", "Correlation"])
-        
+
         for i, key in [
             ((0, 0), "quality"),
             ((0, 1), "odg"),
@@ -80,8 +82,15 @@ def test_perceptual_net():
             print(f"{key} MSE: {metrics['mse']:.4f}")
             print(f"{key} MAE: {metrics['mae']:.4f}")
             print(f"{key} Correlation: {metrics['correlation']:.4f} \n")
-            
-            csv_writer.writerow([f"{key}", f"{metrics['mse']}", f"{metrics['mae']}", f"{metrics['correlation']}"])
+
+            csv_writer.writerow(
+                [
+                    f"{key}",
+                    f"{metrics['mse']}",
+                    f"{metrics['mae']}",
+                    f"{metrics['correlation']}",
+                ]
+            )
 
             x = preds.squeeze(1).cpu().numpy()
             y = targets.squeeze(1).cpu().numpy()

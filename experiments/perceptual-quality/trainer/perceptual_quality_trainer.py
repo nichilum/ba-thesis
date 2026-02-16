@@ -9,15 +9,13 @@ class PerceptualNetTrainer:
         self,
         model,
         train_loader,
-        val_loader=None,
-        lr=1e-3,
-        patience=5,
-        delta=0,
-        es=False,
-        device="cuda",
-        save_path=lambda loss_type, epoch: (
-            f"checkpoints/epoch_{epoch}-{loss_type}-perceptual_net.pth"
-        ),
+        val_loader,
+        lr,
+        patience,
+        delta,
+        es,
+        device,
+        save_path,
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -194,7 +192,7 @@ class PerceptualNetTrainer:
 
 
 class EarlyStopping:
-    def __init__(self, patience=5, delta=0):
+    def __init__(self, patience, delta):
         self.patience = patience
         self.delta = delta
         self.best_loss = None

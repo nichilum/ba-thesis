@@ -5,29 +5,30 @@ from typing import Optional, Sequence
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-from pytorch_tcn import TCN
+from pytorch_tcn import TCN, TemporalConv1d
 from model.perceptual_qualitynet import PerceptualLoss
 from utils.metrics import si_snr
+
 
 class DereverberationModel(nn.Module):
     """Encoder-TCN-Decoder dereverberation model (waveform-to-waveform)."""
 
     def __init__(
         self,
-        encoder_channels: int = 64,
-        tcn_channels: Sequence[int] = (64, 64, 64, 64, 64),
+        encoder_channels: int = 256,  # 64
+        tcn_channels: Sequence[int] = (256,) * 8,  # (64, 64, 64, 64, 64)
         kernel_size: int = 4,
         dropout: float = 0.1,
         causal: bool = True,
         use_norm: str = "weight_norm",
         activation: str = "relu",
         lookahead: int = 0,
-        use_skip_connections: bool = False,
+        use_skip_connections: bool = True,
         dilations: Optional[Sequence[int]] = None,
     ):
         super().__init__()
 
-        self.encoder = nn.Conv1d(1, int(encoder_channels), kernel_size=1)
+        self.encoder = TemporalConv1d(1, int(encoder_channels), kernel_size=1)
 
         self.tcn = TCN(
             num_inputs=int(encoder_channels),
@@ -44,7 +45,7 @@ class DereverberationModel(nn.Module):
             dilations=dilations or [2**i for i in range(len(tcn_channels))],
         )
 
-        self.decoder = nn.Conv1d(int(encoder_channels), 1, kernel_size=1)
+        self.decoder = TemporalConv1d(int(encoder_channels), 1, kernel_size=1)
 
     def forward(self, audio: torch.Tensor) -> torch.Tensor:
         """Args:
@@ -98,7 +99,6 @@ class DereverberationLightningModule(pl.LightningModule):
             self.criterion = loss
         else:
             raise ValueError("Unknown loss type: {}".format(loss))
-
 
     def forward(self, audio: torch.Tensor) -> torch.Tensor:
         return self.model(audio)

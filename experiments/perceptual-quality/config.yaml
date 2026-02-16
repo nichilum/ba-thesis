@@ -63,3 +63,17 @@ derev_1_increased:
     num_blocks_per_repeat: 8
     num_repeats: 3
     dilations: null
+
+perceptual_compare_1:
+  data_split_file: "./data/metadata.jsonl"
+  batch_size: 16
+  num_workers: 4
+  epochs: 10
+  lr: 0.001
+  earlystopping: false
+  patience: 10
+  delta: 0.00001
+  save_dir: "checkpoints"
+  segment_length: 176400 # 44100 * 4
+  sample_rate: 44100
+

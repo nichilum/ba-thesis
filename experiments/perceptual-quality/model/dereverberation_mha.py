@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional, Sequence
+from typing import Any, Dict
 
 import torch
 import torch.nn as nn
@@ -336,3 +337,37 @@ class DereverberationLightningModule(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
+
+    def on_before_optimizer_step(self, optimizer, *args: Any, **kwargs: Any) -> None:
+        grad_norm_dict = self._compute_grad_norms()
+        if grad_norm_dict:
+            self.log_grad_norm(grad_norm_dict)
+
+    def log_grad_norm(self, grad_norm_dict: Dict[str, torch.Tensor]) -> None:
+        self.log_dict(
+            grad_norm_dict,
+            on_step=True,
+            on_epoch=False,
+            prog_bar=False,
+            logger=True,
+        )
+
+    def _compute_grad_norms(self) -> Dict[str, torch.Tensor]:
+        grads = [p.grad for p in self.parameters() if p.grad is not None]
+        if not grads:
+            return {}
+
+        device = grads[0].device
+        l2_sq_sum = torch.zeros((), device=device)
+        inf_max = torch.zeros((), device=device)
+
+        for g in grads:
+            g_detached = g.detach()
+            l2_sq_sum = l2_sq_sum + torch.sum(g_detached * g_detached)
+            inf_max = torch.maximum(inf_max, torch.max(torch.abs(g_detached)))
+
+        l2_total = torch.sqrt(l2_sq_sum)
+        return {
+            "grad_norm/l2_total": l2_total,
+            "grad_norm/inf_total": inf_max,
+        }

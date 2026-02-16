@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Sequence
+from typing import Any, Dict, Optional, Sequence
 
 import torch
 import torch.nn as nn
@@ -11,22 +11,42 @@ from utils.metrics import si_snr
 
 
 class DereverberationModel(nn.Module):
-    """Encoder-TCN-Decoder dereverberation model (waveform-to-waveform)."""
+    """Encoder-TCN-Decoder dereverberation model (waveform-to-waveform).
+
+    Defaults are chosen to keep Conv-TasNet-style temporal structure
+    (X=8 blocks/repeat, R=3 repeats, P=3) while matching a ~4-5M parameter
+    budget with this implementation.
+    """
 
     def __init__(
         self,
-        encoder_channels: int = 256,  # 64
-        tcn_channels: Sequence[int] = (256,) * 8,  # (64, 64, 64, 64, 64)
-        kernel_size: int = 4,
-        dropout: float = 0.1,
-        causal: bool = True,
-        use_norm: str = "weight_norm",
+        encoder_channels: int = 265,
+        tcn_channels: Optional[Sequence[int]] = None,
+        kernel_size: int = 3,
+        dropout: float = 0.0,
+        causal: bool = False,
+        use_norm: str = "layer_norm",
         activation: str = "relu",
         lookahead: int = 0,
         use_skip_connections: bool = True,
+        num_blocks_per_repeat: int = 8,
+        num_repeats: int = 3,
         dilations: Optional[Sequence[int]] = None,
     ):
         super().__init__()
+
+        if tcn_channels is None:
+            tcn_channels = (265,) * (int(num_blocks_per_repeat) * int(num_repeats))
+
+        if dilations is None:
+            base_dilations = [2**i for i in range(int(num_blocks_per_repeat))]
+            dilations = base_dilations * int(num_repeats)
+
+        if len(dilations) != len(tcn_channels):
+            raise ValueError(
+                "len(dilations) must match len(tcn_channels): "
+                f"{len(dilations)} != {len(tcn_channels)}"
+            )
 
         self.encoder = TemporalConv1d(1, int(encoder_channels), kernel_size=1)
 
@@ -42,7 +62,7 @@ class DereverberationModel(nn.Module):
             input_shape="NCL",
             lookahead=int(lookahead),
             output_projection=int(encoder_channels),
-            dilations=dilations or [2**i for i in range(len(tcn_channels))],
+            dilations=list(map(int, dilations)),
         )
 
         self.decoder = TemporalConv1d(int(encoder_channels), 1, kernel_size=1)
@@ -132,3 +152,37 @@ class DereverberationLightningModule(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
+
+    def on_before_optimizer_step(self, optimizer, *args: Any, **kwargs: Any) -> None:
+        grad_norm_dict = self._compute_grad_norms()
+        if grad_norm_dict:
+            self.log_grad_norm(grad_norm_dict)
+
+    def log_grad_norm(self, grad_norm_dict: Dict[str, torch.Tensor]) -> None:
+        self.log_dict(
+            grad_norm_dict,
+            on_step=True,
+            on_epoch=False,
+            prog_bar=False,
+            logger=True,
+        )
+
+    def _compute_grad_norms(self) -> Dict[str, torch.Tensor]:
+        grads = [p.grad for p in self.parameters() if p.grad is not None]
+        if not grads:
+            return {}
+
+        device = grads[0].device
+        l2_sq_sum = torch.zeros((), device=device)
+        inf_max = torch.zeros((), device=device)
+
+        for g in grads:
+            g_detached = g.detach()
+            l2_sq_sum = l2_sq_sum + torch.sum(g_detached * g_detached)
+            inf_max = torch.maximum(inf_max, torch.max(torch.abs(g_detached)))
+
+        l2_total = torch.sqrt(l2_sq_sum)
+        return {
+            "grad_norm/l2_total": l2_total,
+            "grad_norm/inf_total": inf_max,
+        }

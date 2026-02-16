@@ -1,5 +1,5 @@
 from data_loader.dereverberation_dataset import DereverberationDataset
-from model.dereverberation_simple import DereverberationLightningModule
+from model.dereverberation_simple import DereverberationLightningModule, DereverberationModel
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -34,6 +34,7 @@ def train():
             "perceptual_loss_model_path",
             "checkpoints/7358_100ep_perceptual_net_best.pth",
         ),
+        "model": cfg.get("model", {}),
     }
 
     os.makedirs(os.path.dirname(config["model_out"]), exist_ok=True)
@@ -66,7 +67,11 @@ def train():
         pin_memory=True,
     )
 
+    dereverb_model = DereverberationModel(**config["model"])
+
     model = DereverberationLightningModule(
+        model=dereverb_model,
+        lr=config["lr"],
         loss=config["loss"],
         perceptual_loss_model_path=config["perceptual_loss_model_path"],
     )
@@ -93,6 +98,7 @@ def train():
         logger=logger,
         log_every_n_steps=10,
         gradient_clip_val=5.0,
+        detect_anomaly=True,
     )
 
     trainer.fit(model, train_loader, val_loader)

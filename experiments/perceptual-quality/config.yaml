@@ -22,8 +22,47 @@ derev_1:
   model_out: "output/derevnet.pt"
   segment_length: 176400 # 44100 * 4
   sample_rate: 44100
-  loss: "l1"
-  perceptual_loss_model_path: "checkpoints/7358_100ep_perceptual_net_best.pth"
+  loss: "perceptual"
+  perceptual_loss_model_path: "checkpoints/epoch_101-size-perceptual_net_best.pth"
+  model:
+    encoder_channels: 64
+    tcn_channels: [64, 64, 64, 64, 64]
+    kernel_size: 4
+    dropout: 0.1
+    causal: true
+    use_norm: "weight_norm"
+    activation: "relu"
+    lookahead: 0
+    use_skip_connections: false
+    num_blocks_per_repeat: 0
+    num_repeats: 0
+    dilations: null
+
+derev_1_increased:
+  data_split_file: "./data/metadata.jsonl"
+  batch_size: 2
+  num_workers: 4
+  epochs: 100
+  lr: 0.0001
+  save_dir: "checkpoints"
+  model_out: "output/derevnet.pt"
+  segment_length: 176400 # 44100 * 4
+  sample_rate: 44100
+  loss: "perceptual"
+  perceptual_loss_model_path: "checkpoints/epoch_101-size-perceptual_net_best.pth"
+  model:
+    encoder_channels: 265
+    tcn_channels: null
+    kernel_size: 3
+    dropout: 0.0
+    causal: false
+    use_norm: "layer_norm"
+    activation: "relu"
+    lookahead: 0
+    use_skip_connections: true
+    num_blocks_per_repeat: 8
+    num_repeats: 3
+    dilations: null
 
 perceptual_compare_1:
   data_split_file: "./data/metadata.jsonl"
@@ -37,3 +76,4 @@ perceptual_compare_1:
   save_dir: "checkpoints"
   segment_length: 176400 # 44100 * 4
   sample_rate: 44100
+

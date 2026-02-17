@@ -23,6 +23,7 @@
 #include "/content/background.typ"
 #include "/content/related_work.typ"
 
+#include "content/fundamentals.typ"
 #include "/content/methodology.typ"
 #include "/content/experiments.typ"
 

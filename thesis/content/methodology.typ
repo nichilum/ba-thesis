@@ -31,3 +31,9 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.
 go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
+
+- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
+  - why our loss model was based on CNN14
+  - runtime (inference) evaluation
+
+- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)

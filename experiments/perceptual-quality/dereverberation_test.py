@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 from model.dereverberation_simple import DereverberationModel
 from data_loader.dereverberation_dataset import DereverberationDataset
-from utils.metrics import mse_msa_corr
+from utils.metrics import mse_mae_corr
 from utils.load_data import load_data
 import argparse
 from tqdm import tqdm
@@ -68,7 +68,7 @@ def test_dereverb_net():
 
                 preds = model(reverb_audio)
 
-                metrics = mse_msa_corr(preds, targets)
+                metrics = mse_mae_corr(preds, targets)
                 si_snr_value = si_snr(preds, targets)
                 if metrics["mse"] < best_mse:
                     best_mse = metrics["mse"]

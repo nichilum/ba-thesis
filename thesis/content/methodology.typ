@@ -50,3 +50,11 @@ Key takeaways:
 - di does it similarily but we cannot normalize it that well
 - si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
 - train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
+
+quality is here defined as:
+$ Q = "ODG" dot (1 - "wet" dot 0.4) dot (1 - "size" dot 0.3) $
+
+- plot is little pointless here: akin to plotting wetness and size against theirselfs, BUT in the end this quality function will be estimated using Neural Network
+
+
+TODO: redo plots using test data and also add quality NETWORK graph with predictions from NN

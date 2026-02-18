@@ -5,7 +5,7 @@ from model.perceptual_qualitynet import PerceptualQualityNet
 
 # from model.old.perceptual_qualitynet import PerceptualQualityNet
 from data_loader.perceptual_quality_dataset import PerceptualDataset
-from utils.metrics import mse_msa_corr
+from utils.metrics import mse_mae_corr
 from utils.load_data import load_data
 import argparse
 from tqdm import tqdm
@@ -78,7 +78,7 @@ def test_perceptual_net():
         ]:
             preds = torch.cat(list(map(lambda dict: dict[key], all_predictions)), dim=0)
             targets = torch.cat(list(map(lambda dict: dict[key], all_targets)), dim=0)
-            metrics = mse_msa_corr(preds, targets)
+            metrics = mse_mae_corr(preds, targets)
             print(f"{key} MSE: {metrics['mse']:.4f}")
             print(f"{key} MAE: {metrics['mae']:.4f}")
             print(f"{key} Correlation: {metrics['correlation']:.4f} \n")

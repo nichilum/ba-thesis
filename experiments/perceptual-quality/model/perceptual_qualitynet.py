@@ -343,8 +343,7 @@ class PerceptualLoss(nn.Module):
         Returns:
             loss: scalar loss value
         """
-        with torch.no_grad():
-            quality = self.perceptual_net(output_audio)
+        quality = self.perceptual_net(output_audio)
 
         perceptual_loss = 1.0 - quality.mean()
 

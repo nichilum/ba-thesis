@@ -38,4 +38,15 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
 
 - general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
 
-#figure(caption: [], image("/experiments/perceptual-quality/plots/data_metrics_5000.svg"))
+#figure(
+  caption: [Metrics usable as loss functions analysed over 5000 datapoints from training dataset],
+  image("/experiments/perceptual-quality/plots/data_metrics_5000.svg"),
+)
+
+Key takeaways:
+- wetness and size are objective measurements which we know to be true: $lim_("wet"arrow 1)$ and $lim_("size"arrow 1)$ means the signal is badly reverberated and $lim_("wet"arrow 0)$ and $lim_("size"arrow 0)$ means the signal is dereverberated
+- correlation, mae and mse are bad loss functions as they do not accurately predict wetness or size values
+- odg shows more "bad" (close to 0) values around higher wetness or size values, which is what we "need" from a loss function
+- di does it similarily but we cannot normalize it that well
+- si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
+- train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness

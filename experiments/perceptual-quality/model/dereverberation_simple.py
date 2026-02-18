@@ -153,6 +153,9 @@ class DereverberationLightningModule(pl.LightningModule):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
 
+    def optimizer_zero_grad(self, epoch, batch_idx, optimizer):
+        optimizer.zero_grad(set_to_none=True)
+
     def on_before_optimizer_step(self, optimizer, *args: Any, **kwargs: Any) -> None:
         grad_norm_dict = self._compute_grad_norms()
         if grad_norm_dict:

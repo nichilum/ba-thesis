@@ -1,5 +1,5 @@
-#import "/utils/todo.typ": TODO
-#import "../../utils/open_questions.typ": OPENQ
+#import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/open_questions.typ": OPENQ
 
 = Problem
 
@@ -28,7 +28,7 @@ The central problem of this thesis is therefore to investigate whether deep-lear
 //   - live music (active acoustics)
 
 
-  
+
 // SOUND RECORDINGS:
 // - https://www.epidemicsound.com/music/genres/opera/
 // - https://pixabay.com/de/music/search/oper/
@@ -38,8 +38,8 @@ The central problem of this thesis is therefore to investigate whether deep-lear
 
 // #TODO[ // Remove this block
 //   *Problem description*
-//   - What is/are the problem(s)? 
+//   - What is/are the problem(s)?
 //   - Identify the actors and use these to describe how the problem negatively influences them.
 //   - Do not present solutions or alternatives yet!
-//   - Present the negative consequences in detail 
+//   - Present the negative consequences in detail
 // ]

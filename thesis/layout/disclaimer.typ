@@ -1,4 +1,4 @@
-#import "/layout/fonts.typ": *
+#import "/thesis/layout/fonts.typ": *
 
 #let disclaimer(
   title: "",
@@ -13,22 +13,24 @@
   )
 
   set text(
-    font: fonts.body, 
-    size: 12pt, 
-    lang: "en"
+    font: fonts.body,
+    size: 12pt,
+    lang: "en",
   )
 
   set par(leading: 1em)
 
-  
-  // --- Disclaimer ---  
+
+  // --- Disclaimer ---
   v(75%)
-  text("I confirm that this " + degree + "’s thesis is my own work and I have documented all sources and material used.")
+  text(
+    "I confirm that this " + degree + "’s thesis is my own work and I have documented all sources and material used.",
+  )
 
   v(15mm)
   grid(
-      columns: 2,
-      gutter: 1fr,
-      "Cologne, " + submissionDate.display("[day].[month].[year]"), author.join(" & ")
+    columns: 2,
+    gutter: 1fr,
+    "Cologne, " + submissionDate.display("[day].[month].[year]"), author.join(" & "),
   )
 }

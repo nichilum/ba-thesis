@@ -1,5 +1,5 @@
-#import "/utils/todo.typ": TODO
-#import "../../utils/open_questions.typ": OPENQ
+#import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/open_questions.typ": OPENQ
 #import "@preview/gantty:0.5.1": gantt
 
 = Schedule
@@ -7,10 +7,10 @@
 == Work Packages
 
 #let wp(title, owner, body) = [
-=== Work Package: *#title*
-*Responsible:* #owner
+  === Work Package: *#title*
+  *Responsible:* #owner
 
-#body
+  #body
 ]
 
 

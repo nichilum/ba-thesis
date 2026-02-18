@@ -1,4 +1,4 @@
-#import "/utils/todo.typ": TODO
+#import "/thesis/utils/todo.typ": TODO
 
 = Related Work
 #TODO[

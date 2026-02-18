@@ -1,7 +1,7 @@
-#import "/layout/titlepage.typ": *
-#import "/layout/transparency_ai_tools.typ": transparency_ai_tools as transparency_ai_tools_layout
-#import "/utils/print_page_break.typ": *
-#import "/layout/fonts.typ": *
+#import "/thesis/layout/titlepage.typ": *
+#import "/thesis/layout/transparency_ai_tools.typ": transparency_ai_tools as transparency_ai_tools_layout
+#import "/thesis/utils/print_page_break.typ": *
+#import "/thesis/layout/fonts.typ": *
 
 // The project function defines how your document looks.
 // It takes your content and some metadata and formats it.
@@ -29,7 +29,7 @@
     supervisors: supervisors,
     authors: authors,
     startDate: startDate,
-    submissionDate: submissionDate
+    submissionDate: submissionDate,
   )
 
   print_page_break(print: is_print)
@@ -43,9 +43,9 @@
 
   // Set body font family.
   set text(
-    font: fonts.body, 
-    size: 12pt, 
-    lang: "en"
+    font: fonts.body,
+    size: 12pt,
+    lang: "en",
   )
 
   show math.equation: set text(weight: 400)

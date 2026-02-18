@@ -1,5 +1,5 @@
-#import "/layout/fonts.typ": *
-#import "/layout/titlepage_table.typ": render-title-table
+#import "/thesis/layout/fonts.typ": *
+#import "/thesis/layout/titlepage_table.typ": render-title-table
 
 #let feedbacklog(
   titleEnglish: "",
@@ -19,16 +19,21 @@
 
   // Set body font family.
   set text(
-    font: fonts.body, 
-    size: 12pt, 
-    lang: "en"
+    font: fonts.body,
+    size: 12pt,
+    lang: "en",
   )
-  
+
   align(center, text(font: fonts.sans, 1.7em, weight: 700, "Presentation Feedbacklog" + linebreak() + titleEnglish))
 
   v(7.5mm)
 
-  align(center, text(font: fonts.sans, 1.2em, weight: 400, feedbacklogSubmissionDate.display("[day]. [month repr:long] [year]")))
+  align(center, text(
+    font: fonts.sans,
+    1.2em,
+    weight: 400,
+    feedbacklogSubmissionDate.display("[day]. [month repr:long] [year]"),
+  ))
 
   v(7.5mm)
 

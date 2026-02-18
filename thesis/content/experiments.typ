@@ -1,5 +1,5 @@
-#import "/utils/todo.typ": TODO
-#import "/utils/open_questions.typ": OPENQ
+#import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/open_questions.typ": OPENQ
 
 = Experimental Procedures
 

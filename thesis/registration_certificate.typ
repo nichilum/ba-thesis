@@ -1,5 +1,5 @@
-#import "/layout/registration_certificate.typ": *
-#import "/metadata.typ": *
+#import "/thesis/layout/registration_certificate.typ": *
+#import "/thesis/metadata.typ": *
 
 #set text(lang: "de")
 

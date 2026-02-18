@@ -1,5 +1,5 @@
-#import "/utils/todo.typ": TODO
-#import "../../utils/open_questions.typ": OPENQ
+#import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/open_questions.typ": OPENQ
 
 = Objective
 
@@ -33,7 +33,7 @@ Develop a discriminator-based model that evaluates the quality of dereverberated
 //   - score dereverbed dry signal on how good dereverberation worked
 //   - score can be any type (similar to encode decoder: latent space score, idk)
 //   - score can be used as discriminator for incremental learning (kind of like a reactive filter adjustment)
-    
+
 // #TODO[ // Remove this block
 //   *Proposal Objective*
 //   - Define the main goals of your thesis clearly and concisely.

@@ -1,5 +1,5 @@
-#import "/utils/todo.typ": TODO
-#import "/utils/open_questions.typ": OPENQ
+#import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/open_questions.typ": OPENQ
 
 = Methodology
 
@@ -37,3 +37,5 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
   - runtime (inference) evaluation
 
 - general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
+
+#figure(caption: [], image("/experiments/perceptual-quality/plots/data_metrics_5000.svg"))

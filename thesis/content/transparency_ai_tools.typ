@@ -1,4 +1,4 @@
-#import "/utils/todo.typ": TODO
+#import "/thesis/utils/todo.typ": TODO
 
 #TODO[
   Change this paragraph to reflect the tools you used in your thesis
@@ -24,7 +24,7 @@ Categories of AI Usage:
   Citation Assistance
     Tools: Citation Machine
     Purpose: To assist in proper citation formatting.
-  
+
   Data Analysis and Visualization
     Tools: MATLAB, Python libraries (e.g., pandas, matplotlib), e.g. with ChatGPT or DataSpell
     Purpose: To assist in analyzing data sets, generating graphs, and visualizing data.

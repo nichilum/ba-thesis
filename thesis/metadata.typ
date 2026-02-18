@@ -11,6 +11,6 @@
 #let authors = ("Leo Kling", "Jonathan Kron")
 #let birthdate = datetime(day: 15, month: 05, year: 2004) // only necessary for registration certificate
 #let startDate = datetime(day: 12, month: 01, year: 2026)
-#let submissionDate = datetime(day: 05, month: 04, year: 2026)
+#let submissionDate = datetime(day: 13, month: 04, year: 2026)
 #let presentationDate = datetime(day: 01, month: 01, year: 2024)
 #let feedbacklogSubmissionDate = datetime.today()

@@ -2,7 +2,7 @@ from data_loader.dereverberation_dataset import DereverberationDataset
 from model.dereverberation_simple import DereverberationLightningModule, DereverberationModel
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 import os
 import torch
@@ -18,18 +18,24 @@ def train():
     seed(42)
     with open("config.yaml", "r") as f:
         cfg = yaml.safe_load(f)[sys.argv[1]]
+    use_cuda = torch.cuda.is_available()
+    default_precision = "16-mixed" if use_cuda else "32-true"
     config = {
         "data_split_file": Path(cfg.get("data_split_file", "./data/metadata.jsonl")),
         "batch_size": cfg.get("batch_size", 16),
+        "val_batch_size": cfg.get("val_batch_size", cfg.get("batch_size", 16)),
         "num_workers": cfg.get("num_workers", 4),
         "epochs": cfg.get("epochs", 100),
         "lr": cfg.get("lr", 1e-3),
-        "device": "cuda" if torch.cuda.is_available() else "cpu",
+        "device": "cuda" if use_cuda else "cpu",
         "save_dir": cfg.get("save_dir", "checkpoints"),
         "model_out": cfg.get("model_out", "output/derevnet.pt"),
         "segment_length": cfg.get("segment_length", 44100 * 4),
         "sample_rate": cfg.get("sample_rate", 44100),
         "loss": cfg.get("loss", "l1"),
+        "precision": cfg.get("precision", default_precision),
+        "accumulate_grad_batches": cfg.get("accumulate_grad_batches", 1),
+        "detect_anomaly": cfg.get("detect_anomaly", False),
         "perceptual_loss_model_path": cfg.get(
             "perceptual_loss_model_path",
             "checkpoints/7358_100ep_perceptual_net_best.pth",
@@ -61,7 +67,7 @@ def train():
     )
     val_loader = DataLoader(
         val_dataset,
-        batch_size=config["batch_size"],
+        batch_size=config["val_batch_size"],
         shuffle=False,
         num_workers=config["num_workers"],
         pin_memory=True,
@@ -98,7 +104,9 @@ def train():
         logger=logger,
         log_every_n_steps=10,
         gradient_clip_val=5.0,
-        detect_anomaly=True,
+        precision=config["precision"],
+        accumulate_grad_batches=config["accumulate_grad_batches"],
+        detect_anomaly=config["detect_anomaly"],
     )
 
     trainer.fit(model, train_loader, val_loader)

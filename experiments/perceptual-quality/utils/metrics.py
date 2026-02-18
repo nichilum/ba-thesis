@@ -46,6 +46,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import numpy as np
     import seaborn as sns
+    import sys
 
     sample_rate = 44100
 
@@ -63,7 +64,7 @@ if __name__ == "__main__":
 
         return waveform
 
-    data = load_data(Path("./data/metadata.jsonl"))
+    data = load_data(Path(sys.argv[1]))
 
     def mapper(map_obj):
         ref_audio = load_audio(map_obj["original_path"])

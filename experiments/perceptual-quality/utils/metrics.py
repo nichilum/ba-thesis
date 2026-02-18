@@ -45,6 +45,7 @@ if __name__ == "__main__":
     from tqdm import tqdm
     import matplotlib.pyplot as plt
     import numpy as np
+    import seaborn as sns
 
     sample_rate = 44100
 
@@ -103,39 +104,36 @@ if __name__ == "__main__":
     x_axes = [
         ("size", "Size", lambda d: sorted(d, key=lambda r: r["size"])),
         ("wetness", "Wetness", lambda d: sorted(d, key=lambda r: r["wetness"])),
-        (
-            "combined",
-            "Size \u22c5 Wetness",
-            lambda d: sorted(d, key=lambda r: r["size"] * r["wetness"]),
-        ),
     ]
 
-    fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(16, 18))
+    fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(10, 18))
+    sns.set_theme(style="white")
+    cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
 
     for col_idx, (x_key, x_label, sort_fn) in enumerate(x_axes):
         sorted_data = sort_fn(results)
 
-        if x_key == "combined":
-            x_vals = [r["size"] * r["wetness"] for r in sorted_data]
-        else:
-            x_vals = [r[x_key] for r in sorted_data]
-
-        axes[0, col_idx].set_title(f"{x_label}", fontsize=9, pad=12)
+        x_vals = [r[x_key] for r in sorted_data]
 
         for row_idx, metric in enumerate(metrics):
             ax = axes[row_idx, col_idx]
-            y_vals = [r[metric] for r in sorted_data]
+            y_vals = [float(r[metric]) for r in sorted_data]
 
-            ax.tick_params(labelsize=8)
-            ax.grid(linewidth=0.7, zorder=0)
+            ax.grid(linewidth=0.7)
 
-            ax.plot(x_vals, y_vals, linewidth=2, zorder=3)
-            ax.scatter(
-                x_vals,
-                y_vals,
-                s=25,
-                zorder=4,
-                linewidths=0.8,
+            sns.kdeplot(
+                x=x_vals,
+                y=y_vals,
+                cmap=cmap,
+                fill=True,
+                clip=(
+                    (0, 1),
+                    (min(y_vals), 0.025 if metric == "mse" else max(y_vals)),
+                ),
+                cut=10,
+                thresh=0,
+                levels=15,
+                ax=ax,
             )
 
             if col_idx == 0:
@@ -148,4 +146,6 @@ if __name__ == "__main__":
             ax.xaxis.set_major_formatter(plt.FormatStrFormatter("%.3f"))
 
     plt.tight_layout(rect=[0, 0, 1, 0.97])
-    plt.savefig("results_plots.png", dpi=150, bbox_inches="tight")
+    plt.savefig(
+        "plots/data_metrics.svg",
+    )

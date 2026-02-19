@@ -39,8 +39,8 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
 - general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
 
 #figure(
-  caption: [Metrics usable as loss functions analysed over 5000 datapoints from training dataset],
-  image("/experiments/perceptual-quality/plots/data_metrics_5000.svg"),
+  caption: [Metrics usable as loss functions analysed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_6236_15_85_percentile.svg"),
 )
 
 Key takeaways:

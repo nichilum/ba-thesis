@@ -75,7 +75,7 @@ if __name__ == "__main__":
             "net_quality": net_preds["quality"],
         }
 
-    results = list(map(mapper, tqdm(data.test_files[:1000])))
+    results = list(map(mapper, tqdm(data.test_files)))
     metrics = [
         "odg",
         "di",
@@ -124,7 +124,7 @@ if __name__ == "__main__":
                 fill=True,
                 clip=(
                     (0, 1),
-                    (min(y_vals), 0.025 if metric == "mse" else max(y_vals)),
+                    (np.percentile(y_vals, 15), np.percentile(y_vals, 85)),
                 ),
                 cut=10,
                 thresh=0,

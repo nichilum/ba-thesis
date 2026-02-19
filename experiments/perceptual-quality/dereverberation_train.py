@@ -1,5 +1,8 @@
 from data_loader.dereverberation_dataset import DereverberationDataset
-from model.dereverberation_simple import DereverberationLightningModule, DereverberationModel
+from model.dereverberation_simple import (
+    DereverberationLightningModule,
+    DereverberationModel,
+)
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -41,6 +44,7 @@ def train():
             "checkpoints/7358_100ep_perceptual_net_best.pth",
         ),
         "model": cfg.get("model", {}),
+        "gradient_checkpointing": cfg.get("gradient_checkpointing", True),
     }
 
     os.makedirs(os.path.dirname(config["model_out"]), exist_ok=True)
@@ -64,6 +68,7 @@ def train():
         shuffle=True,
         num_workers=config["num_workers"],
         pin_memory=True,
+        persistent_workers=config["num_workers"] > 0,
     )
     val_loader = DataLoader(
         val_dataset,
@@ -71,9 +76,13 @@ def train():
         shuffle=False,
         num_workers=config["num_workers"],
         pin_memory=True,
+        persistent_workers=config["num_workers"] > 0,
     )
 
-    dereverb_model = DereverberationModel(**config["model"])
+    dereverb_model = DereverberationModel(
+        **config["model"],
+        gradient_checkpointing=config["gradient_checkpointing"],
+    )
 
     model = DereverberationLightningModule(
         model=dereverb_model,
@@ -99,7 +108,7 @@ def train():
 
     trainer = pl.Trainer(
         max_epochs=config["epochs"],
-        accelerator="auto",  # Automatically use GPU if available
+        accelerator="auto",
         callbacks=[checkpoint_callback],
         logger=logger,
         log_every_n_steps=10,

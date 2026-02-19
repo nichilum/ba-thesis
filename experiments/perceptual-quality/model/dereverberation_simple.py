@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Sequence
 
 import torch
 import torch.nn as nn
+import torch.utils.checkpoint as torch_checkpoint
 import pytorch_lightning as pl
 from pytorch_tcn import TCN, TemporalConv1d
 from model.perceptual_qualitynet import PerceptualLoss
@@ -16,6 +17,12 @@ class DereverberationModel(nn.Module):
     Defaults are chosen to keep Conv-TasNet-style temporal structure
     (X=8 blocks/repeat, R=3 repeats, P=3) while matching a ~4-5M parameter
     budget with this implementation.
+
+    TODO: check this statement
+    gradient_checkpointing: if True, recompute TCN activations during the
+    backward pass instead of storing them. This trades ~30% more compute for
+    a very large reduction in activation memory — critical when the sequence
+    length is 176 k samples (44.1 kHz × 4 s) and the TCN has 24 blocks.
     """
 
     def __init__(
@@ -32,8 +39,10 @@ class DereverberationModel(nn.Module):
         num_blocks_per_repeat: int = 8,
         num_repeats: int = 3,
         dilations: Optional[Sequence[int]] = None,
+        gradient_checkpointing: bool = True,
     ):
         super().__init__()
+        self.gradient_checkpointing = gradient_checkpointing
 
         if tcn_channels is None:
             tcn_channels = (265,) * (int(num_blocks_per_repeat) * int(num_repeats))
@@ -81,9 +90,18 @@ class DereverberationModel(nn.Module):
             raise ValueError("audio must have shape (N, L) or (N, 1, L)")
 
         x = self.encoder(x)
-        x = self.tcn(x)
-        x = self.decoder(x)
 
+        # Gradient checkpointing: discard intermediate TCN activations and
+        # recompute them on the backward pass. Saves ~(num_blocks - 1) /
+        # num_blocks of TCN activation memory at the cost of one extra forward
+        # pass through the TCN. With 24 blocks this typically cuts activation
+        # memory by ~95 % for the TCN segment.
+        if self.gradient_checkpointing and self.training:
+            x = torch_checkpoint.checkpoint(self.tcn, x, use_reentrant=False)
+        else:
+            x = self.tcn(x)
+
+        x = self.decoder(x)
         x = x.squeeze(1)
         return x
 

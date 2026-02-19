@@ -1,4 +1,3 @@
-
 perceptual_1:
   data_split_file: "./data/metadata.jsonl"
   batch_size: 16
@@ -24,6 +23,7 @@ derev_1:
   sample_rate: 44100
   loss: "perceptual"
   perceptual_loss_model_path: "checkpoints/epoch_101-size-perceptual_net_best.pth"
+  gradient_checkpointing: true
   model:
     encoder_channels: 64
     tcn_channels: [64, 64, 64, 64, 64]
@@ -40,7 +40,8 @@ derev_1:
 
 derev_1_increased:
   data_split_file: "./data/metadata.jsonl"
-  batch_size: 2
+  batch_size: 8
+  accumulate_grad_batches: 4 # effective batch = 8 × 4 = 32
   num_workers: 4
   epochs: 100
   lr: 0.0001
@@ -50,6 +51,7 @@ derev_1_increased:
   sample_rate: 44100
   loss: "perceptual"
   perceptual_loss_model_path: "checkpoints/epoch_101-size-perceptual_net_best.pth"
+  gradient_checkpointing: true
   model:
     encoder_channels: 265
     tcn_channels: null
@@ -76,4 +78,3 @@ perceptual_compare_1:
   save_dir: "checkpoints"
   segment_length: 176400 # 44100 * 4
   sample_rate: 44100
-

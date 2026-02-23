@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import csv
 
-import numpy as np
 import seaborn as sns
 
 
@@ -103,17 +102,21 @@ def test_perceptual_net():
                 cmap=cmap,
                 fill=True,
                 clip=(0, 1),
-                cut=10,
+                cut=5,
                 thresh=0,
                 levels=15,
                 ax=axs[i],
             )
 
-            coef = np.polyfit(x, y, 1)
-            poly1d_fn = np.poly1d(coef)
-            axs[i].scatter(x, y, s=1)
-            axs[i].plot(x, poly1d_fn(x), "--")
-            axs[i].plot([0, 1], [0, 1], color="red")
+            sns.regplot(
+                x=x,
+                y=y,
+                scatter=False,
+                ax=axs[i],
+                line_kws={"linestyle": "--", "linewidth": 2},
+            )
+
+            axs[i].plot([0, 1], [0, 1], color="#bc6cbf", alpha=0.5, linewidth=2)
             axs[i].set(xlabel=f"{key}-pred", ylabel=f"{key}-target")
             axs[i].set_xlim(0, 1)
             axs[i].set_ylim(0, 1)

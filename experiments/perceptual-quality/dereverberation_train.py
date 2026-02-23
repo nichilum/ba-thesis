@@ -5,7 +5,7 @@ from model.dereverberation_simple import (
 )
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, DeviceStatsMonitor
 from pytorch_lightning.loggers import TensorBoardLogger
 import os
 import torch
@@ -19,6 +19,8 @@ import sys
 
 def train():
     seed(42)
+    torch.set_float32_matmul_precision("high")
+
     with open("config.yaml", "r") as f:
         cfg = yaml.safe_load(f)[sys.argv[1]]
     use_cuda = torch.cuda.is_available()
@@ -108,14 +110,14 @@ def train():
 
     trainer = pl.Trainer(
         max_epochs=config["epochs"],
-        accelerator="auto",
-        callbacks=[checkpoint_callback],
+        callbacks=[checkpoint_callback, DeviceStatsMonitor()],
         logger=logger,
         log_every_n_steps=10,
         gradient_clip_val=5.0,
         precision=config["precision"],
         accumulate_grad_batches=config["accumulate_grad_batches"],
         detect_anomaly=config["detect_anomaly"],
+        profiler="simple",
     )
 
     trainer.fit(model, train_loader, val_loader)

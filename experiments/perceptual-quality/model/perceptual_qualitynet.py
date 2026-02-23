@@ -151,10 +151,12 @@ class MelSpectrogram(nn.Module):
         mag = torch.abs(stft)  # (batch, freq_bins, time_frames)
 
         # Apply mel filterbank
-        mel_spec = torch.matmul(self.mel_basis, mag)  # (batch, n_mels, time_frames)
+        mel_spec = torch.matmul(self.mel_basis, mag).clamp(
+            min=1e-7
+        )  # (batch, n_mels, time_frames)
 
         # Log compression
-        log_mel = torch.log(mel_spec + 1e-10)
+        log_mel = torch.log(mel_spec).clamp(min=-80.0)
 
         # Transpose to (batch, time_frames, n_mels) and add channel dim
         log_mel = log_mel.transpose(1, 2).unsqueeze(1)
@@ -194,7 +196,7 @@ class PerceptualQualityNet(nn.Module):
             param.requires_grad = False
 
         # Batch norm on input
-        self.bn0 = nn.BatchNorm2d(n_mels)
+        self.bn0 = nn.BatchNorm2d(n_mels, eps=1e-5)
 
         # Convolutional blocks (progressively increasing channels)
         self.conv_block1 = ConvBlock(in_channels=1, out_channels=64)

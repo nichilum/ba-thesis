@@ -126,10 +126,18 @@ if __name__ == "__main__":
                     (0, 1),
                     (np.percentile(y_vals, 15), np.percentile(y_vals, 85)),
                 ),
-                cut=10,
+                cut=5,
                 thresh=0,
                 levels=15,
                 ax=ax,
+            )
+
+            sns.regplot(
+                x=x_vals,
+                y=y_vals,
+                scatter=False,
+                ax=ax,
+                line_kws={"linestyle": "--", "linewidth": 2},
             )
 
             if col_idx == 0:

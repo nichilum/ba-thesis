@@ -52,9 +52,9 @@ Key takeaways:
 - train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
 
 quality is here defined as:
-$ Q = "ODG" dot (1 - "wet" dot 0.4) dot (1 - "size" dot 0.3) $
+$ Q = "ODG"_"norm" dot (1 - "wet"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $
 
 - plot is little pointless here: akin to plotting wetness and size against theirselfs, BUT in the end this quality function will be estimated using Neural Network
 
 
-TODO: redo plots using test data and also add quality NETWORK graph with predictions from NN
+LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.

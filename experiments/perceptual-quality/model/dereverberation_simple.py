@@ -27,29 +27,29 @@ class DereverberationModel(nn.Module):
 
     def __init__(
         self,
-        encoder_channels: int = 265,
-        tcn_channels: Optional[Sequence[int]] = None,
+        encoder_channels: int = 256,
+        tcn_channels: Sequence[int] = (128,) * 8,
         kernel_size: int = 3,
-        dropout: float = 0.0,
+        dropout: float = 0.1,
         causal: bool = False,
         use_norm: str = "layer_norm",
         activation: str = "relu",
         lookahead: int = 0,
         use_skip_connections: bool = True,
         num_blocks_per_repeat: int = 8,
-        num_repeats: int = 3,
-        dilations: Optional[Sequence[int]] = None,
+        num_repeats: int = 4,
+        dilations: Sequence[int]= (1, 2, 4, 8, 16, 32, 64, 128),
         gradient_checkpointing: bool = True,
     ):
         super().__init__()
         self.gradient_checkpointing = gradient_checkpointing
 
-        if tcn_channels is None:
-            tcn_channels = (265,) * (int(num_blocks_per_repeat) * int(num_repeats))
+        # if tcn_channels is None:
+        #     tcn_channels = (265,) * (int(num_blocks_per_repeat) * int(num_repeats))
 
-        if dilations is None:
-            base_dilations = [2**i for i in range(int(num_blocks_per_repeat))]
-            dilations = base_dilations * int(num_repeats)
+        # if dilations is None:
+        #     base_dilations = [2**i for i in range(int(num_blocks_per_repeat))]
+        #     dilations = base_dilations * int(num_repeats)
 
         if len(dilations) != len(tcn_channels):
             raise ValueError(

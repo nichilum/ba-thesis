@@ -1,8 +1,4 @@
 from data_loader.dereverberation_dataset import DereverberationDataset
-from model.dereverberation_simple import (
-    DereverberationLightningModule,
-    DereverberationModel,
-)
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, DeviceStatsMonitor
@@ -11,10 +7,26 @@ import os
 import torch
 from utils.load_data import load_data
 from pathlib import Path
+from importlib import import_module
 
 from utils.seed import seed
 import yaml
 import sys
+
+
+def _get_dereverb_classes(model_variant: str):
+    variant = (model_variant or "simple").lower()
+    if variant == "simple":
+        module_name = "model.dereverberation_simple"
+    elif variant == "mha":
+        module_name = "model.dereverberation_mha"
+    else:
+        raise ValueError(
+            f"Unsupported model_variant '{model_variant}'. Use 'simple' or 'mha'."
+        )
+
+    module = import_module(module_name)
+    return module.DereverberationModel, module.DereverberationLightningModule, variant
 
 
 def train():
@@ -45,9 +57,14 @@ def train():
             "perceptual_loss_model_path",
             "checkpoints/7358_100ep_perceptual_net_best.pth",
         ),
+        "model_variant": cfg.get("model_variant", "simple"),
         "model": cfg.get("model", {}),
         "gradient_checkpointing": cfg.get("gradient_checkpointing", True),
     }
+
+    DereverberationModel, DereverberationLightningModule, model_variant = (
+        _get_dereverb_classes(config["model_variant"])
+    )
 
     os.makedirs(os.path.dirname(config["model_out"]), exist_ok=True)
 
@@ -81,10 +98,11 @@ def train():
         persistent_workers=config["num_workers"] > 0,
     )
 
-    dereverb_model = DereverberationModel(
-        **config["model"],
-        gradient_checkpointing=config["gradient_checkpointing"],
-    )
+    model_kwargs = dict(config["model"])
+    if model_variant == "simple":
+        model_kwargs["gradient_checkpointing"] = config["gradient_checkpointing"]
+
+    dereverb_model = DereverberationModel(**model_kwargs)
 
     model = DereverberationLightningModule(
         model=dereverb_model,

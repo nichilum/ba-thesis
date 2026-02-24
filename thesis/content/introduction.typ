@@ -11,26 +11,38 @@
 // e.g. with a little historical overview.
 // ]
 
+Reverberation is apparent in every audio signal as it is an inherent characteristic of recording environments. It was shown that reverberation is an important auditory cue which informs the listener over environmental factors @traerStatisticsNaturalReverberation2016. Depending on the application reverberation can either be an attractive addition to the auditory signal, such as in music @NAYLOR2014879 or speech performances.
+
+The inverse task aptly named dereverberation...was first... in a galaxy far far away...
+
+- short historical overview
+  - from filter based models to learning filter parameters to fully NN/generative based dereverberation techniques
+- dereverberation definition
+
+
+In many modern applications, dereverberation is highly desirable. We divide use cases into two main categories: _offline_ and _live_ processing. Offline applications do not strictly require real-time operation, although real-time capability may still be beneficial.
+
+== Motivation
+
+Studies have shown that the adverse effects of reverberation mainly #TODO[LIST ADVERSE EFFECT] significantly degrade human #TODO[as well as machine] speech recognition @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
+These effects also negatively affect the overall quality of diverse audio signals such as in music remixes and film post-production, where excessive room reverberation can reduce audio clarity and limit creative flexibility #TODO[CITE??].
+While the above named offline applications are not in need of real-time processing, live applications, as they are used in interactive scenarios such as video conferencing, speech recognition systems, and live music performance impose strict constraints on processing latency and computational efficiency.
+
 == Problem
-Reverberation is apparent in every audio signal as it is an inherent characteristic of recording environments. It was shown that reverberation is an important auditory cue which informs the listener over environmental factors @traerStatisticsNaturalReverberation2016. Depending on the application reverberation can either be an attractive addition to the auditory signal, such as in music @NAYLOR2014879 or speech performances. While studies have shown that human speech recognition performs worse on reverberant signals @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
 
 Artificial reverberation can be added to audio signals with comparatively simple signal processing techniques, the inverse task of removing or reducing existing reverberation is significantly more complex @attiasSpeechDenoisingDereverberation2000. Reverberation is a time-dispersive and highly non-linear process, where direct sound and multiple delayed reflections overlap in both time and frequency @dattorroEffectDesignPart1997. This overlap makes a clear separation between the original (dry) signal and the reverberant components (wet) difficult and, for a long time, was considered practically unsolvable using classical digital signal processing methods @brandsteinUseExplicitSpeech1998.
 
-In many modern applications however, dereverberation is highly desirable. We divide use cases into two main categories: _offline_ and _live_ processing. Offline applications do not strictly require real-time operation, although real-time capability may still be beneficial. Typical examples include music remixes and film post-production, where excessive room reverberation can reduce audio clarity and limit creative flexibility. In contrast, live applications inherently require real-time processing, as they are used in interactive scenarios such as video conferencing, speech recognition systems, and live music performance. In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021. As a result, live applications impose strict constraints on processing latency and computational efficiency.
+We adress several open challenges in this thesis. First, it is unclear how well established dereverberation architectures generalize to diverse audio signals such as music and mixed content @luoTasNetTimedomainAudio2018. Current dereverberation models utilize different loss functions such as MSE, SI-SNR or PESQ @radkoffLossFunctionsAudio2021 @luoConvTasNetSurpassingIdeal2019 @lemercierStoRMDiffusionbasedStochastic2023 whose indication of dereverberation performance in diverse audio signals is not well documented. It is therefore unclear wether these loss functions are applicable for our use case or if other qualitative metrics would improve results. Second, there are time-domain and frequency-domain approaches, which can be investigated in terms of audio quality, computational complexity, and latency. Third, real-time applicability imposes strict latency limits (e.g. below 50 ms) @schmidMeasuringJustNoticeable2024 that strongly influence network architecture, window size, and sampling rate.
 
-This leads to several open challenges addressed in this thesis. First, it is unclear how well established dereverberation architectures generalize to diverse audio signals such as music and mixed content @luoTasNetTimedomainAudio2018. Current dereverberation models utilize different loss functions such as MSE, SI-SNR or PESQ @radkoffLossFunctionsAudio2021 @luoConvTasNetSurpassingIdeal2019 @lemercierStoRMDiffusionbasedStochastic2023 whose indication of dereverberation performance in diverse audio signals is not well documented. It is therefore unclear wether these loss functions are applicable for our use case or if other qualitative metrics would improve results. Second, there are time-domain and frequency-domain approaches, which can be investigated in terms of audio quality, computational complexity, and latency. Third, real-time applicability imposes strict latency limits (e.g. below 50 ms) @schmidMeasuringJustNoticeable2024 that strongly influence network architecture, window size, and sampling rate.
 
-The central problem of this thesis is therefore to investigate whether deep-learning-based dereverberation methods can be designed to operate in real time while maintaining perceptually convincing audio quality for a wide range of audio signals. This includes comparing time-domain and frequency-domain neural network approaches by evaluating their qualitative performance and analyzing their suitability for low-latency, real-time applications as well as assessing the qualitative performance impact of different metrics for use as loss funcitons.
-
-== Motivation
 // Reverberation is a fundamental property of sound, but excessive or uncontrolled reverberation can significantly degrade the quality and intelligibility of speech, music, and environmental recordings. Many existing datasets lack the acoustic diversity or realism needed to evaluate modern dereverberation methods, making data collection—either through curated datasets, custom recordings, or room simulations—a crucial foundation for developing reliable algorithms. As machine-learning-based dereverberation has advanced rapidly in recent years, there is an opportunity to investigate how different model architectures perform under controlled but realistic acoustic conditions, and how data choice, simulation fidelity, and sampling rate influence model behavior.
 
-As machine-learning based dereverberation has advanced in recent years, works such as Conv-TasNet or StoRM have shown remarkable effectiveness in speech separation and dereverberation, yet their suitability for complex signals such as music remains unclear @luoConvTasNetSurpassingIdeal2019 @lemercierStoRMDiffusionbasedStochastic2023. At the same time, alternative architectures—both in the time domain and frequency domain—offer theoretical advantages but lack direct, systematic comparison @luoTasNetTimedomainAudio2018 @ernstSpeechDereverberationUsing2018 @luoRealtimeSinglechannelDereverberation2018. 
+// As machine-learning based dereverberation has advanced in recent years, works such as Conv-TasNet or StoRM have shown remarkable effectiveness in speech separation and dereverberation, yet their suitability for complex signals such as music remains unclear @luoConvTasNetSurpassingIdeal2019 @lemercierStoRMDiffusionbasedStochastic2023. At the same time, alternative architectures—both in the time domain and frequency domain—offer theoretical advantages but lack direct, systematic comparison @luoTasNetTimedomainAudio2018 @ernstSpeechDereverberationUsing2018 @luoRealtimeSinglechannelDereverberation2018.
 
-This thesis is motivated by the need to understand which approaches yield the highest perceptual and quantitative quality when real-time constraints are taken into account. 
+// This thesis is motivated by the need to understand which approaches yield the highest perceptual and quantitative quality when real-time constraints are taken into account.
 
 
-Exploring the impact of sampling rate, spectral resolution, and model design we aim to provide valuable insights into how dereverberation systems can be optimized for general purpose use.
+// Exploring the impact of sampling rate, spectral resolution, and model design we aim to provide valuable insights into how dereverberation systems can be optimized for general purpose use.
 
 // #TODO[ // Remove this block
 //   *Proposal Motivation*
@@ -42,11 +54,8 @@ Exploring the impact of sampling rate, spectral resolution, and model design we 
 // ]
 
 == Objectives
-#TODO[
-  Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
-]
+// Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
+The central objective of this thesis is therefore to investigate whether deep-learning-based dereverberation methods can be designed to operate in real time while maintaining perceptually convincing audio quality for a wide range of audio signals. This includes comparing time-domain and frequency-domain neural network approaches by evaluating their qualitative performance and analyzing their suitability for low-latency, real-time applications as well as assessing the qualitative performance impact of different metrics for use as loss functions.
 
-== Outline
-#TODO[
-  Describe the outline of your thesis
-]
+// == Outline
+//   Describe the outline of your thesis

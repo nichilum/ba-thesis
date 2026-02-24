@@ -24,7 +24,7 @@ In many modern applications, dereverberation is highly desirable. We divide use 
 
 == Motivation
 
-Studies have shown that the adverse effects of reverberation mainly #TODO[LIST ADVERSE EFFECT] significantly degrade human #TODO[as well as machine] speech recognition @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
+Studies have shown that the adverse effects of reverberation mainly the temporal smearing of target speech and background noise, masking, coloration and signal-to-noise degradation @figarolaReverberationExacerbatesEffects @kuhn-rahloffSchallRaumUnd2025 @cueilleEffectsReverberationSpeech2022 significantly degrade human #TODO[as well as machine] speech recognition @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
 These effects also negatively affect the overall quality of diverse audio signals such as in music remixes and film post-production, where excessive room reverberation can reduce audio clarity and limit creative flexibility #TODO[CITE??].
 While the above named offline applications are not in need of real-time processing, live applications, as they are used in interactive scenarios such as video conferencing, speech recognition systems, and live music performance impose strict constraints on processing latency and computational efficiency.
 

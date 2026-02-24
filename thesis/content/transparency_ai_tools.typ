@@ -34,6 +34,6 @@ What You Need to Do
 
 Coding Assistance
 - Microsoft Copilot
-- ChatGPT 5.2 & 5.3-Codex
+- OpenAI ChatGPT 5.2 & 5.3-Codex
 - Claude Sonnet 4.6
 

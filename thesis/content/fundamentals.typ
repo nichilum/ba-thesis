@@ -1,4 +1,4 @@
-= Fundamentals
+= Theoretical Background
 == TCN RNN CNN etc
 == LOSS
 - how does autograd (backward propagation work)

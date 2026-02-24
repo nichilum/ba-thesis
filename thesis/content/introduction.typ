@@ -1,19 +1,40 @@
 #import "/thesis/utils/todo.typ": TODO
 
 = Introduction
-#TODO[
-  Introduce the topic of your thesis, e.g. with a little historical overview.
-]
+
+// #TODO[ // Remove this block
+//   *Introduction*
+//   - Introduce the reader to the general setting (No Problem description yet)
+//   - What is the environment?
+//   - What are the tools in use?
+//   - (Not more than 1/2 a page)
+// e.g. with a little historical overview.
+// ]
 
 == Problem
-#TODO[
-  Describe the problem that you like to address in your thesis to show the importance of your work. Focus on the negative symptoms of the currently available solution.
-]
+Reverberation is apparent in every audio signal as it is an inherent characteristic of recording environments. It was shown that reverberation is an important auditory cue which informs the listener over environmental factors @traerStatisticsNaturalReverberation2016. Depending on the application reverberation can either be an attractive addition to the auditory signal, such as in music @NAYLOR2014879 or speech performances. While studies have shown that human speech recognition performs worse on reverberant signals @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
+
+Artificial reverberation can be added to audio signals with comparatively simple signal processing techniques, the inverse task of removing or reducing existing reverberation is significantly more complex @attiasSpeechDenoisingDereverberation2000. Reverberation is a time-dispersive and highly non-linear process, where direct sound and multiple delayed reflections overlap in both time and frequency @dattorroEffectDesignPart1997. This overlap makes a clear separation between the original (dry) signal and the reverberant components (wet) difficult and, for a long time, was considered practically unsolvable using classical digital signal processing methods @brandsteinUseExplicitSpeech1998.
+
+In many modern applications however, dereverberation is highly desirable. We divide use cases into two main categories: _offline_ and _live_ processing. Offline applications do not strictly require real-time operation, although real-time capability may still be beneficial. Typical examples include music remixes and film post-production, where excessive room reverberation can reduce audio clarity and limit creative flexibility. In contrast, live applications inherently require real-time processing, as they are used in interactive scenarios such as video conferencing, speech recognition systems, and live music performance. In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021. As a result, live applications impose strict constraints on processing latency and computational efficiency.
+
+This leads to several open challenges addressed in this thesis. First, it is unclear how well established dereverberation architectures generalize to diverse audio signals such as music and mixed content @luoTasNetTimedomainAudio2018. Current dereverberation models utilize different loss functions such as MSE, SI-SNR or PESQ @lemercierStoRMDiffusionbasedStochastic2023 @luoConvTasNetSurpassingIdeal2019 @radkoffLossFunctionsAudio2021 whose indication of dereverberation performance in diverse audio signals is not well documented. It is therefore unclear wether these loss functions are applicable for our use case or if other qualitative metrics would improve results. Second, there are time-domain and frequency-domain approaches, which can be investigated in terms of audio quality, computational complexity, and latency. Third, real-time applicability imposes strict latency limits (e.g. below 50 ms) @schmidMeasuringJustNoticeable2024 that strongly influence network architecture, window size, and sampling rate.
+
+The central problem of this thesis is therefore to investigate whether deep-learning-based dereverberation methods can be designed to operate in real time while maintaining perceptually convincing audio quality for a wide range of audio signals. This includes comparing time-domain and frequency-domain neural network approaches by evaluating their qualitative performance and analyzing their suitability for low-latency, real-time applications as well as assessing the qualitative performance impact of different metrics for use as loss funcitons.
 
 == Motivation
-#TODO[
-  Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
-]
+// Reverberation is a fundamental property of sound, but excessive or uncontrolled reverberation can significantly degrade the quality and intelligibility of speech, music, and environmental recordings. Many existing datasets lack the acoustic diversity or realism needed to evaluate modern dereverberation methods, making data collection—either through curated datasets, custom recordings, or room simulations—a crucial foundation for developing reliable algorithms. As machine-learning-based dereverberation has advanced rapidly in recent years, there is an opportunity to investigate how different model architectures perform under controlled but realistic acoustic conditions, and how data choice, simulation fidelity, and sampling rate influence model behavior.
+
+As machine-learning based dereverberation has advanced in recent years, works such as Conv-TasNet have shown remarkable effectiveness in speech separation and dereverberation, yet their suitability for complex signals such as music remains unclear @luoConvTasNetSurpassingIdeal2019. At the same time, alternative architectures—both in the time domain and frequency domain—offer theoretical advantages but lack direct, systematic comparison @luoTasNetTimedomainAudio2018 @ernstSpeechDereverberationUsing2018 @luoRealtimeSinglechannelDereverberation2018. This thesis is motivated by the need to understand which approaches yield the highest perceptual and quantitative quality when real-time constraints are taken into account. Exploring the impact of sampling rate, spectral resolution, and model design we aim to provide valuable insights into how dereverberation systems can be optimized for general purpose use.
+
+// #TODO[ // Remove this block
+//   *Proposal Motivation*
+//   - Outline why it is (scientifically) important to solve the problem
+//   - Again use the actors to present your solution, but don't be to specific
+//   - Do not repeat the problem, instead focus on the positive aspects when the solution to the problem is available
+//   - Be visionary!
+//   - Optional: motivate with existing research, previous work
+// ]
 
 == Objectives
 #TODO[

@@ -162,5 +162,5 @@
   include "/thesis/layout/appendix.typ"
 
   pagebreak()
-  bibliography("/thesis/thesis.bib")
+  bibliography("/thesis/dereverberation.bib")
 }

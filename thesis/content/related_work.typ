@@ -31,6 +31,13 @@
 - based on CLC (complex linear coding)
 - compared using sisnr to CRM (complex ratio mask): it's better
 - viable for real-time usage
+- 48kHz
+
+For the first stage, we take advantage from the fact that noise as well as speech usually
+have a smooth spectral envelope
+=> prob not entirely possible for music and diverse audio signals
+
+
 
 // - StoRM
 // - (Conv)-TasNet

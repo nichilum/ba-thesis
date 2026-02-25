@@ -5,10 +5,12 @@
 In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
 == TCN RNN CNN etc
 == LOSS
+- in general training of neural net with loss function:
+  - partial derivatives, gradient, jacobi matrix (analytical)
+  - gradient descent explaination
 - how does autograd (backward propagation work)
   - how to use this with nn as loss
 - what does loss even do
-- gradient descent explaination
 == Quality Metrics
 - sisnr
 - peaq & pesq

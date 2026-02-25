@@ -9,7 +9,13 @@
 
 == StoRM
 
-== DeepFilter
+== DeepFilterNet
+
+- seeks to have better performance than real-values or complex-masks (need high freq resolution)
+- uses Deep Filters, that are filters applied to multiple time/freq bins
+- based on CLC (complex linear coding)
+- compared using sisnr to CRM (complex ratio mask): it's better
+- viable for real-time usage
 
 // - StoRM
 // - (Conv)-TasNet

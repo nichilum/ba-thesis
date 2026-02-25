@@ -12,7 +12,7 @@ In these cases, reverberation can significantly degrade speech intelligibility, 
 == Quality Metrics
 - sisnr
 - peaq & pesq
-- vimqol
+- visqol
 - pemoq
 - correlation (is this a good metric for audio signals?)
   - we used it for loss

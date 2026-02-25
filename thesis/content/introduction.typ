@@ -11,13 +11,17 @@
 // e.g. with a little historical overview.
 // ]
 
-Reverberation is apparent in every audio signal as it is an inherent characteristic of recording environments. It was shown that reverberation is an important auditory cue which informs the listener over environmental factors @traerStatisticsNaturalReverberation2016. Depending on the application reverberation can either be an attractive addition to the auditory signal, such as in music @NAYLOR2014879 or speech performances.
+Reverberation is apparent in most audio signals as it is an inherent characteristic of recording environments.
+It is caused by late reflections ($>50-80$ ms) that overlap with the direct sound in the diffuse sound field @kuhn-rahloffSchallRaumUnd2025.
+Studies have shown that reverberation is an important auditory cue which informs the listener over environmental factors @traerStatisticsNaturalReverberation2016. Depending on the application reverberation can be an attractive addition to the auditory signal, such as in music @NAYLOR2014879 or speech performances.
 
-The inverse task aptly named dereverberation...was first... in a galaxy far far away...
+The inverse task aptly named dereverberation, is a process of removing reverberant parts of a recorded audio signal under reverberant conditions. Thus retaining only the direct sound of the recording. //and discarding the diffuse sound field.
+This was only made feasable due to recent advancements in the field of deep learning. Historically, this task was approached using standard signal processing techniques that involved coherence estimation, suppresion rules based on thresholds and gain functions @bloomEvaluationTwoinputSpeech1982 @allenMultimicrophoneSignalprocessingTechnique1977.
 
-- short historical overview
-  - from filter based models to learning filter parameters to fully NN/generative based dereverberation techniques
-- dereverberation definition
+
+// - short historical overview
+//   - from filter based models to learning filter parameters to fully NN/generative based dereverberation techniques
+// - dereverberation definition
 
 
 In many modern applications, dereverberation is highly desirable. We divide use cases into two main categories: _offline_ and _live_ processing. Offline applications do not strictly require real-time operation, although real-time capability may still be beneficial.

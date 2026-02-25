@@ -37,3 +37,5 @@ Coding Assistance
 - OpenAI ChatGPT 5.2 & 5.3-Codex
 - Claude Sonnet 4.6
 
+Writing Assistance
+- DeepL for translations

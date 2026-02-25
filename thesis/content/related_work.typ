@@ -17,7 +17,12 @@
 
 == StoRM
 
-- diffusion (fully generative)
+- diffusion architecture (fully generative)
+- score function estimator (similar to our loss network)
+- high computation requirements
+- not realtime capable
+- clean seperation results
+- speech only
 
 == DeepFilter
 

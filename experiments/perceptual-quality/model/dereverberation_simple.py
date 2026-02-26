@@ -38,7 +38,7 @@ class DereverberationModel(nn.Module):
         use_skip_connections: bool = True,
         num_blocks_per_repeat: int = 8,
         num_repeats: int = 4,
-        dilations: Sequence[int]= (1, 2, 4, 8, 16, 32, 64, 128),
+        dilations: Sequence[int] = (1, 2, 4, 8, 16, 32, 64, 128),
         gradient_checkpointing: bool = True,
     ):
         super().__init__()
@@ -143,29 +143,54 @@ class DereverberationLightningModule(pl.LightningModule):
 
     def _unpack_batch(self, batch):
         if isinstance(batch, (tuple, list)) and len(batch) == 2:
-            return batch[0], batch[1]
+            return batch[0], batch[1], None
         if isinstance(batch, dict):
             x = batch["reverb_audio"]
             y = batch["original_audio"]
+            mask = batch.get("mask", None)  # (batch, samples), 1=valid 0=silence/pad
             if y is None:
                 raise KeyError("Batch dict must include 'original_audio'")
-            return x, y
+            return x, y, mask
         raise TypeError("Unsupported batch format")
 
+    def _masked_loss(self, y_hat, y, mask):
+        if mask is None:
+            return self.criterion(y_hat, y)
+
+        if self.loss_name == "sisnr":
+            # SI-SNR is a per-sequence metric, mask by zeroing out silent frames
+            # then compute per-sample and mean
+            y_hat_m = y_hat * mask
+            y_m = y * mask
+            return self.criterion(y_hat_m, y_m)
+
+        elif self.loss_name == "perceptual":
+            y_hat_m = y_hat * mask
+            y_m = y * mask
+            return self.criterion(y_hat_m, y_m)
+
+        else:
+            # L1 / MSE: compute elementwise then average over valid samples only
+            # so the loss scale doesn't shrink for short utterances
+            elementwise = (
+                torch.abs(y_hat - y) if self.loss_name == "l1" else (y_hat - y) ** 2
+            )
+            masked = elementwise * mask
+            loss = masked.sum() / mask.sum().clamp(min=1)
+            return loss
+
     def training_step(self, batch, batch_idx: int):
-        x, y = self._unpack_batch(batch)
+        x, y, mask = self._unpack_batch(batch)
         y_hat = self(x)
-        loss = self.criterion(y_hat, y)
-        if hasattr(self, "log"):
-            self.log("train_loss", loss, prog_bar=True)
+        loss = self._masked_loss(y_hat, y, mask)
+        self.log("train_loss", loss, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx: int):
-        x, y = self._unpack_batch(batch)
+        x, y, mask = self._unpack_batch(batch)
         y_hat = self(x)
-        loss = self.criterion(y_hat, y)
-        if hasattr(self, "log"):
-            self.log("val_loss", loss, prog_bar=True)
+        loss = self._masked_loss(y_hat, y, mask)
+        self.log("val_loss", loss, prog_bar=True)
         return loss
 
     def configure_optimizers(self):

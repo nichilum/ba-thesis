@@ -14,6 +14,7 @@
 - realtime capable
 - si-snr as loss function (we do differently)1
 - noticible/audible artifacts in our tests
+- 8 kHz
 
 == StoRM
 
@@ -23,6 +24,7 @@
 - not realtime capable
 - clean seperation results
 - speech only
+- 16 kHz
 
 == DeepFilterNet
 

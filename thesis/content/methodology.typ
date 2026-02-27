@@ -23,7 +23,7 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
 - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
 - make data
   - peaq (what implementation was used, namedrop authors for credebility)
-  - reverberation techniques
+  - reverberation techniques @smithPhysicalAudioSignal2010
   - upsampling to 44100 (and 48000 for peaq)
   - used parameter reverb because of better size and wetness control
 

@@ -22,4 +22,5 @@ dependencies = [
     "torchviz>=0.0.3",
     "statsmodels>=0.14.6",
     "pydub>=0.25.1",
+    "audioop-lts>=0.2.2",
 ]

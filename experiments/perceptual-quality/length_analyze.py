@@ -12,6 +12,7 @@ import sys
 from model.perceptual_qualitynet import PerceptualQualityNet
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
+import random
 
 if __name__ == "__main__":
     sample_rate = 44100
@@ -35,28 +36,39 @@ if __name__ == "__main__":
     full_duration = 0
     non_silent_duration = 0
 
-    for e in tqdm(data.train_files):
-        ref_audio = load_audio(e["original_path"])
-        pcm = (ref_audio.numpy() * 32767).astype(np.int16)
-        audio_segment = AudioSegment(
-            pcm.tobytes(),
-            frame_rate=sample_rate,
-            sample_width=2,
-            channels=1,
-        )
-        nonsilent_ranges = detect_nonsilent(
-            audio_segment,
-            min_silence_len=100,
-            silence_thresh=-40,
-        )
-        for nr in nonsilent_ranges:
-            non_silent_duration += nr[1] - nr[0]
-        full_duration += audio_segment.duration_seconds * 1000
+    shuffled_train = data.train_files
+    random.shuffle(shuffled_train)
+    num_sample_points = 10
 
-    print(f"Analyzed {len(data.train_files)} files of the train dataset")
-    print(f"Duration of all train samples combined: {full_duration} ms")
+    for i in range(num_sample_points):
+        index = random.randint(0, len(shuffled_train) - 1)
+        sample_point_full_duration = 0
+        sample_point_non_silent_duration = 0
+        for ir in range(index - 5, index + 6):
+            ref_audio = load_audio(shuffled_train[ir]["original_path"])
+            pcm = (ref_audio.numpy() * 32767).astype(np.int16)
+            audio_segment = AudioSegment(
+                pcm.tobytes(),
+                frame_rate=sample_rate,
+                sample_width=2,
+                channels=1,
+            )
+            nonsilent_ranges = detect_nonsilent(
+                audio_segment,
+                min_silence_len=100,
+                silence_thresh=-40,
+            )
+            for nr in nonsilent_ranges:
+                sample_point_non_silent_duration += nr[1] - nr[0]
+            sample_point_full_duration += audio_segment.duration_seconds * 1000
+        full_duration += sample_point_full_duration / 10
+        non_silent_duration += sample_point_non_silent_duration / 10
+
     print(
-        f"Duration of all non silent utterances in training data: {non_silent_duration} ms"
+        f"Duration of all train samples combined: {full_duration * len(shuffled_train) / num_sample_points / 1000 / 60} m"
+    )
+    print(
+        f"Duration of all non silent utterances in training data: {non_silent_duration * len(shuffled_train) / num_sample_points / 1000 / 60} m"
     )
     print(
         f"Ratio of non silent duration to full duration: {non_silent_duration / full_duration}"

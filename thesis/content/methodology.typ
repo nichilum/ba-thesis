@@ -1,5 +1,6 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/open_questions.typ": OPENQ
+#import "/thesis/utils/author.typ": *
 
 = Methodology
 
@@ -56,7 +57,11 @@ To stop the model from learning to generate silence
     - "di": di, #sym.arrow nicht normiert
 - live implementation as well as rir implementation for training of conv tasnet
 
+
+
+
 == LOSS
+#jojo
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.
 go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task

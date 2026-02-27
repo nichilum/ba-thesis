@@ -19,6 +19,7 @@
   transparency_ai_tools: include "/thesis/content/transparency_ai_tools.typ",
 )
 
+
 #include "/thesis/content/introduction.typ"
 #include "/thesis/content/background.typ"
 #include "/thesis/content/related_work.typ"

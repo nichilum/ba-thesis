@@ -15,7 +15,7 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
 - RiR for TASNet training
 \
 - total length, what classes are covered
-- look at PANNs paper
+- look at PANNs paper for AudioSet Citation
 
 === Data Preprocessing
 
@@ -26,6 +26,34 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
   - reverberation techniques
   - upsampling to 44100 (and 48000 for peaq)
   - used parameter reverb because of better size and wetness control
+
+
+*PROBLEMS*:
+- AudioSet is 44.1kHz: 10790 files
+- LibriMix/LibriSpeech is 16kHz: 51232 files
+- Freesound is 44.1kHz: 46753 files
+
+reverberation was made in native sample rate, then upsampled for training:
+meaning that some files lack proper wide band reverberation and might "confuse" model
+
+
+
+- Ratio of total sample duration to non silent parts: prob about 70%
+-> meaning that 30% of the time (excluding utterances that needed zero padding to get to our desired 2 or 4 second segment length) the model would train on pure silence. Therefore we needed to mask the silent and zero padded parts to lessen their impact when calculating loss.
+To stop the model from learning to generate silence
+
+
+*REVERBERATION*:
+
+- reverb done with parameter reverb
+  - from pedalboard (FreeVerb implementation) #TODO[CITE FreeVerb]
+- offline
+  - saved precomputed values for :
+    - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
+    - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
+    - "odg": odg, #sym.arrow nicht normiert
+    - "di": di, #sym.arrow nicht normiert
+- live implementation as well as rir implementation for training of conv tasnet
 
 == LOSS
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)

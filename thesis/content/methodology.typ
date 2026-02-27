@@ -7,7 +7,6 @@
 
 === Data Collection
 
-Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
 
 - AudioSet @gemmekeAudioSetOntology2017
 - LibriSpeech (LibriMix) @panayotovLibrispeechASRCorpus2015
@@ -18,6 +17,8 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
 - look at PANNs paper for AudioSet Citation
 
 === Data Preprocessing
+
+Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
 
 - sample rate: upscaling downscaling possible??
 - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)

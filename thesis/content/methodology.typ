@@ -46,7 +46,7 @@ To stop the model from learning to generate silence
 *REVERBERATION*:
 
 - reverb done with parameter reverb
-  - from pedalboard (FreeVerb implementation) #TODO[CITE FreeVerb]
+  - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
 - offline
   - saved precomputed values for :
     - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert

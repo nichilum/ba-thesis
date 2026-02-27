@@ -35,7 +35,7 @@ if __name__ == "__main__":
     full_duration = 0
     non_silent_duration = 0
 
-    for e in tqdm(data.train_files[:10]):
+    for e in tqdm(data.train_files):
         ref_audio = load_audio(e["original_path"])
         pcm = (ref_audio.numpy() * 32767).astype(np.int16)
         audio_segment = AudioSegment(

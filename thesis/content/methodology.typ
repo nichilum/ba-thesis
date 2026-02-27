@@ -9,10 +9,10 @@
 
 Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
 
-- AudioSet
-- LibriSpeech (LibriMix)
-- Freesound
-- RiR for TASNet training
+- AudioSet @gemmekeAudioSetOntology2017
+- LibriSpeech (LibriMix) @panayotovLibrispeechASRCorpus2015
+- Freesound @fonsecaFSD50KOpenDataset2022
+- RiR for TASNet training @jeub09a
 \
 - total length, what classes are covered
 - look at PANNs paper

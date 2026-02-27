@@ -35,7 +35,7 @@ if __name__ == "__main__":
     full_duration = 0
     non_silent_duration = 0
 
-    for e in data.train_files:
+    for e in tqdm(data.train_files[:10]):
         ref_audio = load_audio(e["original_path"])
         pcm = (ref_audio.numpy() * 32767).astype(np.int16)
         audio_segment = AudioSegment(
@@ -52,3 +52,12 @@ if __name__ == "__main__":
         for nr in nonsilent_ranges:
             non_silent_duration += nr[1] - nr[0]
         full_duration += audio_segment.duration_seconds * 1000
+
+    print(f"Analyzed {len(data.train_files)} files of the train dataset")
+    print(f"Duration of all train samples combined: {full_duration} ms")
+    print(
+        f"Duration of all non silent utterances in training data: {non_silent_duration} ms"
+    )
+    print(
+        f"Ratio of non silent duration to full duration: {non_silent_duration / full_duration}"
+    )

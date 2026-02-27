@@ -7,7 +7,7 @@
 
 == Conv-TasNet
 
-- builds upon tasnet (roughly describe additions)
+- builds upon tasnet @luoTasNetTimedomainAudio2018 (roughly describe additions)
 - seperation using masking, primarly for speech signals
 - encoder decoder - tcn bottleneck
 - works in time-domain (not stft domain)
@@ -15,6 +15,7 @@
 - si-snr as loss function (we do differently)1
 - noticible/audible artifacts in our tests
 - 8 kHz
+- @luoConvTasNetSurpassingIdeal2019
 
 == StoRM
 
@@ -25,6 +26,7 @@
 - clean seperation results
 - speech only
 - 16 kHz
+- @lemercierStoRMDiffusionbasedStochastic2023
 
 == DeepFilterNet
 
@@ -34,6 +36,7 @@
 - compared using sisnr to CRM (complex ratio mask): it's better
 - viable for real-time usage
 - 48kHz
+- @schroterDeepFilterNetLowComplexity2022
 
 For the first stage, we take advantage from the fact that noise as well as speech usually
 have a smooth spectral envelope

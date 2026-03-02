@@ -6,6 +6,15 @@
 
 == Dataset
 
+Other machine learning fields mainly computer vision (CV) and large language models (LLMs) have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 #TODO[CITE LLMs DATASETS].
+
+As shown in @related_work previous work in the field of audio dereverberation has generally focused on speech signals. As this limitation is the same for many audio based machine learning problems (e.g. multi speaker seperation, noise cancellation and speech to text) many of the most used large audio datasets consist only of speech signals which are reduced in bandwidth as well as language diversity and recored in anechoic conditions @garofolojohns.CSRIWSJ0Complete2007 @panayotovLibrispeechASRCorpus2015.
+
+Datasets of diverse audio signals have emerged from audio classification problems. Early examples being private self collected datasets of indivdual researchers @woodardModelingClassificationNatural1992 @ellisDetectingAlarmSounds2001.
+Over the recent years interest in audio classification has surged as can be seen in the amount of entries in the "Detection and Classification of Acoustic Scenes and Events" (DCASE) challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The DCASE has also been a major influence in the increase of publically available datasets as prior to the DCASE challenges only a limited amount were available most notably RWCP @smithPhysicalAudioSignal2010.
+
+The current largest dataset of diverse audio signals is Google's fittingly named AudioSet containing over 5,800 hours of audio recordings with 527 sound classes @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building ontop of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube.
+
 === Data Collection
 
 
@@ -16,6 +25,17 @@
 \
 - total length, what classes are covered
 - look at PANNs paper for AudioSet Citation
+
+
+- as our model will train self supervised we only needed a diverse dataset of dry audio
+  - the release of googles AudioSet was a milestone for this purpose (diverse, unedited audio)
+    - AudioSet is actually just embedding features of audio clips from youtube but for our purposes we needed the actual audio data as embeddings are just not enough
+    - own downloader, scraped from youtube in 44.1 kHz, talk about tech used and the theoretical quality possible
+      - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
+    - talk about size and what we managed to download
+  - we also used data from freesound org (cite) to not train on youtube/downloader artifacts
+  - also used data from libri speech which is bandwidth limited and only contains speech
+    - more weighing on clean speech in the hopes that this dereverberates BEST (prob more important in a general system than music or other diverse audio signals)
 
 === Data Preprocessing
 

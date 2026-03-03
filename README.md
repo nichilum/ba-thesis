@@ -1,5 +1,8 @@
 # IDEAS AND TODOS
 
+
+- mask multiply change to other operation??
+
 ## General Ideas
 
 - Use formant changes as augmentation (are datasets biased towards male voices?)

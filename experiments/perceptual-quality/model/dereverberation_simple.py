@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.utils.checkpoint as torch_checkpoint
 import pytorch_lightning as pl
-from pytorch_tcn import TCN, TemporalConv1d
+from pytorch_tcn import TCN, TemporalConv1d, TemporalConvTranspose1d
 from model.perceptual_qualitynet import PerceptualLoss
 from utils.metrics import si_snr
 
@@ -28,6 +28,8 @@ class DereverberationModel(nn.Module):
     def __init__(
         self,
         encoder_channels: int = 256,
+        sr: int = 44100,
+        win: float = 2,
         tcn_channels: Sequence[int] = (128,) * 8,
         kernel_size: int = 3,
         dropout: float = 0.1,
@@ -44,6 +46,10 @@ class DereverberationModel(nn.Module):
         super().__init__()
         self.gradient_checkpointing = gradient_checkpointing
 
+        # TasNet-style encoder/decoder window: win ms at sr Hz
+        self.win = int(sr * win / 1000)
+        self.stride = self.win // 2
+
         # if tcn_channels is None:
         #     tcn_channels = (265,) * (int(num_blocks_per_repeat) * int(num_repeats))
 
@@ -57,7 +63,9 @@ class DereverberationModel(nn.Module):
                 f"{len(dilations)} != {len(tcn_channels)}"
             )
 
-        self.encoder = TemporalConv1d(1, int(encoder_channels), kernel_size=1)
+        self.encoder = nn.Conv1d(
+            1, int(encoder_channels), self.win, bias=False, stride=self.stride
+        )
 
         self.tcn = TCN(
             num_inputs=int(encoder_channels),
@@ -74,7 +82,32 @@ class DereverberationModel(nn.Module):
             dilations=list(map(int, dilations)),
         )
 
-        self.decoder = TemporalConv1d(int(encoder_channels), 1, kernel_size=1)
+        self.decoder = nn.ConvTranspose1d(
+            int(encoder_channels), 1, self.win, bias=False, stride=self.stride
+        )
+
+    def pad_signal(self, x: torch.Tensor) -> tuple[torch.Tensor, int]:
+        """Pad input so the strided encoder covers every sample.
+
+        Mirrors Conv-TasNet padding: right-pad to make the length
+        compatible with ``self.win`` / ``self.stride``, then prepend and
+        append ``self.stride`` zeros so the first and last windows are
+        centred on the signal boundaries.
+
+        Returns:
+            (padded_input, rest)  where *rest* is the number of
+            right-padding samples that must be removed after decoding.
+        """
+        batch_size = x.size(0)
+        nsample = x.size(2)
+        rest = self.win - (self.stride + nsample % self.win) % self.win
+        if rest > 0:
+            pad = torch.zeros(batch_size, 1, rest, device=x.device, dtype=x.dtype)
+            x = torch.cat([x, pad], 2)
+
+        pad_aux = torch.zeros(batch_size, 1, self.stride, device=x.device, dtype=x.dtype)
+        x = torch.cat([pad_aux, x, pad_aux], 2)
+        return x, rest
 
     def forward(self, audio: torch.Tensor) -> torch.Tensor:
         """Args:
@@ -89,7 +122,10 @@ class DereverberationModel(nn.Module):
         else:
             raise ValueError("audio must have shape (N, L) or (N, 1, L)")
 
-        x = self.encoder(x)
+        # Pad to ensure encoder/decoder preserve the original length
+        x, rest = self.pad_signal(x)
+
+        encoder_output = self.encoder(x)
 
         # Gradient checkpointing: discard intermediate TCN activations and
         # recompute them on the backward pass. Saves ~(num_blocks - 1) /
@@ -97,11 +133,17 @@ class DereverberationModel(nn.Module):
         # pass through the TCN. With 24 blocks this typically cuts activation
         # memory by ~95 % for the TCN segment.
         if self.gradient_checkpointing and self.training:
-            x = torch_checkpoint.checkpoint(self.tcn, x, use_reentrant=False)
+            masks = torch_checkpoint.checkpoint(self.tcn, encoder_output, use_reentrant=False)
         else:
-            x = self.tcn(x)
+            masks = self.tcn(encoder_output)
+
+        masks = torch.sigmoid(masks)
+        x = encoder_output * masks
 
         x = self.decoder(x)
+
+        # Remove padding added by pad_signal
+        x = x[:, :, self.stride : -(rest + self.stride)].contiguous()
         x = x.squeeze(1)
         return x
 
@@ -194,41 +236,7 @@ class DereverberationLightningModule(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.parameters(), lr=self.lr)
+        return torch.optim.Adam(self.parameters(), lr=self.lr)
 
     def optimizer_zero_grad(self, epoch, batch_idx, optimizer):
         optimizer.zero_grad(set_to_none=True)
-
-    # def on_before_optimizer_step(self, optimizer, *args: Any, **kwargs: Any) -> None:
-    #     grad_norm_dict = self._compute_grad_norms()
-    #     if grad_norm_dict:
-    #         self.log_grad_norm(grad_norm_dict)
-
-    # def log_grad_norm(self, grad_norm_dict: Dict[str, torch.Tensor]) -> None:
-    #     self.log_dict(
-    #         grad_norm_dict,
-    #         on_step=True,
-    #         on_epoch=False,
-    #         prog_bar=False,
-    #         logger=True,
-    #     )
-
-    # def _compute_grad_norms(self) -> Dict[str, torch.Tensor]:
-    #     grads = [p.grad for p in self.parameters() if p.grad is not None]
-    #     if not grads:
-    #         return {}
-
-    #     device = grads[0].device
-    #     l2_sq_sum = torch.zeros((), device=device)
-    #     inf_max = torch.zeros((), device=device)
-
-    #     for g in grads:
-    #         g_detached = g.detach()
-    #         l2_sq_sum = l2_sq_sum + torch.sum(g_detached * g_detached)
-    #         inf_max = torch.maximum(inf_max, torch.max(torch.abs(g_detached)))
-
-    #     l2_total = torch.sqrt(l2_sq_sum)
-    #     return {
-    #         "grad_norm/l2_total": l2_total,
-    #         "grad_norm/inf_total": inf_max,
-    #     }

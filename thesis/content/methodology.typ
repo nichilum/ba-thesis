@@ -6,7 +6,7 @@
 
 == Dataset
 
-Other machine learning fields mainly computer vision (CV) and large language models (LLMs) have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 #TODO[, namely ...] #TODO[CITE LLMs DATASETS].
+Other machine learning fields mainly computer vision (CV) and large language models (LLMs) have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 namely mC4, MassiveText or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.
 
 As shown in @related_work previous work in the field of audio dereverberation has generally focused on speech signals. As this limitation is the same for many audio based machine learning problems (e.g. multi speaker seperation, noise cancellation and speech to text) many of the most used large audio datasets consist only of speech signals which are reduced in bandwidth as well as language diversity and recored in anechoic conditions @garofolojohns.CSRIWSJ0Complete2007 @panayotovLibrispeechASRCorpus2015 @richterEARSAnechoicFullband2024.
 
@@ -14,31 +14,28 @@ Datasets of diverse audio signals have emerged from audio classification problem
 Over the recent years interest in audio classification has surged as can be seen in the amount of entries in the "Detection and Classification of Acoustic Scenes and Events" (DCASE) challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The DCASE has also been a major influence in the increase of publically available datasets as prior to the DCASE challenges only a limited amount were available most notably RWCP @smithPhysicalAudioSignal2010.
 
 The current largest dataset of diverse audio signals is Google's fittingly named AudioSet containing over 5,800 hours of audio recordings with 527 classes
-of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building ontop of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube.
-
-#TODO[hand vs. machine labeled dataset (which is which)]
+of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building on top of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube. Both datasets are human-labeled while AudioSet specifies that sounds are human-verified and classes are suggested using YouTube metadata.
 
 === Data Collection
 
+Our proposed approach requires a diverse dataset of dry audio data. In total 108,775 indivdual audio samples were collected resulting in the following dataset:
 
-- AudioSet @gemmekeAudioSetOntology2017
-- LibriSpeech (LibriMix) @panayotovLibrispeechASRCorpus2015
-- Freesound @fonsecaFSD50KOpenDataset2022
+#figure(caption: [Dataset split], table(
+  columns: 3,
+  [*Dataset*], [*Number of Files*], [*Length of Files*],
+  [AudioSet], [10790 (9.92 %)], [],
+  [FSD50K], [46753 (42.98 %)], [],
+  [LibriSpeech/LibriMix], [51232 (47.1 %)], [],
+))
+
+Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset includes english utterances recored in anechoic conditions and samples at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
+
 - RiR for TASNet training @jeub09a
-\
-- total length, what classes are covered
-- look at PANNs paper for AudioSet Citation
-
-
-- as our model will train self supervised we only needed a diverse dataset of dry audio
-  - the release of googles AudioSet was a milestone for this purpose (diverse, unedited audio)
-    - AudioSet is actually just embedding features of audio clips from youtube but for our purposes we needed the actual audio data as embeddings are just not enough
-    - own downloader, scraped from youtube in 44.1 kHz, talk about tech used and the theoretical quality possible
-      - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
-    - talk about size and what we managed to download
-  - we also used data from freesound org (cite) to not train on youtube/downloader artifacts
-  - also used data from libri speech which is bandwidth limited and only contains speech
-    - more weighing on clean speech in the hopes that this dereverberates BEST (prob more important in a general system than music or other diverse audio signals)
+- what classes are covered
+  - look at PANNs paper for AudioSet Citation
+- own downloader, scraped from youtube in 44.1 kHz, talk about tech used and the theoretical quality possible
+  - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
+- talk about size and what we managed to download
 
 === Data Preprocessing
 
@@ -53,10 +50,16 @@ Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen 
   - used parameter reverb because of better size and wetness control
 
 
+Duration of all train samples combined: 819907050.9525146 ms
+Duration of all non silent utterances in training data: 539188097 ms
+Ratio of non silent duration to full duration: 0.6576210027387939
+
 *PROBLEMS*:
 - AudioSet is 44.1kHz: 10790 files
+  - theoretically not fully DRY audio
 - LibriMix/LibriSpeech is 16kHz: 51232 files
 - Freesound is 44.1kHz: 46753 files
+  - theoretically not fully DRY audio
 
 reverberation was made in native sample rate, then upsampled for training:
 meaning that some files lack proper wide band reverberation and might "confuse" model

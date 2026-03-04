@@ -39,8 +39,6 @@ Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1
 
 === Data Preprocessing
 
-Dies das irgendwas mit Unity schreiben, dass das auch eine Möglichkeit gewesen wäre Räume zu simulieren, aber zu lange gedauert hätte, da simulation nur in realtime, bei unser menge an daten (k.a. 500+ stunden), maybe paar screenshots
-
 - sample rate: upscaling downscaling possible??
 - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
 - make data
@@ -72,6 +70,19 @@ To stop the model from learning to generate silence
 
 
 *REVERBERATION*:
+
+- discuss ways considered to reverberate
+  - convolution with RIRs (room impulse responses)
+    - from open datasets like AIR @jeub09a
+    - most realistic but also most computationally expensive and not very flexible in terms of size and wetness control
+  - parameter based reverberation
+    - mostly used in music production as stylistic effect
+    - more flexible in terms of size and wetness control, less computationally expensive
+    - see fundamentals chapter
+  - room simulation in Unity or pyroomacoustics
+    - most realistic and flexible but also most computationally expensive and not possible to do offline for our amount of data
+    - Unity is done in realtime (add unity screenshots)
+    - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
 - reverb done with parameter reverb
   - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010

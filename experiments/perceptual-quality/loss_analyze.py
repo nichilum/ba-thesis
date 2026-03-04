@@ -11,7 +11,8 @@ import seaborn as sns
 import sys
 from model.perceptual_qualitynet import PerceptualQualityNet
 
-if __name__ == "__main__":
+
+def main():
     sample_rate = 44100
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -207,12 +208,25 @@ def analyze_mask():
     print(len(dry_data))
 
     quality = []
+    size = []
+    wetness = []
 
-    for pct in range(100):
-        cutoff = int(len(dry_data) * pct / 100)
-        modified = dry_data.clone()
+    for pct in range(101):
+        cutoff = int(len(rev_data) * pct / 100)
+        modified = rev_data.clone()
         modified[:cutoff] = 0
         quality.append(predict_quality(modified)["quality"])
+        size.append(predict_quality(modified)["size"])
+        wetness.append(predict_quality(modified)["wetness"])
 
-    plt.plot(quality)
-    plt.show()
+    plt.plot(quality, label="quality", color="#1f77b4")
+    plt.plot(size, label="size", color="#bc6cbf")
+    plt.plot(wetness, label="wetness", color="#e27285")
+    plt.legend()
+    plt.xlabel("Percentage of zeros")
+    plt.ylabel("Prediction")
+    plt.savefig("plots/perceptual_net_zeros_preds.svg")
+
+
+if __name__ == "__main__":
+    analyze_mask()

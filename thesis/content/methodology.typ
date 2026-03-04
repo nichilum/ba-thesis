@@ -1,6 +1,7 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/open_questions.typ": OPENQ
 #import "/thesis/utils/author.typ": *
+#import "@preview/diagraph:0.3.6": *
 
 = Methodology
 
@@ -16,7 +17,7 @@ Over the recent years interest in audio classification has surged as can be seen
 The current largest dataset of diverse audio signals is Google's fittingly named AudioSet containing over 5,800 hours of audio recordings with 527 classes
 of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building on top of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube. Both datasets are human-labeled while AudioSet specifies that sounds are human-verified and classes are suggested using YouTube metadata.
 
-=== Data Collection
+=== Data Collection<data_collection>
 
 Our proposed approach requires a diverse dataset of dry audio data. In total 108,775 indivdual audio samples were collected resulting in the following dataset:
 
@@ -29,7 +30,13 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
   [Total], [108775], [324h 44m 49s],
 ))
 
-Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset includes english utterances recored in anechoic conditions and samples at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
+Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
+
+#TODO[
+  Another dataset of room impulse responses (RIR) was gathered consisting of ... individual RIRs.
+  This was later in part used for reverberation purposes.
+  The RIRs were sourced from ...
+]
 
 // - RiR for TASNet training @jeub09a
 // - what classes are covered
@@ -39,6 +46,46 @@ Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1
 // - talk about size and what we managed to download
 
 === Data Preprocessing
+
+To train our model on the dataset descibed in @data_collection a supervisory signal must be generated for each audio sample. In our case this augmentation is done through reverberation of the dry audio data.
+
+#figure(caption: [Augmentation pipeline], raw-render(
+  ```dot
+    digraph pipeline {
+      rankdir=LR
+      node [fontsize=10, style=filled, shape=box, rounded=true, width=1.8, height=0.4]
+      edge [fontsize=8]
+
+      dry   [fillcolor="white"]
+      conv  [fillcolor="white"]
+      rev   [fillcolor="white"]
+      model [fillcolor="white"]
+
+      {rank=same; conv; dry}
+
+      dry  -> conv
+      conv -> rev [constraint=false]
+      dry  -> model [style=dashed, label="dry input", constraint=false]
+      rev  -> model [label="supervisory signal"]
+    }
+  ```,
+  labels: (
+    dry: [*Dry Audio*],
+    conv: [*Reverberation*],
+    rev: [*Reverberant Audio*],
+    model: [*Model Training*],
+  ),
+))
+
+
+- data collected consist of dry data
+- model should train self supervised, no need to label etc but we needed a way to generate wet/reverberated data
+  - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
+    - first implementation was in memory
+      - both reverberation through RIRs and Parameter reverb were implemented
+      - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
+    - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
+    - VST based parameter reverb is os dependent and make for a horrible workflow
 
 - sample rate: upscaling downscaling possible??
 - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)

@@ -30,3 +30,5 @@
   caption: [Prediction quality of perceptual net from signal with increasing zero percentage],
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )
+
+#TODO[https://typst.app/universe/package/neural-netz]

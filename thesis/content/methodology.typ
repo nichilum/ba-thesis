@@ -81,7 +81,7 @@ To stop the model from learning to generate silence
     - see fundamentals chapter
   - room simulation in Unity or pyroomacoustics
     - most realistic and flexible but also most computationally expensive and not possible to do offline for our amount of data
-    - Unity is done in realtime (add unity screenshots)
+    - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
 - reverb done with parameter reverb

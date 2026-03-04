@@ -23,6 +23,7 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
 
 #figure(caption: [Dataset split], table(
   columns: 3,
+  align: (left, center, center),
   [*Dataset*], [*Number of Files*], [*Length of Files*],
   [_AudioSet_], [10790 (9.92 %)], [44h 52m 34s (13.8 %)],
   [_FSD50K_], [46753 (42.98 %)], [107h 34m 25s (33.1 %)],

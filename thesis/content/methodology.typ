@@ -23,9 +23,10 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
 #figure(caption: [Dataset split], table(
   columns: 3,
   [*Dataset*], [*Number of Files*], [*Length of Files*],
-  [AudioSet], [10790 (9.92 %)], [],
-  [FSD50K], [46753 (42.98 %)], [],
-  [LibriSpeech/LibriMix], [51232 (47.1 %)], [],
+  [AudioSet], [10790 (9.92 %)], [44h 52m 34s (13.8 %)],
+  [FSD50K], [46753 (42.98 %)], [107h 34m 25s (33.1 %)],
+  [LibriSpeech/LibriMix], [51232 (47.1 %)], [172h 17m 49s (53.1 %)],
+  [Total], [108775], [324h 44m 49s],
 ))
 
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset includes english utterances recored in anechoic conditions and samples at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.

@@ -74,47 +74,20 @@ To train our model on the dataset descibed in @data_collection a supervisory sig
   ),
 ))
 
-
-- data collected consist of dry data
-- model should train self supervised, no need to label etc but we needed a way to generate wet/reverberated data
-  - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
-    - first implementation was in memory
-      - both reverberation through RIRs and Parameter reverb were implemented
-      - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
-    - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
-    - VST based parameter reverb is os dependent and make for a horrible workflow
+- explain why self supervised (see theoretical background)
 
 - sample rate: upscaling downscaling possible??
 - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
-- make data
-  - peaq (what implementation was used, namedrop authors for credebility)
-  - reverberation techniques @smithPhysicalAudioSignal2010
-  - upsampling to 44100 (and 48000 for peaq)
-  - used parameter reverb because of better size and wetness control
+
+==== Reverberation
 
 
-Duration of all train samples combined: 819907050.9525146 ms
-Duration of all non silent utterances in training data: 539188097 ms
-Ratio of non silent duration to full duration: 0.6576210027387939
-
-*PROBLEMS*:
-- AudioSet is 44.1kHz: 10790 files
-  - theoretically not fully DRY audio
-- LibriMix/LibriSpeech is 16kHz: 51232 files
-- Freesound is 44.1kHz: 46753 files
-  - theoretically not fully DRY audio
-
-reverberation was made in native sample rate, then upsampled for training:
-meaning that some files lack proper wide band reverberation and might "confuse" model
-
-
-
-- Ratio of total sample duration to non silent parts: prob about 70%
--> meaning that 30% of the time (excluding utterances that needed zero padding to get to our desired 2 or 4 second segment length) the model would train on pure silence. Therefore we needed to mask the silent and zero padded parts to lessen their impact when calculating loss.
-To stop the model from learning to generate silence
-
-
-*REVERBERATION*:
+- two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
+  - first implementation was in memory
+    - both reverberation through RIRs and Parameter reverb were implemented
+    - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
+  - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
+  - VST based parameter reverb is os dependent and make for a horrible workflow
 
 - discuss ways considered to reverberate
   - convolution with RIRs (room impulse responses)
@@ -129,21 +102,52 @@ To stop the model from learning to generate silence
     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
+- AudioSet is 44.1kHz: 10790 files
+  - theoretically not fully DRY audio
+- LibriMix/LibriSpeech is 16kHz: 51232 files
+- Freesound is 44.1kHz: 46753 files
+  - theoretically not fully DRY audio
+
+reverberation was made in native sample rate, then upsampled for training:
+meaning that some files lack proper wide band reverberation and might "confuse" model
+
+- saved precomputed values for :
+  - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
+  - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
+
+- live implementation as well as rir implementation for training of conv tasnet
 - reverb done with parameter reverb
   - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
+
+==== PEAQ
+
 - offline
   - saved precomputed values for :
-    - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
-    - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
     - "odg": odg, #sym.arrow nicht normiert
     - "di": di, #sym.arrow nicht normiert
-- live implementation as well as rir implementation for training of conv tasnet
 
+
+- make data
+  - peaq (what implementation was used, namedrop authors for credebility)
+  - reverberation techniques @smithPhysicalAudioSignal2010
+  - upsampling to 44100 (and 48000 for peaq)
+  - used parameter reverb because of better size and wetness control
+
+
+==== Non-Silent Parts
+
+- Ratio of total sample duration to non silent parts: prob about 70%
+-> meaning that 30% of the time (excluding utterances that needed zero padding to get to our desired 2 or 4 second segment length) the model would train on pure silence. Therefore we needed to mask the silent and zero padded parts to lessen their impact when calculating loss.
+To stop the model from learning to generate silence
 
 #figure(
   caption: [Mask],
   image("/experiments/perceptual-quality/plots/mask_plot.svg"),
 )
+
+Duration of all train samples combined: 819907050.9525146 ms
+Duration of all non silent utterances in training data: 539188097 ms
+Ratio of non silent duration to full duration: 0.6576210027387939
 
 == LOSS
 #jojo

@@ -153,3 +153,66 @@ if __name__ == "__main__":
     plt.savefig(
         "plots/data_metrics.svg",
     )
+
+
+def analyze_mask():
+    sample_rate = 44100
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    quality_net = PerceptualQualityNet(sample_rate=sample_rate)
+    quality_net.load_state_dict(
+        torch.load(
+            "checkpoints/epoch_195-quality-perceptual_net_best.pth",
+            map_location=device,
+            weights_only=True,
+        )
+    )
+    quality_net.eval()
+    quality_net.to(device)
+
+    def predict_quality(waveform):
+        with torch.no_grad():
+            audio = waveform.unsqueeze(0).to(device)
+            preds = quality_net(audio, return_all=True)
+            return {k: v.squeeze().cpu().item() for k, v in preds.items()}
+
+    def load_audio(path):
+        waveform, sr = sf.read(path)
+        waveform = torch.from_numpy(waveform).float()
+
+        if waveform.ndim > 1:
+            waveform = torch.mean(waveform, dim=1)
+
+        if sr != sample_rate:
+            waveform = waveform.unsqueeze(0)
+            waveform = torchaudio.functional.resample(waveform, sr, sample_rate)
+            waveform = waveform.squeeze(0)
+
+        return waveform
+
+    path_reverberant = Path(
+        "/home/jojo/ba-thesis/experiments/perceptual-quality/data/audio/e4/5456-62043-0005.wav"
+    )
+    path_dry = Path(
+        "/home/jojo/ba-thesis/datasets/LibriMix/data/LibriSpeech/train-clean-100/5456/62043/5456-62043-0005.flac"
+    )
+
+    # plt.plot(load_audio(path_reverberant).cpu().numpy())
+    # plt.plot(load_audio(path_dry).cpu().numpy())
+    # plt.show()
+
+    dry_data = load_audio(path_dry)
+    rev_data = load_audio(path_reverberant)
+
+    print(len(dry_data))
+
+    quality = []
+
+    for pct in range(100):
+        cutoff = int(len(dry_data) * pct / 100)
+        modified = dry_data.clone()
+        modified[:cutoff] = 0
+        quality.append(predict_quality(modified)["quality"])
+
+    plt.plot(quality)
+    plt.show()

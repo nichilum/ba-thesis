@@ -263,6 +263,80 @@ derev_tcn_v3:
     num_repeats: 4
     dilations: [1, 2, 4, 8, 16, 32, 64, 128]
 
+# Conv-TasNet paper, second-to-last row (best non-causal):
+# N=512 L=16 B=128 H=512 Sc=128 P=3 X=8 R=3 gLN non-causal
+# 5.1M params | SI-SNRi 15.3 dB | SDRi 15.6 dB
+derev_convtasnet:
+  data_split_file: "./data/metadata.jsonl"
+  batch_size: 4
+  accumulate_grad_batches: 4  # effective batch = 4 × 4 = 16
+  num_workers: 4
+  epochs: 100
+  lr: 0.0001
+  save_dir: "checkpoints"
+  model_out: "output/derev_convtasnet.pt"
+  segment_length: 88200  # 44100 * 2
+  sample_rate: 44100
+  loss: "perceptual"
+  perceptual_loss_model_path: "checkpoints/epoch_195-odg-perceptual_net_best.pth"
+  gradient_checkpointing: true
+  model:
+    encoder_channels: 512                   # N=512
+    sr: 44100
+    win: 2                                  # L=16 @ 8 kHz ≈ 2 ms → 88 samples @ 44.1 kHz
+    tcn_channels: [512, 512, 512, 512, 512, 512, 512, 512,
+                   512, 512, 512, 512, 512, 512, 512, 512,
+                   512, 512, 512, 512, 512, 512, 512, 512]  # H=512, X=8 × R=3 = 24 blocks
+    kernel_size: 3                          # P=3
+    dropout: 0.0
+    causal: false
+    use_norm: "layer_norm"                  # gLN
+    activation: "relu"
+    lookahead: 0
+    use_skip_connections: true              # Sc=128 (skip connections enabled)
+    num_blocks_per_repeat: 8               # X=8
+    num_repeats: 3                          # R=3
+    dilations: [1, 2, 4, 8, 16, 32, 64, 128,
+                1, 2, 4, 8, 16, 32, 64, 128,
+                1, 2, 4, 8, 16, 32, 64, 128]
+
+# Conv-TasNet paper params (N=512 L=16 B=128 H=512 Sc=128 P=3 X=8 R=3)
+# adapted for pytorch_tcn (standard conv, no depthwise-separable bottleneck).
+# tcn_channels=179 chosen to match the paper's 5.1M parameter budget.
+derev_tcn_v4:
+  data_split_file: "./data/metadata.jsonl"
+  batch_size: 4
+  accumulate_grad_batches: 4  # effective batch = 4 × 4 = 16
+  num_workers: 4
+  epochs: 100
+  lr: 0.0001
+  save_dir: "checkpoints"
+  model_out: "output/derev_tcn_v4.pt"
+  segment_length: 88200  # 44100 * 2
+  sample_rate: 44100
+  loss: "perceptual"
+  perceptual_loss_model_path: "checkpoints/epoch_195-odg-perceptual_net_best.pth"
+  gradient_checkpointing: true
+  model:
+    encoder_channels: 512                   # N=512
+    sr: 44100
+    win: 2                                  # L ≈ 2 ms → 88 samples @ 44.1 kHz
+    tcn_channels: [179, 179, 179, 179, 179, 179, 179, 179,
+                   179, 179, 179, 179, 179, 179, 179, 179,
+                   179, 179, 179, 179, 179, 179, 179, 179]  # ≈5.1M total params
+    kernel_size: 3                          # P=3
+    dropout: 0.0
+    causal: false
+    use_norm: "layer_norm"                  # gLN
+    activation: "relu"
+    lookahead: 0
+    use_skip_connections: true
+    num_blocks_per_repeat: 8               # X=8
+    num_repeats: 3                          # R=3
+    dilations: [1, 2, 4, 8, 16, 32, 64, 128,
+                1, 2, 4, 8, 16, 32, 64, 128,
+                1, 2, 4, 8, 16, 32, 64, 128]
+
 derev_tcn_v3_MSE:
   data_split_file: "./data/metadata.jsonl"
   batch_size: 4

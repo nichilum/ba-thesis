@@ -30,12 +30,12 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
 
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset includes english utterances recored in anechoic conditions and samples at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
 
-- RiR for TASNet training @jeub09a
-- what classes are covered
-  - look at PANNs paper for AudioSet Citation
-- own downloader, scraped from youtube in 44.1 kHz, talk about tech used and the theoretical quality possible
-  - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
-- talk about size and what we managed to download
+// - RiR for TASNet training @jeub09a
+// - what classes are covered
+//   - look at PANNs paper for AudioSet Citation
+// - own downloader, scraped from youtube in 44.1 kHz, talk about tech used and the theoretical quality possible
+//   - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
+// - talk about size and what we managed to download
 
 === Data Preprocessing
 
@@ -84,7 +84,10 @@ To stop the model from learning to generate silence
 - live implementation as well as rir implementation for training of conv tasnet
 
 
-
+#figure(
+  caption: [Mask],
+  image("/experiments/perceptual-quality/plots/mask_plot.svg"),
+)
 
 == LOSS
 #jojo

@@ -96,6 +96,9 @@
     }
   }
 
+  // --- Tables ---
+  set table(stroke: (_, y) => if y > 0 { (top: 0.8pt) } else if y == 0 { (bottom: 0.8pt) }, row-gutter: (2.2pt, auto))
+
   // --- Paragraphs ---
   set par(leading: 1em)
 

@@ -7,12 +7,15 @@ In these cases, reverberation can significantly degrade speech intelligibility, 
 == TCN RNN CNN etc
 #leo
 
+The idea of autoencoders has been part of the historical landscape of neuralnetworks for decades (LeCun, 1987; Bourlard and Kamp, 1988; Hinton and Zemel,1994). @goodfellowDeepLearning2016
+
 - short historical overview and comparison over networks, deep learning and CNNs
 
 TCN:
 - Describe Architecture
 - Usecases
 - Advantages and Disadvantages over CNNs and RNNs
+- look at description in https://www.researchgate.net/publication/360936572_An_enhanced_Conv-TasNet_model_for_speech_separation_using_a_speaker_distance-based_loss_function
 === Supervised Learning<supervised_learning>
 === Self-Supervised Learning<self_supervised>
 == LOSS

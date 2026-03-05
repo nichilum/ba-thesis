@@ -79,6 +79,11 @@ This synthetic labeling approach is similar in concept to self-supervised traini
 
 ==== Reverberation
 
+To provide the model with augmented audio signals two kinds of preprocessing were considered. Either reverberate the signals _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
+
+Several ways of reverberation were also explored. One way was convolution via @RIR:pl
+
+A first implementation was done using live
 
 - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
   - first implementation was in memory

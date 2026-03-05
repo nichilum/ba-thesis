@@ -57,7 +57,7 @@
     //   plural: "TPSes",
     //   longplural: "test procedure specifications",
     // ),
-    RIR: "Room impulse response",
+    RIR: "room impulse response",
   )
 
   show: init-glossary.with(myGlossary)

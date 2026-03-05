@@ -29,7 +29,7 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
   [_FSD50K_], [46753 (42.98 %)], [107h 34m 25s (33.1 %)],
   [_LibriSpeech_], [51232 (47.1 %)], [172h 17m 49s (53.1 %)],
   [_Total_], [108775], [324h 44m 49s],
-))
+))<dataset_split>
 
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
 
@@ -84,9 +84,13 @@ To train our model on the dataset descibed in @data_collection a supervisory sig
 
 To provide the model with augmented audio signals two kinds of preprocessing were considered. Either reverberate the signals _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
 
-Several ways of reverberation were also explored. One way was convolution via @RIR:pl
+Several ways of reverberation were also explored. One way was convolution via @RIR:pl. This is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency, although convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Convolution reverbs also do not expose many parameters or controls to feed to our loss network (see @loss_network).
 
-A first implementation was done using live
+Parameter based reverberation, like delay networks are fast and require little memory, but require careful tuning to find configurations that sound realistic. Then again this gives us easy access to e.g. size and wetness controls that we can pass on to training.
+
+Finally, room simulations are also used for reverberating training data @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity or libraries like pyroomacoustics can be used to simulate rooms with different sizes, materials and microphone placements. This is the most realistic way of generating synthetic reverb, but also the most computationally expensive and not possible to do offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable for our amount of data, as the runtime would be about 324h (see @dataset_split).
+
+A first implementation was done using live... #TODO[]
 
 - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
   - first implementation was in memory
@@ -95,18 +99,18 @@ A first implementation was done using live
   - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
   - VST based parameter reverb is os dependent and make for a horrible workflow
 
-- discuss ways considered to reverberate
-  - convolution with RIRs (room impulse responses)
-    - from open datasets like AIR @jeub09a
-    - most realistic but also most computationally expensive and not very flexible in terms of size and wetness control
-  - parameter based reverberation
-    - mostly used in music production as stylistic effect
-    - more flexible in terms of size and wetness control, less computationally expensive
-    - see fundamentals chapter
-  - room simulation in Unity or pyroomacoustics
-    - most realistic and flexible but also most computationally expensive and not possible to do offline for our amount of data
-    - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
-    - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
+// - discuss ways considered to reverberate
+//   - convolution with RIRs (room impulse responses)
+//     - from open datasets like AIR @jeub09a
+//     - most realistic but also most computationally expensive and not very flexible in terms of size and wetness control
+//   - parameter based reverberation
+//     - mostly used in music production as stylistic effect
+//     - more flexible in terms of size and wetness control, less computationally expensive
+//     - see fundamentals chapter
+//   - room simulation in Unity or pyroomacoustics
+//     - most realistic and flexible but also most computationally expensive and not possible to do offline for our amount of data
+//     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
+//     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
 - AudioSet is 44.1kHz: 10790 files
   - theoretically not fully DRY audio
@@ -155,7 +159,7 @@ Duration of all train samples combined: 819907050.9525146 ms
 Duration of all non silent utterances in training data: 539188097 ms
 Ratio of non silent duration to full duration: 0.6576210027387939
 
-== LOSS
+== LOSS<loss_network>
 #jojo
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.

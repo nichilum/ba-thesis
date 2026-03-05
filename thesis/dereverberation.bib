@@ -47,6 +47,22 @@
   urldate = {2026-01-12}
 }
 
+@online{baevskiWav2vec20Framework2020,
+  title = {Wav2vec 2.0: {{A Framework}} for {{Self-Supervised Learning}} of {{Speech Representations}}},
+  shorttitle = {Wav2vec 2.0},
+  author = {Baevski, Alexei and Zhou, Henry and Mohamed, Abdelrahman and Auli, Michael},
+  date = {2020-10-22},
+  eprint = {2006.11477},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  doi = {10.48550/arXiv.2006.11477},
+  url = {http://arxiv.org/abs/2006.11477},
+  urldate = {2026-03-05},
+  abstract = {We show for the first time that learning powerful representations from speech audio alone followed by fine-tuning on transcribed speech can outperform the best semi-supervised methods while being conceptually simpler. wav2vec 2.0 masks the speech input in the latent space and solves a contrastive task defined over a quantization of the latent representations which are jointly learned. Experiments using all labeled data of Librispeech achieve 1.8/3.3 WER on the clean/other test sets. When lowering the amount of labeled data to one hour, wav2vec 2.0 outperforms the previous state of the art on the 100 hour subset while using 100 times less labeled data. Using just ten minutes of labeled data and pre-training on 53k hours of unlabeled data still achieves 4.8/8.2 WER. This demonstrates the feasibility of speech recognition with limited amounts of labeled data.},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Computation and Language,Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
+}
+
 @online{bahrmanUDREAMUnsupervisedDereverberation2025,
   title = {U-{{DREAM}}: {{Unsupervised Dereverberation}} Guided by a {{Reverberation Model}}},
   shorttitle = {U-{{DREAM}}},
@@ -281,6 +297,15 @@
   abstract = {Speech derverberation using a single microphone is addressed in this paper. Motivated by the recent success of the fully convolutional networks (FCN) in many image processing applications, we investigate their applicability to enhance the speech signal represented by short-time Fourier transform (STFT) images. We present two variations: a “U-Net” which is an encoder-decoder network with skip connections and a generative adversarial network (GAN) with U-Net as generator, which yields a more intuitive cost function for training. To evaluate our method we used the data from the REVERB challenge, and compared our results to other methods under the same conditions. We have found that our method outperforms the competing methods in most cases.},
   eventtitle = {2018 26th {{European Signal Processing Conference}} ({{EUSIPCO}})},
   keywords = {Computer architecture,Gallium nitride,Generative adversarial networks,Reverberation,Spectrogram,Speech enhancement,Task analysis}
+}
+
+@inproceedings{farinaImpulseResponseMeasurements2007,
+  title = {Impulse Response Measurements},
+  booktitle = {23rd Nordic Sound Symposium},
+  author = {Farina, Angelo},
+  date = {2007},
+  pages = {27--30},
+  location = {Bolkesjø, Norway}
 }
 
 @article{figarolaReverberationExacerbatesEffects2025,
@@ -623,6 +648,23 @@
   abstract = {This dataset includes audio and annotations useful for tasks as score-informed source separation, score following, multi-pitch estimation, transcription or instrument detection, in the context of symphonic music. This dataset was presented and used in the evaluation of: M. Miron, J. Carabias-Orti, J. J. Bosch, E. Gómez and J. Janer, "Score-informed source separation for multi-channel orchestral recordings", Journal of Electrical and Computer Engineering (2016))" On this web page we do not provide the original audio files, which can be found at the web page hosted by Aalto University. However, with their permission we distribute the denoised versions for some of the anechoic orchestral recordings: Pätynen, J., Pulkki, V., and Lokki, T., "Anechoic recording system for symphony orchestra," Acta Acustica united with Acustica, vol. 94, nr. 6, pp. 856-865, November/December 2008. For the intellectual rights and the distribution policy of the audio recordings in this dataset contact Aalto University, Jukka Pätynen and Tapio Lokki. For more information about the original anechoic recordings we refer to the web page and the associated publication [2] We provide the associated musical note onset and offset annotations, and the Roomsim[3] configuration files used to generate the multi-microphone recordings [1]. The anechoic dataset in [2] consists of four passages of symphonic music from the Classical and Romantic periods. This work presented a set of anechoic recordings for each of the instruments, which were then synchronized between them so that they could later be combined to a mix of the orchestra. In order to keep the evaluation setup consistent between the four pieces, we selected the following instruments: violin, viola, cello, double bass, oboe, flute, clarinet, horn, trumpet and bassoon. We created a ground truth score, by hand annotating the notes played by the instruments. The annotation process involved gathering the original scores in MIDI format, performing an initial automatic audio-to-score alignment, then manually aligning each instrument track separately with the guidance of a monophonic pitch estimation. During the recording process detailed in [2], the gain of the microphone amplifiers was fixed to the same value for the whole process, which reduced the dynamic range of the recordings of the quieter instruments. This lead to problems with which we had to deal, in order to reduce the noise. In the paper we described the score-informed denoising procedure we applied to each track. A complete description of the dataset and the creation methodology, including the generation of the multi-microphone recordings, is presented in [1]. Please Acknowledge PHENICX-Anechoic in Academic Research Using this dataset When the present dataset is used for academic research, we would highly appreciate if scientific publications of works partly based on the PHENICX-Anechoic dataset quote the publications above. We are interested in knowing if you find our datasets useful! If you use our dataset please email us at mtg-info@upf.edu and tell us about your research. ~ https://www.upf.edu/web/mtg/phenicx-anechoic}
 }
 
+@article{misicAnalysisCPUGPU2016,
+  title = {Analysis of {{CPU}} and {{GPU}} Implementations of Convolution Reverb Effect},
+  author = {Misic, Marko and Nikolov, Dusan and Tomasevic, Milo},
+  date = {2016},
+  journaltitle = {Telfor Journal},
+  shortjournal = {Telfor},
+  volume = {8},
+  number = {2},
+  pages = {121--126},
+  issn = {1821-3251},
+  doi = {10.5937/telfor1602121M},
+  url = {https://scindeks.ceon.rs/Article.aspx?artid=1821-32511602121M},
+  urldate = {2026-03-05},
+  abstract = {Rapid development of modern central processing units (CPUs) and graphics processing units (GPUs) has allowed a significant increase in computing power for different engineering applications. Audio signal processing is an example of such a computationally demanding application. Fast Fourier Transform (FFT) is often a core part of these processing algorithms, and it is efficiently implemented on the CPUs and GPUs through available libraries. In this paper, we present an implementation of the convolution reverb effect using OpenMP and FFTW library on the CPU, and CUDA and cuFFT library on the GPU. Implemented effect is tested with the set of four different audio signals and ten impulse responses of different lengths. We observed speedups in the range of 2 to 3 times over CPU implementation. The results of the analysis are briefly discussed with emphasis on the benefits and drawbacks of using GPUs in such an application.},
+  langid = {english}
+}
+
 @inproceedings{nakamuraAcousticalSoundDatabase2000,
   title = {Acoustical {{Sound Database}} in {{Real Environments}} for {{Sound Scene Understanding}} and {{Hands-Free Speech Recognition}}},
   booktitle = {Proceedings of the {{Second International Conference}} on {{Language Resources}} and {{Evaluation}} ({{LREC}}'00)},
@@ -816,6 +858,17 @@
   date = {2015},
   abstract = {We evaluate a real-time multi-channel dereverberation method for the application to speech recognition with deep neural networks (DNN). The dereverberation method is based on modeling the reverberated signal as a mixture of a fully coherent direct path signal and a diffuse reverberation component, and estimating the coherentto-diffuse power ratio (CDR) from the spatial coherence of the signals. The method can operate in real-time, i.e., without requiring processing of entire utterances. We compare CDR estimators which are “blind”, i.e., do not require information about the direction of arrival (DOA) of the target signal, with estimators which make use of a DOA estimate. The impact of the dereverberation method on speech recognition accuracy with different DNN-based acoustic models is investigated with the REVERB challenge corpus and the Kaldi speech recognition toolkit.},
   langid = {english}
+}
+
+@inproceedings{siddiqOptimizationConvolutionReverberation2020,
+  title = {Optimization of {{Convolution Reverberation}}},
+  author = {Siddiq, Sadjad},
+  date = {2020},
+  issn = {2413-6689},
+  url = {https://www.dafx.de/paper-archive/details/Rj5F378RFBW38OU_AcbnDA},
+  urldate = {2026-03-05},
+  abstract = {Siddiq, S.: Optimization of Convolution Reverberation, 2020},
+  eventtitle = {International {{Conference}} on {{Digital Audio Effects}} ({{DAFx}})}
 }
 
 @online{SisnrScaleinvariantSignaltonoise,

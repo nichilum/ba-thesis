@@ -45,7 +45,7 @@ Another dataset of room impulse responses (RIR) was gathered, which was later in
 
 === Data Preprocessing
 
-To train our model on the dataset descibed in @data_collection a supervisory signal must be generated for each audio sample. In our case this augmentation is done through reverberation of the dry audio data.
+A supervised training approach (as explained in @supervised_learning) was chosen to train our model. Labeling was done automatically through reverberation of the dry audio samples included in the dataset described in @data_collection.
 
 #figure(caption: [Augmentation pipeline], raw-render(
   ```dot
@@ -75,10 +75,7 @@ To train our model on the dataset descibed in @data_collection a supervisory sig
   ),
 ))
 
-- explain why self supervised (see theoretical background)
-
-- sample rate: upscaling downscaling possible??
-- short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
+This synthetic labeling approach is similar in concept to self-supervised training. In computer vision tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
 
 ==== Reverberation
 
@@ -111,6 +108,10 @@ A first implementation was done using live... #TODO[]
 //     - most realistic and flexible but also most computationally expensive and not possible to do offline for our amount of data
 //     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
 //     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
+
+
+- sample rate: upscaling downscaling possible??
+- short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
 
 - AudioSet is 44.1kHz: 10790 files
   - theoretically not fully DRY audio

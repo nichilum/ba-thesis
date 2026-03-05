@@ -11,12 +11,13 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 
 - short historical overview and comparison over networks, deep learning and CNNs
 
-TCN: 
+TCN:
 - Describe Architecture
 - Usecases
 - Advantages and Disadvantages over CNNs and RNNs
 - look at description in https://www.researchgate.net/publication/360936572_An_enhanced_Conv-TasNet_model_for_speech_separation_using_a_speaker_distance-based_loss_function
-
+=== Supervised Learning<supervised_learning>
+=== Self-Supervised Learning<self_supervised>
 == LOSS
 - in general training of neural net with loss function:
   - partial derivatives, gradient, jacobi matrix (analytical)

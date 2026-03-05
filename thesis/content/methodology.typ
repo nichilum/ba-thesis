@@ -63,8 +63,8 @@ To train our model on the dataset descibed in @data_collection a supervisory sig
 
       dry  -> conv
       conv -> rev [constraint=false]
-      dry  -> model [style=dashed, label="dry input", constraint=false]
-      rev  -> model [label="supervisory signal"]
+      dry  -> model [style=dashed, label="target signal", constraint=false]
+      rev  -> model [label="input signal"]
     }
   ```,
   labels: (

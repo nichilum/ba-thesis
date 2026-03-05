@@ -7,6 +7,8 @@ In these cases, reverberation can significantly degrade speech intelligibility, 
 == TCN RNN CNN etc
 #leo
 
+The idea of autoencoders has been part of the historical landscape of neuralnetworks for decades (LeCun, 1987; Bourlard and Kamp, 1988; Hinton and Zemel,1994). @goodfellowDeepLearning2016
+
 - short historical overview and comparison over networks, deep learning and CNNs
 
 TCN: 

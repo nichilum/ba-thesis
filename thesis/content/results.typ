@@ -40,7 +40,7 @@
     table(
       columns: 3,
       align: (left, center, center),
-      [Network], [StoRM], [Conv-TasNet],
+      [*Network*], [StoRM], [Conv-TasNet],
       [*MSE*], v(stormCSV.mse), v(convtasnetCSV.mse),
       [*SI-SNR*], v(stormCSV.si_snr), v(convtasnetCSV.si_snr),
       [*PESQ-WB*], v(stormCSV.pesq_wb), v(convtasnetCSV.pesq_wb),

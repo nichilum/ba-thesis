@@ -9,11 +9,12 @@ In these cases, reverberation can significantly degrade speech intelligibility, 
 
 - short historical overview and comparison over networks, deep learning and CNNs
 
-TCN: 
+TCN:
 - Describe Architecture
 - Usecases
 - Advantages and Disadvantages over CNNs and RNNs
-
+=== Supervised Learning<supervised_learning>
+=== Self-Supervised Learning<self_supervised>
 == LOSS
 - in general training of neural net with loss function:
   - partial derivatives, gradient, jacobi matrix (analytical)

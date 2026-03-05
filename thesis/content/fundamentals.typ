@@ -15,6 +15,7 @@ TCN:
 - Describe Architecture
 - Usecases
 - Advantages and Disadvantages over CNNs and RNNs
+- look at description in https://www.researchgate.net/publication/360936572_An_enhanced_Conv-TasNet_model_for_speech_separation_using_a_speaker_distance-based_loss_function
 
 == LOSS
 - in general training of neural net with loss function:

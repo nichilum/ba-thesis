@@ -1,5 +1,11 @@
 #import "/thesis/utils/author.typ": *
 = Theoretical Background
+
+== Reverberation
+
+convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
+
+
 == Reverberation in Active Acoustics Systems
 - explain the theoretical background of coloration artifacts in live systems utilizing active acoustics when reverberation is present in a feedback loop
 

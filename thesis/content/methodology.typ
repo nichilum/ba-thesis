@@ -79,18 +79,18 @@ This synthetic labeling approach is similar in concept to self-supervised traini
 
 ==== Reverberation
 
-To provide the model with augmented audio signals two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
+To provide the model with reverberant audio signals two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
 
 The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2018:
 - convolutional
 - delay networks
 - computational acoustics
 
-Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Historically this comes at a higher computational cost and latency, although convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls to feed to our loss network (see @loss_network), making labeling of samples difficult.
+Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls, making labeling of samples which are fed to our loss network (see @loss_network) difficult.
 
-Parameter based reverberation, like delay networks are fast and require little memory, but require careful tuning to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to e.g. size and wetness controls that we can use for labeling.
+Parameter based reverberation, like delay networks are fast and require little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to e.g. size and wetness controls that we can use for labeling (see @loss_network).
 
-Finally, room simulations are also used for reverberating training data @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity or libraries like pyroomacoustics can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by th discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or Ray Tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable for our amount of data, as the runtime would be about 324 hours (cf. @dataset_split).
+In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity or libraries like pyroomacoustics can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_split).
 
 A first implementation was done using live... #TODO[]
 

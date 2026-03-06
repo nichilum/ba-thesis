@@ -52,36 +52,33 @@
   },
 )
 
-#let d(a, b) = {
+#let d(storm, tasnet, ylabel) = {
   lq.diagram(
     xaxis: (
       ticks: range(1, 3).zip(([StoRM], [Conv-TasNet])),
       subticks: none,
     ),
-    ylabel: "MSE",
+    ylabel: ylabel,
 
-    lq.boxplot(a, outliers: none, median: rgb(171, 105, 144)),
-    lq.boxplot(b, outliers: none, x: 2, median: rgb(171, 105, 144)),
+    lq.boxplot(storm, outliers: none, median: rgb(171, 105, 144)),
+    lq.boxplot(tasnet, outliers: none, x: 2, median: rgb(171, 105, 144)),
   )
 }
 
 #figure(
-  caption: [
-    Boxplot comparison of the MSE metric for the evaluation of dereverberation performance of diverse audio samples.
-  ],
-  lq.diagram(
-    xaxis: (
-      ticks: range(1, 3).zip(([StoRM], [Conv-TasNet])),
-      subticks: none,
-    ),
-    ylabel: "MSE",
-
-    lq.boxplot(stormCSV.mse, outliers: none, median: rgb(171, 105, 144)),
-    lq.boxplot(convtasnetCSV.mse, outliers: none, x: 2, median: rgb(171, 105, 144)),
-  ),
+  caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples.],
+  grid(
+    columns: 2,
+    column-gutter: 1cm,
+    row-gutter: .5cm,
+    align: right,
+    d(stormCSV.mse, convtasnetCSV.mse, "MSE"),
+    d(stormCSV.si_snr, convtasnetCSV.si_snr, "SI-SNR"),
+    d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"),
+    d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
+    d(stormCSV.odg, convtasnetCSV.odg, "ODG"),
+    d(stormCSV.di, convtasnetCSV.di, "DI"),
+  )
 )
 
-#figure(
-  caption: [],
-  d(stormCSV.si_snr, convtasnetCSV.si_snr)
-)
+#TODO[Think about outliers in boxplots (only show some?)]

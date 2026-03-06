@@ -32,3 +32,5 @@ TCN:
 - pemoq
 - correlation (is this a good metric for audio signals?)
   - we used it for loss
+
+== PEAQ<fun_peaq>

@@ -58,6 +58,8 @@
     //   longplural: "test procedure specifications",
     // ),
     RIR: "room impulse response",
+    ODG: "objective difference grade",
+    DI: "distortion index",
   )
 
   show: init-glossary.with(myGlossary)

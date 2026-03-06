@@ -45,9 +45,9 @@ Another dataset of room impulse responses (RIR) was gathered, which was later in
 
 === Data Preprocessing
 
-A supervised training approach (as explained in @supervised_learning) was chosen to train our model. Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
+A supervised training approach (as explained in @supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
-#figure(caption: [Augmentation pipeline], raw-render(
+#figure(caption: [Dereverberation Preprocessing Pipeline], raw-render(
   ```dot
     digraph pipeline {
       rankdir=LR
@@ -73,11 +73,45 @@ A supervised training approach (as explained in @supervised_learning) was chosen
     rev: [*Reverberant Audio*],
     model: [*Model Training*],
   ),
-))
+))<derev_process_pipeline>
+
+
+Additional labels used for the perceptual loss model (see @loss_network) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
+
+#figure(caption: [Perceptual Loss Preprocessing Pipeline], raw-render(
+  ```dot
+    digraph pipeline {
+      rankdir=LR
+      node [fontsize=10, style=filled, shape=box, rounded=true, width=2, height=0.4]
+      edge [fontsize=8]
+
+      dry   [fillcolor="white"]
+      rev   [fillcolor="white"]
+      model [fillcolor="white"]
+      peaq  [fillcolor="white"]
+
+      {rank=same; rev; dry; peaq}
+
+      dry  -> model [label="signal a", constraint=false]
+      dry -> rev
+      rev  -> model [label="signal b"]
+      rev -> model [style=dashed, label="wetness, size"]
+      rev -> peaq
+      dry -> peaq
+      peaq -> model [style=dashed, label="odg"]
+    }
+  ```,
+  labels: (
+    dry: [*Dry Audio*],
+    rev: [*Reverberant Audio*],
+    model: [*Model Training*],
+    peaq: [*PEAQ*],
+  ),
+))<percep_process_pipeline>
 
 This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in computer vision tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
 
-==== Reverberation
+==== Reverberation<preprocessing_reverberation>
 
 To provide the model with reverberant audio signals two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
 
@@ -135,20 +169,9 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 - reverb done with parameter reverb
   - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
 
-==== PEAQ
+==== PEAQ<preprocessing_peaq>
 
-- offline
-  - saved precomputed values for :
-    - "odg": odg, #sym.arrow nicht normiert
-    - "di": di, #sym.arrow nicht normiert
-
-
-- make data
-  - peaq (what implementation was used, namedrop authors for credebility)
-  - reverberation techniques @smithPhysicalAudioSignal2010
-  - upsampling to 44100 (and 48000 for peaq)
-  - used parameter reverb because of better size and wetness control
-
+As explained in @loss_network for every dry-reverberant-sample pair the PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with PEAQ.
 
 ==== Non-Silent Parts
 
@@ -189,6 +212,8 @@ Key takeaways:
 - di does it similarily but we cannot normalize it that well
 - si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
 - train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
+
+WE CAN STILL USE PEAQ: @delgadoCanWeStill2020 <\- compared to visqol pemo-q etc
 
 quality is here defined as:
 $ Q = "ODG"_"norm" dot (1 - "wet"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $

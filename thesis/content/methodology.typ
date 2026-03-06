@@ -94,13 +94,16 @@ Finally, room simulations are also used for reverberating training data @lemerci
 
 A first implementation was done using live... #TODO[]
 
-- two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
+// - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
   - first implementation was in memory
-    - both reverberation through RIRs and Parameter reverb were implemented
+    - reverberation through room simulations, RIRs and Parameter reverb were implemented
     - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
   - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
   - VST based parameter reverb is os dependent and make for a horrible workflow
-
+- live implementation as well as rir implementation for training of conv tasnet
+- reverb done with parameter reverb
+  - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
+  - 
 // - discuss ways considered to reverberate
 //   - convolution with RIRs (room impulse responses)
 //     - from open datasets like AIR @jeub09a
@@ -131,9 +134,7 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
-- live implementation as well as rir implementation for training of conv tasnet
-- reverb done with parameter reverb
-  - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
+
 
 ==== PEAQ
 

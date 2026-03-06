@@ -45,7 +45,7 @@ Another dataset of room impulse responses (RIR) was gathered, which was later in
 
 === Data Preprocessing
 
-A supervised training approach (as explained in @supervised_learning) was chosen to train our model. Labeling was done automatically through reverberation of the dry audio samples included in the dataset described in @data_collection.
+A supervised training approach (as explained in @supervised_learning) was chosen to train our model. Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
 #figure(caption: [Augmentation pipeline], raw-render(
   ```dot
@@ -75,7 +75,7 @@ A supervised training approach (as explained in @supervised_learning) was chosen
   ),
 ))
 
-This synthetic labeling approach is similar in concept to self-supervised training. In computer vision tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
+This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in computer vision tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
 
 ==== Reverberation
 

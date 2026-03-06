@@ -130,7 +130,7 @@ A first implementation was done using live processing in memory. All three appro
 
 After getting access to the RWTH Aachen CLAIX compute cluster, we pivoted to an offline dataset as compute time was of more importance than disk space. As mentioned parameter based reverberation was suited best for our own networks, due to the access to size and wetness controls.
 
-Specifically, we first used Valhalla Supermassive in VST3 format, which was later abandoned, as it lacked linux compatibility. We then chose a FreeVerb implementation @smithPhysicalAudioSignal2010 in the `pedalboard` Python package @sobotPedalboard2023.
+Specifically, we first used Valhalla Supermassive in VST3 format, which was later abandoned, as it lacked Linux compatibility. We then chose a FreeVerb implementation @smithPhysicalAudioSignal2010 in the `pedalboard` Python package @sobotPedalboard2023.
 
 // - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
 // - first implementation was in memory

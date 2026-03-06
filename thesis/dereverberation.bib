@@ -7,6 +7,18 @@
   organization = {Audio A/D Converters | Audio Components | Products | Asahi Kasei Microdevices (AKM)}
 }
 
+@article{allenImageMethodEfficiently1979,
+  title = {Image Method for Efficiently Simulating Small-Room Acoustics},
+  author = {Allen, Jont and Berkley, David},
+  date = {1979-04-01},
+  journaltitle = {The Journal of the Acoustical Society of America},
+  shortjournal = {The Journal of the Acoustical Society of America},
+  volume = {65},
+  pages = {943--950},
+  doi = {10.1121/1.382599},
+  abstract = {Image methods are commonly used for the analysis of the acoustic properties of enclosures. In this paper we discuss the theoretical and practical use of image techniques for simulating, on a digital computer, the impulse response between two points in a small rectangular room. The resulting impulse response, when convolved with any desired input signal, such as speech, simulates room reverberation of the input signal. This technique is useful in signal processing or psychoacoustic studies. The entire process is carried out on a digital computer so that a wide range of room parameters can be studied with accurate control over the experimental conditions. A FORTRAN implementation of this model has been included.}
+}
+
 @article{allenMultimicrophoneSignalprocessingTechnique1977,
   title = {Multimicrophone Signal-Processing Technique to Remove Room Reverberation from Speech Signals},
   author = {Allen, J. B. and Berkley, D. A. and Blauert, J.},
@@ -819,6 +831,13 @@
   keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
 }
 
+@thesis{schlechtFeedbackDelayNetworks2018,
+  title = {Feedback {{Delay Networks}} in {{Artificial Reverberation}} and {{Reverberation Enhancement}}},
+  author = {Schlecht, Sebastian},
+  date = {2018-02-05},
+  abstract = {In today's audio production and reproduction as well as in music performance practices it has become common practice to alter reverberation artificially through electronics or electro-acoustics. For music productions, radio plays, and movie soundtracks, the sound is often captured in small studio spaces with little to no reverberation to save real estate and to ensure a controlled environment such that the artistically intended spatial impression can be added during post-production. Spatial sound reproduction systems require flexible adjustment of artificial reverberation to the diffuse sound portion to help the reconstruction of the spatial impression. Many modern performance spaces are multi-purpose, and the reverberation needs to be adjustable to the desired performance style. Employing electro-acoustic feedback, also known as Reverberation Enhancement Systems (RESs), it is possible to extend the physical to the desired reverberation. These examples demonstrate a wide range of applications where reverberation is created and enhanced artificially employing signal processing techniques. A major challenge of designing artificial reverberators is the high complexity of the physical reverberation process. Even small office spaces of 40 m\textasciicircum 3 exhibit more than 10\textasciicircum 7 acoustic modes, in concert halls the number of acoustic modes can surpass 10\textasciicircum 9 in the audible range. The room geometry, as well as the interaction with the boundary materials, can be as well fairly complex. Whereas these complex considerations are mandatory for simulations of specific spaces, used for example for the acoustic and architectural planning of a concert venue, they are somewhat misleading in the realm of artistic applications. The focus on perceptually convincing artificial reverberation algorithms provides the freedom to make some simplifications to the generation process, leading to the recursive systems, which play a central role in this dissertation. Two specific formulations of recursive systems for artificial reverberation are considered: Firstly, Feedback Delay Networks (FDNs) which are built around multiple delays which are fed back to their inputs and by this mimic the recursive process of sound waves bouncing back and forth in an acoustic space. And secondly, RESs, which are installed in rooms to extend the physical reverberation via electro-acoustic feedback between microphones and loudspeakers. The main objective of artificial reverberators is to recreate and enhance room impulse responses while considering three aspects: i) accurate recreation of physical spaces; ii) delivering perceptually convincing spaces; and iii) efficiency of processing and parameterization. The primary goal of this dissertation is to achieve better control over the evolution of the artificial reverberation over time, namely the evolution of normal modes and reflections over time. The decay rate of normal modes most importantly determines the stability of the system, but also the perceptual quality of the artificial reverberation. For this purpose, existing network topologies for artificial reverberation are unified in the general FDN framework. For the FDN, an analytic formulation of the polynomial governing the recursive behavior is presented from which analytic constraints on the angular distribution of the decaying modes are derived. Lossless FDNs are commonly used as a design prototype for artificial reverberation algorithms for which all normal modes neither decay nor rise. The lossless property is dependent on the feedback matrix, which connects the output of a set of delays to their inputs, and the lengths of the delays. This work presents the most general class of feedback matrices which constitutes lossless FDNs regardless the lengths of the delays. As a secondary goal, the temporal features of impulse responses produced by FDNs, i.e., the number of echoes per time interval and its evolution over time, are analyzed. This so-called echo density is related to known measures of mixing time and their psychoacoustic correlates such as perception of the room size. It is shown that the echo density of FDNs follows a polynomial function, whereby the polynomial coefficients can be derived from the lengths of the delays for which an explicit method is given. The mixing time of impulse responses can be predicted from the echo density, and conversely, the desired mixing time can be achieved by a derived mean delay length. In the last part of this dissertation, a novel time-variant reverberation algorithm is introduced. By modulating the feedback matrix nearly continuously over time, an intricate pattern of concurrent amplitude modulations of the feedback paths evolves. It is demonstrated that the perceived quality of the decaying normal modes can be enhanced by the feedback matrix modulation. The same technique of time-varying feedback matrices is applied in multichannel sound systems to improve the system's stability. It is shown with a statistical approach that time-varying mixing matrices can achieve optimal stability improvement for a higher number of channels. A listening test demonstrates the improved quality of time-varying mixing matrices over comparable existing techniques.}
+}
+
 @inproceedings{schmidMeasuringJustNoticeable2024,
   title = {Measuring the {{Just Noticeable Difference}} for {{Audio Latency}}},
   booktitle = {Audio {{Mostly}} 2024 - {{Explorations}} in {{Sonic Cultures}}},
@@ -947,6 +966,19 @@
   langid = {english},
   pubstate = {prepublished},
   keywords = {Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
+}
+
+@book{vorlanderAuralizationFundamentalsAcoustics2008,
+  title = {Auralization: Fundamentals of Acoustics, Modelling, Simulation, Algorithms and Acoustic Virtual Reality},
+  shorttitle = {Auralization},
+  author = {Vorländer, Michael},
+  date = {2008},
+  edition = {1st ed},
+  publisher = {Springer},
+  location = {Berlin},
+  isbn = {978-3-540-48829-3},
+  pagetotal = {335},
+  keywords = {Psychoacoustics,Sound in virtual reality}
 }
 
 @online{watsonLearningFastSamplers2022,

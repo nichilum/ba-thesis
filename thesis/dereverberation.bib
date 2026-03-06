@@ -410,6 +410,14 @@
   organization = {Google}
 }
 
+@article{holtersGstPEAQOpenSource2015,
+  title = {{{GstPEAQ}} – an {{Open Source Implementation}} of the {{PEAQ Algorithm}}},
+  author = {Holters, Martin and Zã, Udo},
+  date = {2015},
+  abstract = {In 1998, the ITU published a recommendation for an algorithm for objective measurement of audio quality, aiming to predict the outcome of listening tests. Despite the age, today only one implementation of that algorithm meeting the conformance requirements exists. Additionally, two open source implementations of the basic version of the algorithm are available which, however, do not meet the conformance requirements. In this paper, yet another non-conforming open source implementation, GstPEAQ, is presented. However, it improves upon the previous ones by coming closer to conformance and being computationally more efficient. Furthermore, it implements not only the basic, but also the advanced version of the algorithm. As is also shown, despite the nonconformance, the results obtained computationally still closely resemble those of listening tests.},
+  langid = {english}
+}
+
 @inproceedings{hromadovaFrequencyResponseSmartphones2022,
   title = {Frequency {{Response}} of {{Smartphones}} at the {{Upper Limit}} of the {{Audible Range}}},
   author = {Hromadova, Veronika and Kasák, Peter and Brida, Peter and Jarina, Roman},
@@ -615,6 +623,14 @@
   urldate = {2026-01-13},
   abstract = {Signal extraction from a single-channel mixture with additional undesired signals is most commonly performed using time-frequency (TF) masks. Typically, the mask is estimated with a deep neural network (DNN), and element-wise applied to the complex mixture short-time Fourier transform (STFT) representation to perform the extraction. Ideal mask magnitudes are zero for solely undesired signals in a TF bin and undefined for total destructive interference. Usually, masks have an upper bound to provide well-defined DNN outputs at the cost of limited extraction capabilities. We propose to estimate with a DNN a complex TF filter for each mixture TF bin which maps an STFT area in the respective mixture to the desired TF bin to address destructive interference in mixture TF bins. The DNN is optimized by minimizing the error between the extracted and the ground-truth desired signal allowing to learn the TF filters without having to specify ground-truth TF filters. We compare our approach with complex and real-valued TF masks by separating speech from a variety of different sound and noise classes from the Google AudioSet corpus. We also process the mixture STFT with notch-filters and zero whole time-frames, to simulate packet-loss during transmission, to demonstrate the reconstruction capabilities of our approach. The proposed method outperformed the baselines, especially when notch-filters and time-frame zeroing were applied.},
   keywords = {Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
+}
+
+@book{mannallRoomAcoustiCOpensourceRoom2025,
+  title = {{{RoomAcoustiC}}++: {{An}} Open-Source Room Acoustic Model for Real-Time Audio Simulations},
+  shorttitle = {{{RoomAcoustiC}}++},
+  author = {Mannall, Joshua and Savioja, Lauri and Neidhardt, Annika and Mason, Russell and Sena, Enzo},
+  date = {2025-08-27},
+  abstract = {An open-source C++ library named RoomAcoustiC++: Real-time Acoustics Library for real-time room acoustic modelling is introduced that implements a hybrid geometric acoustic and feedback delay network model. The geometric acoustic component uses the image edge model to locate geometry-dependent early specular reflections and edge diffraction. The feedback delay network models late reverberation for a target reverberation time. The model is capable of a dynamic simulation including moving geometry, sources and listener and changing wall absorption, with binaural spatialisation over headphones and customisable head-related transfer functions using the 3D Tune-In toolbox. A comparison with existing closed-source and open-source projects is presented. This found that many state-of-the-art room acoustic models for real-time applications are closed-source, limiting reproducibility. RoomAcoustiC++ offers an improved room acoustic model compared to existing open-source projects. The library was validated against physical measurements from the Benchmark for Room Acoustic Simulations (BRAS) database. An analysis of the real-time performance shows that the software is capable of binaural rendering for scenes with occluding geometries and multiple sources.}
 }
 
 @inproceedings{matthewdaviesTemporalConvolutionalNetworks2019,
@@ -831,6 +847,23 @@
   keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
 }
 
+@inproceedings{scheiblerPyroomacousticsPythonPackage2018,
+  title = {Pyroomacoustics: {{A Python}} Package for Audio Room Simulations and Array Processing Algorithms},
+  shorttitle = {Pyroomacoustics},
+  booktitle = {2018 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
+  author = {Scheibler, Robin and Bezzam, Eric and Dokmanić, Ivan},
+  date = {2018-04},
+  eprint = {1710.04196},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  pages = {351--355},
+  doi = {10.1109/ICASSP.2018.8461310},
+  url = {http://arxiv.org/abs/1710.04196},
+  urldate = {2026-03-06},
+  abstract = {We present pyroomacoustics, a software package aimed at the rapid development and testing of audio array processing algorithms. The content of the package can be divided into three main components: an intuitive Python object-oriented interface to quickly construct different simulation scenarios involving multiple sound sources and microphones in 2D and 3D rooms; a fast C implementation of the image source model for general polyhedral rooms to efficiently generate room impulse responses and simulate the propagation between sources and receivers; and finally, reference implementations of popular algorithms for beamforming, direction finding, and adaptive filtering. Together, they form a package with the potential to speed up the time to market of new algorithms by significantly reducing the implementation overhead in the performance evaluation step.},
+  keywords = {Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing}
+}
+
 @thesis{schlechtFeedbackDelayNetworks2018,
   title = {Feedback {{Delay Networks}} in {{Artificial Reverberation}} and {{Reverberation Enhancement}}},
   author = {Schlecht, Sebastian},
@@ -910,6 +943,20 @@
   isbn = {978-0-9745607-2-4},
   langid = {english},
   pagetotal = {803}
+}
+
+@software{sobotPedalboard2023,
+  title = {Pedalboard},
+  author = {Sobot, Peter},
+  date = {2023-04-10},
+  doi = {10.5281/ZENODO.7817839},
+  url = {https://zenodo.org/record/7817839},
+  urldate = {2026-03-06},
+  abstract = {{$<$}code{$>$}pedalboard{$<$}/code{$>$} is a Python library for working with audio: reading, writing, adding effects, and more. It supports most popular audio file formats and a number of common audio effects out of the box, and also allows the use of VST3® and Audio Unit formats for third-party plugins. {$<$}code{$>$}pedalboard{$<$}/code{$>$} was built by Spotify's Audio Intelligence Lab to enable using studio-quality audio effects from within Python and TensorFlow. Internally at Spotify, {$<$}code{$>$}pedalboard{$<$}/code{$>$} is used for data augmentation to improve machine learning models and to help power features like Spotify's AI DJ. {$<$}code{$>$}pedalboard{$<$}/code{$>$} also helps in the process of content creation, making it possible to add effects to audio without using a Digital Audio Workstation.},
+  langid = {english},
+  organization = {Zenodo},
+  version = {0.7.3},
+  keywords = {audio,audio-processing,audio-unit,juce,python,vst}
 }
 
 @online{TemporalConvolutionalNetworks,

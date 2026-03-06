@@ -90,20 +90,24 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 
 Parameter based reverberation, like delay networks are fast and require little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to e.g. size and wetness controls that we can use for labeling (see @loss_network).
 
-In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity or libraries like pyroomacoustics can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_split).
+In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_split).
 
-A first implementation was done using live... #TODO[]
+A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangable framework. Using this the original Conv-TasNet dataloader was adjusted to use the @RIR implementation.
+
+After getting access to the RWTH Aachen CLAIX compute cluster, we pivoted to an offline dataset as compute time was of more importance than disk space. As mentioned parameter based reverberation was suited best for our own networks, due to the access to size and wetness controls.
+
+Specifically, we first used Valhalla Supermassive in VST3 format, which was later abandoned, as it lacked linux compatibility. We then chose a FreeVerb implementation @smithPhysicalAudioSignal2010 in the `pedalboard` Python package @sobotPedalboard2023.
 
 // - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
-  - first implementation was in memory
-    - reverberation through room simulations, RIRs and Parameter reverb were implemented
-    - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
-  - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
-  - VST based parameter reverb is os dependent and make for a horrible workflow
-- live implementation as well as rir implementation for training of conv tasnet
-- reverb done with parameter reverb
-  - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
-  - 
+// - first implementation was in memory
+//   - reverberation through room simulations, RIRs and Parameter reverb were implemented
+//   - using this the original conv tasnet dataloader was adjusted to use the in memory RIR implementation
+// - after getting access to online compute (with TB+ space) we ditched in memory approach as training compute time was of more importance
+// - VST based parameter reverb is os dependent and make for a horrible workflow
+// - live implementation as well as rir implementation for training of conv tasnet
+// - reverb done with parameter reverb
+//   - from pedalboard (FreeVerb implementation) @smithPhysicalAudioSignal2010
+
 // - discuss ways considered to reverberate
 //   - convolution with RIRs (room impulse responses)
 //     - from open datasets like AIR @jeub09a

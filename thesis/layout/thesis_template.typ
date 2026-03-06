@@ -132,8 +132,10 @@
 
   let theme-a = (
     section: (title, body) => {
-      heading(numbering: none, title)
-      v(1em)
+      // heading(numbering: none, title)
+      text(font: fonts.body, 1.5em, weight: 700, "Glossary")
+      v(15mm)
+      // v(1em)
       body
     },
     group: (name, index, total, body) => {

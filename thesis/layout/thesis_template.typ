@@ -7,6 +7,7 @@
 #import "/thesis/utils/print_page_break.typ": *
 #import "/thesis/layout/fonts.typ": *
 #import "/thesis/utils/diagram.typ": in-outline
+#import "/thesis/glossar.typ": glossaryContent
 
 #import "@preview/glossy:0.9.0": *
 
@@ -36,33 +37,7 @@
 
   // pagebreak()
 
-  let myGlossary = (
-    // html: (
-    //   short: "HTML",
-    //   long: "Hypertext Markup Language",
-    //   description: "A standard language for creating web pages",
-    //   group: "Web",
-    // ),
-    // css: (
-    //   short: "CSS",
-    //   long: "Cascading Style Sheets",
-    //   description: "A stylesheet language used for describing the presentation of a document",
-    //   group: "Web",
-    // ),
-    // tps: (
-    //   short: "TPS",
-    //   long: "test procedure specification",
-    //   description: "A formal document describing test steps and expected results",
-    //   // Optional: Override automatic pluralization
-    //   plural: "TPSes",
-    //   longplural: "test procedure specifications",
-    // ),
-    RIR: "room impulse response",
-    ODG: "objective difference grade",
-    DI: "distortion index",
-  )
-
-  show: init-glossary.with(myGlossary)
+  show: init-glossary.with(glossaryContent)
 
   titlepage(
     title: title,

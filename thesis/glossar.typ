@@ -1,0 +1,25 @@
+#let glossaryContent = (
+  // html: (
+  //   short: "HTML",
+  //   long: "Hypertext Markup Language",
+  //   description: "A standard language for creating web pages",
+  //   group: "Web",
+  // ),
+  // css: (
+  //   short: "CSS",
+  //   long: "Cascading Style Sheets",
+  //   description: "A stylesheet language used for describing the presentation of a document",
+  //   group: "Web",
+  // ),
+  // tps: (
+  //   short: "TPS",
+  //   long: "test procedure specification",
+  //   description: "A formal document describing test steps and expected results",
+  //   // Optional: Override automatic pluralization
+  //   plural: "TPSes",
+  //   longplural: "test procedure specifications",
+  // ),
+  RIR: "room impulse response",
+  ODG: "objective difference grade",
+  DI: "distortion index",
+)

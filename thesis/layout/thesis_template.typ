@@ -9,7 +9,7 @@
 #import "/thesis/utils/diagram.typ": in-outline
 #import "/thesis/glossar.typ": glossaryContent
 
-#import "@preview/glossy:0.9.0": *
+#import "/thesis/glossy/lib.typ": *
 
 #let thesis(
   title: "",
@@ -130,63 +130,13 @@
   v(2.4fr)
   pagebreak()
 
-  let theme-a = (
-    section: (title, body) => {
-      // heading(numbering: none, title)
-      text(font: fonts.body, 1.5em, weight: 700, "Glossary")
-      v(15mm)
-      // v(1em)
-      body
-    },
-    group: (name, index, total, body) => {
-      if name != "" and total > 1 {
-        v(1.5em)
-        align(left, text(weight: "bold", size: 1.2em, name))
-        v(0.75em)
-        line(length: 100%, stroke: 0.5pt)
-        v(0.75em)
-      }
-      body
-    },
-    entry: (entry, index, total) => {
-      let short-display = text(weight: "bold", entry.short)
-      let long-display = if entry.long == none {
-        []
-      } else {
-        [. #entry.long]
-      }
-
-      let description = if entry.description == none {
-        []
-      } else {
-        [. #entry.description]
-      }
-
-      block(
-        below: 1em,
-        text(
-          size: 0.95em,
-          {
-            grid(
-              columns: (1fr, auto),
-              gutter: 0.75em,
-              [#short-display#long-display#description#entry.label], text(fill: rgb("#666666"), entry.pages.join(", ")),
-            )
-          },
-        ),
-      )
-    },
-  )
-
   glossary(
     title: "Glossary", // Optional: defaults to Glossary theme:
-    theme: theme-a,
     sort: true, // Optional: whether or not to sort the glossary
     ignore-case: false, // Optional: ignore case when sorting terms
     show-all: false, // Optional; Show all terms even if unreferenced
   )
   pagebreak()
-
 
   // Main body. Reset page numbering.
   set page(numbering: "1")

@@ -16,7 +16,7 @@
   (
     "ids": input.at(0).slice(1),
     "mse": input.at(1).slice(1).map(d => float(d)).sorted(key: it => it),
-    "si_snr": input.at(2).slice(1).map(d => float(d)).sorted(key: it => it),
+    "si_snr": input.at(2).slice(1).map(d => float(d) * -1).sorted(key: it => it),
     "pesq_wb": input.at(3).slice(1).map(d => float(d)).filter(e => not e.is-nan()).sorted(key: it => it),
     "pesq_nb": input.at(4).slice(1).map(d => float(d)).filter(e => not e.is-nan()).sorted(key: it => it),
     "odg": input.at(5).slice(1).map(d => float(d)).filter(e => not e.is-nan()).sorted(key: it => it),
@@ -25,7 +25,7 @@
 }
 
 
-#let v(array) = [#calc.round(arrayAvg(array), digits: 2) #sym.plus.minus  #calc.round(arrayStd(array), digits: 2)]
+#let v(array, digits: 2, std_digits: 2) = [#calc.round(arrayAvg(array), digits: digits) #sym.plus.minus  #calc.round(arrayStd(array), digits: std_digits)]
 
 #let stormCSV = loadAnalysisCSV("../data/export20260204-125026.csv")
 #let convtasnetCSV = loadAnalysisCSV("../data/export20260205-120712.csv")
@@ -41,7 +41,7 @@
       columns: 3,
       align: (left, center, center),
       [*Network*], [StoRM], [Conv-TasNet],
-      [*MSE*], v(stormCSV.mse), v(convtasnetCSV.mse),
+      [*MSE*], v(stormCSV.mse, digits: 5, std_digits: 3), v(convtasnetCSV.mse, digits: 5, std_digits: 3),
       [*SI-SNR*], v(stormCSV.si_snr), v(convtasnetCSV.si_snr),
       [*PESQ-WB*], v(stormCSV.pesq_wb), v(convtasnetCSV.pesq_wb),
       [*PESQ-NB*], v(stormCSV.pesq_nb), v(convtasnetCSV.pesq_nb),
@@ -51,6 +51,12 @@
     )
   },
 )
+
+- high std in some metrics, especially in SISNR and MSE
+- overall low odg and di
+- low-ish pesq score
+- good SISNR score, but high std
+- _compare metrics to storm and convtasnet paper metrics with speech-samples_
 
 #let d(storm, tasnet, ylabel) = {
   lq.diagram(

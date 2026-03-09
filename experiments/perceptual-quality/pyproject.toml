@@ -23,4 +23,6 @@ dependencies = [
     "statsmodels>=0.14.6",
     "pydub>=0.25.1",
     "audioop-lts>=0.2.2",
+    "torchcodec>=0.10.0",
+    "pyfar>=0.7.4",
 ]

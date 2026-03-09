@@ -1,0 +1,6 @@
+Checkpoint : checkpoints/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848.ckpt
+Input dir  : testing_dataset/input
+Files      : 9
+
+SI-SNR output (dB) : mean=+10.06  std=5.14  min=+4.19  max=+22.36
+SI-SNR Δ (dB)      : mean=+5.24  std=2.40  min=+2.53  max=+9.17

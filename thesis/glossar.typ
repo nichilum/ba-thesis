@@ -19,7 +19,86 @@
   //   plural: "TPSes",
   //   longplural: "test procedure specifications",
   // ),
-  RIR: "room impulse response",
-  ODG: "objective difference grade",
-  DI: "distortion index",
+  RIR: (
+    short: "RIR",
+    long: "room impulse response",
+    group: "Acoustics",
+  ),
+  DCASE: (
+    short: "DCASE",
+    long: "Detection and Classification of Acoustic Scenes and Events",
+    group: "Acoustics",
+  ),
+  AIR: (
+    short: "AIR",
+    long: "Aachen Impulse Response",
+    group: "Acoustics",
+  ),
+  // Neural Networks
+  TCN: (
+    short: "TCN",
+    long: "temporal convolutional network",
+    group: "Neural Networks",
+  ),
+  RNN: (
+    short: "RNN",
+    long: "recurrent neural network",
+    group: "Neural Networks",
+  ),
+  CNN: (
+    short: "CNN",
+    long: "convolutional neural network",
+    group: "Neural Networks",
+  ),
+  LLM: (
+    short: "LLM",
+    long: "large language model",
+    group: "Neural Networks",
+  ),
+  CV: (
+    short: "CV",
+    long: "computer vision",
+    group: "Neural Networks",
+  ),
+  // Metrics
+  SI-SNR: (
+    short: "SI-SNR",
+    long: "scale-invariant signal-to-noise ratio",
+    group: "Metrics",
+  ),
+  ODG: (
+    short: "ODG",
+    long: "objective difference grade",
+    group: "Metrics",
+  ),
+  DI: (
+    short: "DI",
+    long: "distortion index",
+    group: "Metrics",
+  ),
+  PESQ: (
+    short: "PESQ",
+    long: "Perceptual Evaluation of Speech Quality",
+    group: "Metrics",
+  ),
+  PEAQ: (
+    short: "PEAQ",
+    long: "Perceptual Evaluation of Audio Quality",
+    group: "Metrics",
+  ),
+  ViSQOL: (
+    short: "ViSQOL",
+    long: "Virtual Speech Quality Objective Listener",
+    group: "Metrics",
+  ),
+  MSE: (
+    short: "MSE",
+    long: "mean squared error",
+    group: "Metrics",
+  ),
+  MAE: (
+    short: "MAE",
+    long: "mean absolute error",
+    group: "Metrics",
+  ),
 )

@@ -7,12 +7,12 @@
 
 == Dataset
 
-Other machine learning fields mainly computer vision (CV) and large language models (LLMs) have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 namely mC4, MassiveText or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.
+Other machine learning fields mainly @CV and @LLM have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 namely mC4, MassiveText or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.
 
 As shown in @related_work previous work in the field of audio dereverberation has generally focused on speech signals. As this limitation is the same for many audio based machine learning problems (e.g. multi speaker seperation, noise cancellation and speech to text) many of the most used large audio datasets, like LibriSpeech or WSJ0, consist only of speech signals which are reduced in bandwidth as well as language diversity and recored in anechoic conditions @garofolojohns.CSRIWSJ0Complete2007 @panayotovLibrispeechASRCorpus2015 @richterEARSAnechoicFullband2024.
 
 Datasets of diverse audio signals have emerged from audio classification problems. Early examples being private self collected datasets of indivdual researchers @woodardModelingClassificationNatural1992 @ellisDetectingAlarmSounds2001.
-Over the recent years interest in audio classification has surged as can be seen in the amount of entries in the "Detection and Classification of Acoustic Scenes and Events" (DCASE) challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The DCASE has also been a major influence in the increase of publically available datasets as prior to the DCASE challenges only a limited amount were available most notably RWCP @smithPhysicalAudioSignal2010.
+Over the recent years interest in audio classification has surged as can be seen in the amount of entries in the @DCASE challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The @DCASE has also been a major influence in the increase of publically available datasets as prior to the @DCASE challenges only a limited amount were available most notably RWCP @smithPhysicalAudioSignal2010.
 
 The current largest dataset of diverse audio signals is Google's fittingly named AudioSet containing over 5,800 hours of audio recordings with 527 classes
 of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building on top of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube. Both datasets are human-labeled while AudioSet specifies that sounds are human-verified and classes are suggested using YouTube metadata.
@@ -33,7 +33,7 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
 
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
 
-Another dataset of room impulse responses (RIR) was gathered, which was later in part used for reverberation purposes. The RIRs were collected from the Aachen Impulse Response (AIR) dataset @jeub09a as well as from the "Hybrid Reverb" plugin in Ableton Live 12 #footnote[https://www.ableton.com/en/packs/hybrid-reverb/]. The AIR dataset contains 433 individual RIRs with different acoustical properties, such as reverberation time and room volume.
+Another dataset of @RIR:pl was gathered, which was later in part used for reverberation purposes. The @RIR:pl were collected from the @AIR dataset @jeub09a as well as from the "Hybrid Reverb" plugin in Ableton Live 12 #footnote[https://www.ableton.com/en/packs/hybrid-reverb/]. The @AIR dataset contains 433 individual @RIR:pl with different acoustical properties, such as reverberation time and room volume.
 
 
 // - RiR for TASNet training @jeub09a
@@ -109,7 +109,7 @@ Additional labels used for the perceptual loss model (see @loss_network) were sa
   ),
 ))<percep_process_pipeline>
 
-This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in computer vision tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
+This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in @CV:long tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
 
 ==== Reverberation<preprocessing_reverberation>
 
@@ -176,7 +176,7 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 
 ==== PEAQ<preprocessing_peaq>
 
-As explained in @loss_network for every dry-reverberant-sample pair the PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with PEAQ.
+As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with @PEAQ.
 
 ==== Non-Silent Parts
 

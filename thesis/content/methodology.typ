@@ -210,6 +210,25 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
   image("/experiments/perceptual-quality/plots/data_metrics_test_6236_15_85_percentile.svg"),
 )
 
+#figure(
+  caption: [Metrics usable as loss functions analysed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
+)
+
+#TODO[
+  - Show \<15 and >85 data in e.g. grey
+  - MSE: shit, HIGH DEVIATION FROM REGRESSION = bad
+  - MAE: eh, ok for wetness, although extreme FEATHERING/spread out
+  - corr: very good for wetness, weird range 0.8 is still technically correlating
+  - PUT QUALTIY IN ANOTHER PLOT
+    - make argument for why first quality score was using peaq (just because it should theoretically be the best)
+    - also storm was using pesq: ALSO ADD PESQ TO PLOT FOR COMPARISON WITH PEAQ
+    - then make argument why we removed PEAQ from quality score: in actuallity "bad" performance
+    - SISNR is hard to normalize which is theoretically not needed for loss function, value range makes sense here (unlike corr or ODG norm)
+  - maybe a plot for PESQ for only speech signals for reverberation
+  - PEAQ is just not a good metric for reverberation
+]
+
 Key takeaways:
 - wetness and size are objective measurements which we know to be true: $lim_("wet"arrow 1)$ and $lim_("size"arrow 1)$ means the signal is badly reverberated and $lim_("wet"arrow 0)$ and $lim_("size"arrow 0)$ means the signal is dereverberated
 - correlation, mae and mse are bad loss functions as they do not accurately predict wetness or size values

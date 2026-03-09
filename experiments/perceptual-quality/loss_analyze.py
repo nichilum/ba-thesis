@@ -116,7 +116,23 @@ def main():
             ax = axes[row_idx, col_idx]
             y_vals = [float(r[metric]) for r in sorted_data]
 
+            p15 = np.percentile(y_vals, 15)
+            p85 = np.percentile(y_vals, 85)
+            y_min, y_max = min(y_vals), max(y_vals)
+
             ax.grid(linewidth=0.7)
+
+            sns.kdeplot(
+                x=x_vals,
+                y=y_vals,
+                cmap="Greys",
+                fill=True,
+                clip=((0, 1), (y_min, y_max)),
+                cut=5,
+                thresh=0,
+                levels=15,
+                ax=ax,
+            )
 
             sns.kdeplot(
                 x=x_vals,
@@ -125,7 +141,7 @@ def main():
                 fill=True,
                 clip=(
                     (0, 1),
-                    (np.percentile(y_vals, 15), np.percentile(y_vals, 85)),
+                    (p15, p85),
                 ),
                 cut=5,
                 thresh=0,

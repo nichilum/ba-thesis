@@ -68,7 +68,7 @@ def main():
             "wetness": wetness,
             "odg": odg_normalized,
             "di": map_obj["di"],
-            "sisnr": si_snr(test_audio, ref_audio),
+            "sisnr": -si_snr(test_audio, ref_audio),
             "mse": metrics["mse"],
             "mae": metrics["mae"],
             "correlation": metrics["correlation"],
@@ -229,4 +229,5 @@ def analyze_mask():
 
 
 if __name__ == "__main__":
-    analyze_mask()
+    # analyze_mask()
+    main()

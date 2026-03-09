@@ -82,3 +82,16 @@
 )
 
 #TODO[Think about outliers in boxplots (only show some?)]
+
+#figure(
+  caption: [],
+  image("../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png")
+)
+
+- gating effect
+- adds highs in some examples
+  - makes sense because of "learning" at 44.1 kHz
+  - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
+  - discussion: maybe reverberating at 44.1 kHz would have made sense
+- if the input signal is not so reverberant, the output only gets dereverberated very little
+- quality of dereverberation is highly dependent on the quality of the input signal

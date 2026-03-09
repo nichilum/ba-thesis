@@ -30,9 +30,7 @@ class DereverberationDataset(Dataset):
         reverb_audio = self.load_audio(self.data[idx]["reverberant_path"])
         original_audio = self.load_audio(self.data[idx]["original_path"])
 
-        reverb_audio, original_audio, mask = self.trim_to_longest_nonsilent(
-            reverb_audio, original_audio
-        )
+        mask = self.trim_to_longest_nonsilent(reverb_audio)
 
         if reverb_audio.shape[0] > self.segment_length:
             start = random.randint(0, reverb_audio.shape[0] - self.segment_length)
@@ -63,11 +61,9 @@ class DereverberationDataset(Dataset):
             waveform = torchaudio.functional.resample(waveform, sr, self.sample_rate)
             waveform = waveform.squeeze(0)
 
-        return waveform  # raw, no trimming here anymore
+        return waveform
 
-    def trim_to_longest_nonsilent(
-        self, reverb_waveform: torch.Tensor, dry_waveform: torch.Tensor
-    ):
+    def trim_to_longest_nonsilent(self, reverb_waveform: torch.Tensor):
         pcm = (reverb_waveform.numpy() * 32767).astype(np.int16)
         audio_segment = AudioSegment(
             pcm.tobytes(),
@@ -82,12 +78,10 @@ class DereverberationDataset(Dataset):
             silence_thresh=self.silence_thresh,
         )
 
-        # Fall back to all-ones mask if nothing detected (very quiet file)
         if not nonsilent_ranges:
             mask = torch.ones(reverb_waveform.shape[0], dtype=torch.float32)
-            return reverb_waveform, dry_waveform, mask
+            return mask
 
-        # Build mask from all non-silent ranges, no cropping
         mask = torch.zeros(reverb_waveform.shape[0], dtype=torch.float32)
         for start_ms, end_ms in nonsilent_ranges:
             start_sample = int(start_ms / 1000 * self.sample_rate)
@@ -96,4 +90,4 @@ class DereverberationDataset(Dataset):
             )
             mask[start_sample:end_sample] = 1.0
 
-        return reverb_waveform, dry_waveform, mask
+        return mask

@@ -30,7 +30,8 @@ class PerceptualDataset(Dataset):
 
         odg_normalized = np.clip((odg + 4.0) / 4.0, 0, 1)
 
-        quality = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
+        # quality = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
+        quality = 1 - 0.6 * wetness - 0.4 * size
         quality = np.clip(quality, 0, 1)
 
         return {

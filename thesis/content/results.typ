@@ -52,6 +52,8 @@
   },
 )
 
+#TODO[Spectogram of our output (storm and convtasnet) for audioset samples]
+
 - high std in some metrics, especially in SISNR and MSE
 - overall low odg and di
 - low-ish pesq score

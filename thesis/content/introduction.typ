@@ -59,7 +59,15 @@ We adress several open challenges in this thesis. First, it is unclear how well 
 
 == Objectives
 // Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
-The central objective of this thesis is therefore to investigate whether deep-learning-based dereverberation methods can be designed to operate in real time while maintaining perceptually convincing audio quality for a wide range of audio signals. This includes comparing time-domain and frequency-domain neural network approaches by evaluating their qualitative performance and analyzing their suitability for low-latency, real-time applications as well as assessing the qualitative performance impact of different metrics for use as loss functions.
+
+The central objective of this thesis is to explore deep-learning-based dereverberation methods. As our primary question we ask whether a model can be designed to operate in real-time while maintaining perceptually convincing audio quality for a wide range of audio signals including music, speech and other noises (e.g. vehicle or animal sounds). Solutions for multiple performance constraints are surveyed mainly the dataset, domain and loss function.
+
+The dataset processing and curation process is discussed regarding bias, variance and sample quality.
+
+Time-domain and frequency-domain neural network approaches are investigated by evaluating their qualitative performance and analyzing their suitability for low-latency, real-time applications through comparison of domain specific literature and our own neural network implementations.
+
+The performance of different quality metrics is assessed and their qualitative performance for use as loss functions examined leading to our own implementation of a loss neural network.
+
 
 // == Outline
 //   Describe the outline of your thesis

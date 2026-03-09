@@ -2,6 +2,8 @@
 
 
 - mask multiply change to other operation??
+- validate pydub on node
+- rewrite perceptual quality to only use size and wetness
 
 ## General Ideas
 

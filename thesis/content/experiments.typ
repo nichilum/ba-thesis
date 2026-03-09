@@ -13,7 +13,7 @@
   - original loss function (SI-SNR) only resulted in no convergence (stayed negative) and thus unusable results
   - switched SI-SNR loss to MSE loss which resulted in convergence and usable results
   - show training and validation loss plots
-  - show some example predictions (spectrograms and audio)
+  - show some example predictions (spectrograms and audio) in results?!
 
 #import "@preview/neural-netz:0.3.0": draw-network
 

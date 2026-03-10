@@ -4,6 +4,9 @@
 = Implementation & Experimental Setup
 
 == Conv-TasNet for diverse audio dereverberation
+
+
+
 - no proper weights for training available
   - I forgot the proper reasoning why we did not use weights available on huggingsface and google drive (linked on one github repo)
     - only for speaker seperation
@@ -16,6 +19,336 @@
   - show some example predictions (spectrograms and audio) in results?!
 
 #import "@preview/neural-netz:0.3.0": draw-network
+
+== PerceptualQualityNet Architecture
+
+
+// ── Main backbone ──────────────────────────────────────────────────────────
+#draw-network(
+  (
+    // ── Input ──────────────────────────────────────────────────────────────
+    (
+      type: "input",
+      image: none,
+      height: 8,
+      depth: 1,
+      label: "Audio",
+      name: "audio",
+    ),
+
+    // ── MelSpectrogram ─────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.5,
+      height: 8,
+      depth: 2,
+      fill: rgb("#9B59B6"),
+      opacity: 0.85,
+      label: "MelSpec",
+      name: "mel",
+      offset: 1.5,
+      legend: "Feature Extractor (frozen)",
+    ),
+
+    // ── BN0 ────────────────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.3,
+      height: 8,
+      depth: 5,
+      fill: rgb("#F39C12"),
+      opacity: 0.85,
+      label: "BN0",
+      name: "bn0",
+      offset: 1.5,
+      legend: "Batch Normalization",
+    ),
+
+    // ── Conv Block 1 ───────────────────────────────────────────────────────
+    (
+      type: "conv",
+      widths: (0.4, 0.4),
+      height: 7,
+      depth: 7,
+      channels: (1, 64),
+      label: "CB1\n1→64",
+      name: "cb1",
+      offset: 1.8,
+      show-relu: true,
+    ),
+    (
+      type: "pool",
+      height: 3.5,
+      depth: 3.5,
+      label: "Avg\n2×2",
+      name: "pool1",
+    ),
+
+    // ── Conv Block 2 ───────────────────────────────────────────────────────
+    (
+      type: "conv",
+      widths: (0.4, 0.4),
+      height: 6,
+      depth: 6,
+      channels: (64, 128),
+      label: "CB2\n64→128",
+      name: "cb2",
+      offset: 1.5,
+      show-relu: true,
+    ),
+    (
+      type: "pool",
+      height: 3,
+      depth: 3,
+      label: "Avg\n2×2",
+      name: "pool2",
+    ),
+
+    // ── Conv Block 3 ───────────────────────────────────────────────────────
+    (
+      type: "conv",
+      widths: (0.4, 0.4),
+      height: 5,
+      depth: 5,
+      channels: (128, 256),
+      label: "CB3\n128→256",
+      name: "cb3",
+      offset: 1.5,
+      show-relu: true,
+    ),
+    (
+      type: "pool",
+      height: 2.5,
+      depth: 2.5,
+      label: "Avg\n2×2",
+      name: "pool3",
+    ),
+
+    // ── Conv Block 4 ───────────────────────────────────────────────────────
+    (
+      type: "conv",
+      widths: (0.4, 0.4),
+      height: 4,
+      depth: 4,
+      channels: (256, 512),
+      label: "CB4\n256→512",
+      name: "cb4",
+      offset: 1.5,
+      show-relu: true,
+    ),
+    (
+      type: "pool",
+      height: 2,
+      depth: 2,
+      label: "Avg\n2×2",
+      name: "pool4",
+    ),
+
+    // ── Conv Block 5 ───────────────────────────────────────────────────────
+    (
+      type: "conv",
+      widths: (0.4, 0.4),
+      height: 3,
+      depth: 3,
+      channels: (512, 1024),
+      label: "CB5\n512→1024",
+      name: "cb5",
+      offset: 1.5,
+      show-relu: true,
+    ),
+    (
+      type: "pool",
+      height: 1.5,
+      depth: 1.5,
+      label: "Avg\n2×2",
+      name: "pool5",
+    ),
+
+    // ── Global Pooling ─────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.25,
+      height: 5,
+      depth: 0,
+      fill: rgb("#1ABC9C"),
+      opacity: 0.85,
+      label: "GPool\n1024",
+      name: "gpool",
+      offset: 2,
+      legend: "Global Pooling",
+    ),
+
+    // ── FC Shared ──────────────────────────────────────────────────────────
+    (
+      type: "fc",
+      height: 4,
+      depth: 0,
+      channels: (512,),
+      label: "FC\n512",
+      name: "fc_shared",
+      offset: 2,
+    ),
+
+    // ── ODG Head ───────────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.25,
+      height: 3.5,
+      depth: 0,
+      fill: rgb("#E74C3C"),
+      opacity: 0.85,
+      label: "ODG\n128→1",
+      name: "odg",
+      offset: 3,
+      legend: "Task Head",
+    ),
+
+    // ── Size Head ──────────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.25,
+      height: 2.5,
+      depth: 0,
+      fill: rgb("#C0392B"),
+      opacity: 0.85,
+      label: "Size\n64→1",
+      name: "size",
+      offset: 1.5,
+      show-connection: false,
+      legend: "Task Head (size/wet)",
+    ),
+
+    // ── Wetness Head ───────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.25,
+      height: 2.5,
+      depth: 0,
+      fill: rgb("#C0392B"),
+      opacity: 0.85,
+      label: "Wet\n64→1",
+      name: "wetness",
+      offset: 1.5,
+      show-connection: false,
+    ),
+
+    // ── Quality Head ───────────────────────────────────────────────────────
+    (
+      type: "custom",
+      width: 0.35,
+      height: 4,
+      depth: 0,
+      fill: rgb("#27AE60"),
+      opacity: 0.9,
+      label: "Quality\n515→128→1",
+      name: "quality",
+      offset: 4,
+      legend: "Quality Output",
+    ),
+  ),
+
+  connections: (
+    (from: "fc_shared", to: "size",    type: "skip", mode: "air", label: "512", pos: 4),
+    (from: "fc_shared", to: "wetness", type: "skip", mode: "air", label: "512", pos: 5),
+    (from: "odg",       to: "quality", type: "skip", mode: "air", label: "cat+3", pos: 5),
+    (from: "size",      to: "quality", type: "skip", mode: "air", pos: 4),
+    (from: "wetness",   to: "quality", type: "skip", mode: "air", pos: 3),
+    (from: "fc_shared", to: "quality", type: "skip", mode: "depth", label: "512", pos: 7),
+  ),
+
+  palette: "warm",
+  show-legend: true,
+  legend-title: "Layer Types",
+  show-relu: true,
+  scale: 60%,
+  stroke-thickness: 1,
+  depth-multiplier: 0.22,
+)
+
+
+
+=== ConvBlock detail (each block uses this structure)
+
+#draw-network(
+  (
+    (
+      type: "input",
+      image: none,
+      height: 5,
+      depth: 5,
+      label: "Input\n(B,C_in,H,W)",
+      name: "in",
+    ),
+    (
+      type: "conv",
+      widths: (0.5,),
+      height: 5,
+      depth: 5,
+      channels: (3, "C_out"),
+      label: "Conv2d 3×3\nstride=1 pad=1",
+      name: "c1",
+      offset: 2,
+      show-relu: true,
+    ),
+    (
+      type: "custom",
+      width: 0.3,
+      height: 5,
+      depth: 5,
+      fill: rgb("#F39C12"),
+      opacity: 0.85,
+      label: "BN + ReLU",
+      name: "bn1",
+      offset: 1,
+      legend: "BN + ReLU",
+    ),
+    (
+      type: "conv",
+      widths: (0.5,),
+      height: 5,
+      depth: 5,
+      channels: ("C_out", "C_out"),
+      label: "Conv2d 3×3\nstride=1 pad=1",
+      name: "c2",
+      offset: 2,
+      show-relu: true,
+    ),
+    (
+      type: "custom",
+      width: 0.3,
+      height: 5,
+      depth: 5,
+      fill: rgb("#F39C12"),
+      opacity: 0.85,
+      label: "BN + ReLU",
+      name: "bn2",
+      offset: 1,
+    ),
+    (
+      type: "pool",
+      height: 2.5,
+      depth: 2.5,
+      label: "AvgPool\n(pool_size)",
+      name: "pool",
+    ),
+    (
+      type: "input",
+      image: none,
+      height: 2.5,
+      depth: 2.5,
+      label: "Output\n(B,C_out,H/2,W/2)",
+      name: "out",
+      offset: 1,
+    ),
+  ),
+  connections: (),
+  palette: "warm",
+  show-legend: true,
+  legend-title: "Sub-layers",
+  show-relu: true,
+  scale: 90%,
+)
+
 
 #figure(
   caption: [],

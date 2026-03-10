@@ -228,6 +228,8 @@ As described in @fun_loss_function a loss function is a qualitative function tha
 
 To optimize model performance this error must be minimized.
 
+- what loss functions are used
+- why own loss function
 
 
 

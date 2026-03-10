@@ -148,7 +148,19 @@ def main():
                 levels=15,
                 ax=ax,
             )
-            ax.set_ylim(p15, p85)
+
+            # Compute regression line predicted values to find its range
+            x_arr = np.array(x_vals)
+            y_arr = np.array(y_vals)
+            coeffs = np.polyfit(x_arr, y_arr, 1)
+            x_line = np.linspace(x_arr.min(), x_arr.max(), 200)
+            y_line = np.polyval(coeffs, x_line)
+
+            # Expand y limits to include regression line if it goes outside percentile range
+            y_lower = min(p15, y_line.min())
+            y_upper = max(p85, y_line.max())
+
+            ax.set_ylim(y_lower, y_upper)
 
             sns.regplot(
                 x=x_vals,

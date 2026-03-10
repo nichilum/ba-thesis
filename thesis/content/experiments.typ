@@ -11,7 +11,7 @@
 - used model implementation by the author linked in the original paper @luoConvTasNetSurpassingIdeal2019
   - trained using LibriMix dataset @panayotovLibrispeechASRCorpus2015, original WSJ0-2mix and WSJ0-3mix datasets @garofolojohns.CSRIWSJ0Complete2007 are not publically available
   - original loss function (SI-SNR) only resulted in no convergence (stayed negative) and thus unusable results
-  - switched SI-SNR loss to MSE loss which resulted in convergence and usable results
+  - switched SI-SNR loss to MSE loss which resulted in convergence and usable results (propably some oversight on our side)
   - show training and validation loss plots
   - show some example predictions (spectrograms and audio) in results?!
 

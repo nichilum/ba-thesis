@@ -166,12 +166,11 @@ class PerceptualNetTrainer:
 
                 self.writer.add_scalars("Val Losses", val_losses, epoch)
 
-                for k, v in val_losses.items():
-                    if v < self.best_val_losses[k]:
-                        self.best_val_losses[k] = v
-                        out_path = self.save_path(k, epoch + 1)
-                        torch.save(self.model.state_dict(), out_path)
-                        print(f"Saved best model to {out_path}")
+                if val_losses["quality"] < self.best_val_losses["quality"]:
+                    self.best_val_losses["quality"] = val_losses["quality"]
+                    out_path = self.save_path("quality", epoch + 1)
+                    torch.save(self.model.state_dict(), out_path)
+                    print(f"Saved best model to {out_path}")
             else:
                 torch.save(self.model.state_dict(), self.save_path)
                 print(f"Saved latest model to {self.save_path}")

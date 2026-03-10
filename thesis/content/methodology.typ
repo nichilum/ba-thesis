@@ -155,22 +155,23 @@ Specifically, we first used Valhalla Supermassive in VST3 format, which was late
 //     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
 //     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
+When processing the data from our dataset, the desicion was made to reverberate all files in their native sample rate and then later upsampled to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and Freesound at 44.1 kHz.
 
-- sample rate: upscaling downscaling possible??
-- short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
+While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented due to the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation. The effects of these are discussed in @disc_upsampling.
 
-- AudioSet is 44.1kHz: 10790 files
-  - theoretically not fully DRY audio
-- LibriMix/LibriSpeech is 16kHz: 51232 files
-- Freesound is 44.1kHz: 46753 files
-  - theoretically not fully DRY audio
+// - sample rate: upscaling downscaling possible??
+// - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
 
-reverberation was made in native sample rate, then upsampled for training:
-meaning that some files lack proper wide band reverberation and might "confuse" model
+// - AudioSet is 44.1kHz: 10790 files
+//   - theoretically not fully DRY audio
+// - LibriMix/LibriSpeech is 16kHz: 51232 files
+// - Freesound is 44.1kHz: 46753 files
+//   - theoretically not fully DRY audio
 
-- saved precomputed values for :
-  - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
-  - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
+
+// - saved precomputed values for :
+//   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
+//   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
 
 

@@ -74,7 +74,7 @@
 }
 
 #figure(
-  caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples.],
+  caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
   grid(
     columns: 2,
     column-gutter: 1cm,

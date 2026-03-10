@@ -26,7 +26,7 @@ Three loss functions were evaluated. The @SI-SNR, which serves as the original C
   image("../figures/conv_tasnet_mss_loss.svg")
 )
 
-
+#TODO[other word than failure? maybe "instability"?]
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the failure of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
 
 #figure(

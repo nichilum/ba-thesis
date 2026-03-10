@@ -148,6 +148,7 @@ def main():
                 levels=15,
                 ax=ax,
             )
+            ax.set_ylim(p15, p85)
 
             sns.regplot(
                 x=x_vals,
@@ -167,9 +168,7 @@ def main():
             ax.xaxis.set_major_formatter(plt.FormatStrFormatter("%.3f"))
 
     plt.tight_layout(rect=[0, 0, 1, 0.97])
-    plt.savefig(
-        "plots/data_metrics.svg",
-    )
+    plt.savefig("plots/data_metrics.svg")
 
 
 def analyze_mask():

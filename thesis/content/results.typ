@@ -98,8 +98,8 @@
 
 - gating effect
 - adds highs in some examples
-  - makes sense because of "learning" at 44.1 kHz
+  - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
   - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
-  - discussion: maybe reverberating at 44.1 kHz would have made sense
+  - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
 - if the input signal is not so reverberant, the output only gets dereverberated very little
 - quality of dereverberation is highly dependent on the quality of the input signal

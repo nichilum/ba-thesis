@@ -3,17 +3,8 @@ from utils.load_data import load_data
 from pathlib import Path
 
 import sys
-import torch
-from torch.utils.data import Dataset
-import random
-import soundfile as sf
-import torchaudio
 import numpy as np
-from pydub import AudioSegment
-from pydub.silence import detect_nonsilent
 import matplotlib.pyplot as plt
-import seaborn as sns
-import sys
 
 
 def main():

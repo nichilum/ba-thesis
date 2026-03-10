@@ -26,6 +26,18 @@ Three loss functions were evaluated. The @SI-SNR, which serves as the original C
   image("../figures/conv_tasnet_mss_loss.svg")
 )
 
+The MSE-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB.
+
+On music and non-speech content, however, the model introduces noticeable timbral artifacts.
+
+#figure(
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of the MSE-trained Conv-TasNet on a speech (top) and music (bottom) sample.
+  ],
+  image("../figures/spectrogram_comparison.png")
+)
+
+
 #TODO[other word than failure? maybe "instability"?]
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the failure of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
 

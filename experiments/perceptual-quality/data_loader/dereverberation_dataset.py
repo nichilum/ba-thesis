@@ -6,9 +6,6 @@ import torchaudio
 import numpy as np
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
-import matplotlib.pyplot as plt
-import seaborn as sns
-import sys
 
 
 class DereverberationDataset(Dataset):

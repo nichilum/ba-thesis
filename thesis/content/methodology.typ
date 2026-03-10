@@ -21,7 +21,7 @@ of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second
 
 Our proposed approach requires a diverse dataset of dry audio data. In total 108,775 indivdual audio samples were collected resulting in the following dataset:
 
-#figure(caption: [Dataset split], table(
+#figure(caption: [Dataset composition], table(
   columns: 3,
   align: (left, center, center),
   [*Dataset*], [*Number of Files*], [*Length of Files*],
@@ -29,9 +29,30 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
   [_FSD50K_], [46753 (42.98 %)], [107h 34m 25s (33.1 %)],
   [_LibriSpeech_], [51232 (47.1 %)], [172h 17m 49s (53.1 %)],
   [_Total_], [108775], [324h 44m 49s],
-))<dataset_split>
+))<dataset_comp>
 
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
+
+A final dataset split of $70%$ training, $15%$ validation and $15%$ testing data was decided. Each sample was randomly assigned to one subset allowing for equal distribution of the entire dataset (cf. @dataset_comp) in each subset.
+
+To assure reproducibility the file name of each sample is hashed using MD5 @rivestMD5MessagedigestAlgorithm1992:
+
+$
+  h & = op("MD5")(italic("name")) \
+  r & = frac(op("int")(h_(0 dots 3))_"LE", 2^32 - 1)
+$
+
+The first 4 bytes are then used to assign the split:
+
+$
+  "split"(r) = cases(
+    "train" & quad "if" r < S_"train",
+    "val" & quad "if" S_"train" <= r < S_"train" + S_"val",
+    "test" & quad "otherwise"
+  )
+$
+
+With $S_"train"=0.7 "and" S_"val"=0.15$.
 
 Another dataset of @RIR:pl was gathered, which was later in part used for reverberation purposes. The @RIR:pl were collected from the @AIR dataset @jeub09a as well as from the "Hybrid Reverb" plugin in Ableton Live 12 #footnote[https://www.ableton.com/en/packs/hybrid-reverb/]. The @AIR dataset contains 433 individual @RIR:pl with different acoustical properties, such as reverberation time and room volume.
 
@@ -124,7 +145,7 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 
 Parameter based reverberation, like delay networks are fast and require little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to e.g. size and wetness controls that we can use for labeling (see @loss_network).
 
-In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_split).
+In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_comp).
 
 A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangable framework. Using this the original Conv-TasNet dataloader was adjusted to use the @RIR implementation.
 
@@ -176,25 +197,55 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 
 ==== PEAQ<preprocessing_peaq>
 
-As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with @PEAQ.
+As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with @PEAQ.
 
 ==== Non-Silent Parts
 
-- Ratio of total sample duration to non silent parts: prob about 70%
--> meaning that 30% of the time (excluding utterances that needed zero padding to get to our desired 2 or 4 second segment length) the model would train on pure silence. Therefore we needed to mask the silent and zero padded parts to lessen their impact when calculating loss.
-To stop the model from learning to generate silence
+#let d_full = 819907050.9525146 / 1000 / 60 / 60
+#let d_non_silent = 539188097 / 1000 / 60 / 60
+
+Using the Python package Pydub @robertJiaaroPydub2026 non-silent ranges of all samples of the training subset (see @data_collection) were analyzed.
+A sample is considered silent if its level is below $-40 "dBFS"$. A range of samples is considered silent once it is longer than 100 samples.
+
+Using this formula $d_"full" approx #calc.round(d_full, digits: 2)$ hours of training data was examined. The duration of all non-silent ranges was $d_"non_silent" approx #calc.round(d_non_silent, digits: 2)$ hours leaving $d_"silent" approx #calc.round(d_full - d_non_silent, digits: 2)$ hours of silence or about
+
+$ d_"silent"/d_"full" approx #calc.round(100 * (d_full - d_non_silent) / d_full, digits: 2) % $
+. The problem is worsend by the fact that samples shorter than the segment length defined in @segment_length are zero padded to the desired length adding even more silent parts.
+
+As we don't want our model to focus on generating silence a mask is generated for each sample specifying its silent ranges (cf. @silent_mask_signal). This mask is then used in the loss function to ignore the silent range (see @loss_function_silent_mask).
 
 #figure(
-  caption: [Mask],
+  caption: [Signal with non-silent mask],
   image("/experiments/perceptual-quality/plots/mask_plot.svg"),
-)
+)<silent_mask_signal>
 
-Duration of all train samples combined: 819907050.9525146 ms
-Duration of all non silent utterances in training data: 539188097 ms
-Ratio of non silent duration to full duration: 0.6576210027387939
 
 == LOSS<loss_network>
 #jojo
+
+As described in @fun_loss_function a loss function is a qualitative function that is used to measure model performance by calculating the deviation of the model's prediction to their ground trouth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
+
+To optimize model performance this error must be minimized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.
 go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
@@ -206,12 +257,12 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
 - general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
 
 #figure(
-  caption: [Metrics usable as loss functions analysed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
+  caption: [Metrics usable as loss functions analyzed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
   image("/experiments/perceptual-quality/plots/data_metrics_test_6236_15_85_percentile.svg"),
 )
 
 #figure(
-  caption: [Metrics usable as loss functions analysed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
+  caption: [Metrics usable as loss functions analyzed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )
 

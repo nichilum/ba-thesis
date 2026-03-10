@@ -31,7 +31,7 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 === Supervised Learning<supervised_learning>
 === Self-Supervised Learning<self_supervised>
 
-=== LOSS
+=== Loss Function<fun_loss_function>
 - in general training of neural net with loss function:
   - partial derivatives, gradient, jacobi matrix (analytical)
   - gradient descent explaination

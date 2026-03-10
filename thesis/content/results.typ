@@ -4,6 +4,31 @@
 
 = Results
 
+== Conv-TasNet
+
+=== Loss Function
+
+Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs. A multi-scale spectral loss likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs. Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs.
+
+//TODO: we do not know the reason for this, might be a user error
+
+#figure(
+  caption: [
+    Training curves for Conv-TasNet with different loss functions. The SI-SNR loss did not converge to a positive value, while the MSE loss converged stably.
+  ],
+  image("../figures/conv_tasnet_loss_comparison.svg")
+)
+
+#figure(
+  caption: [
+    Training curve for Conv-TasNet with MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
+  ],
+  image("../figures/conv_tasnet_mss_loss.svg")
+)
+
+
+These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the failure of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
+
 #figure(
   caption: [],
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),

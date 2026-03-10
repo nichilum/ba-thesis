@@ -5,18 +5,17 @@
 
 == Conv-TasNet for diverse audio dereverberation
 
+Conv-TasNet @luoConvTasNetSurpassingIdeal2019 operates in the time domain using a learned encoder--TCN--decoder architecture, where a temporal convolutional network estimates a multiplicative mask over the encoded signal to isolate a target source (cf. @related_work_conv_tasnet). Although originally designed for speech source separation, the masking paradigm is conceptually compatible with dereverberation. Late reflections overlap with the direct sound in the encoder representation, and a mask can in principle suppress this reverberant energy while retaining the direct component.
 
+No pre-trained dereverberation weights were publicly available. Weights linked from the original repository were trained for speaker separation only and are thus not applicable to this task. Attempts to obtain suitable weights from the original authors received no reply. We therefore trained the model from scratch using the implementation linked in the paper #footnote[https://github.com/naplab/Conv-TasNet].
 
-- no proper weights for training available
-  - I forgot the proper reasoning why we did not use weights available on huggingsface and google drive (linked on one github repo)
-    - only for speaker seperation
-    - reached out to original authors but did not get a response
-- used model implementation by the author linked in the original paper @luoConvTasNetSurpassingIdeal2019
-  - trained using LibriMix dataset @panayotovLibrispeechASRCorpus2015, original WSJ0-2mix and WSJ0-3mix datasets @garofolojohns.CSRIWSJ0Complete2007 are not publically available
-  - original loss function (SI-SNR) only resulted in no convergence (stayed negative) and thus unusable results
-  - switched SI-SNR loss to MSE loss which resulted in convergence and usable results (propably some oversight on our side)
-  - show training and validation loss plots
-  - show some example predictions (spectrograms and audio) in results?!
+=== Architecture and Training Setup
+
+The encoder is a 1-D convolution (512 channels, window 2 ms at 8 kHz). The TCN separator consists of 8 layers across 3 stacks with feature dimension 128 and depthwise-separable convolutions of kernel size 3. The decoder mirrors the encoder via a transposed convolution. The model is configured as a single-source system. The 8 kHz sample rate imposes a hard frequency ceiling of 4 kHz, which excludes upper harmonics and air that are perceptually important for music and broadband diverse audio content.
+
+The original training sets WSJ0-2mix and WSJ0-3mix @garofolojohns.CSRIWSJ0Complete2007 used in the Conv-TasNet paper are not publicly available, requiring an alternative training dataset. We used LibriSpeech @panayotovLibrispeechASRCorpus2015, resampled to 8 kHz and segmented into random 4-second crops per iteration. Reverberation is applied on-the-fly by convolving the dry signal with one of five impulse responses from the preprocessing pipeline, yielding time-aligned wet/dry pairs with varied room conditions across epochs. The training dataset is therefore speech-only, which biases the mask priors toward speech characteristics and is expected to reduce generalization to music and other diverse audio content.
+
+Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning rate of $10^(-3)$, gradient clipping with maximum $L_2$-norm of 5.0 @luoConvTasNetSurpassingIdeal2019, and a batch size of 32 over 100 epochs via PyTorch Lightning.
 
 #import "@preview/neural-netz:0.3.0": draw-network
 

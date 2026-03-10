@@ -5,7 +5,7 @@
 //   Describe related work regarding your topic and emphasize your (scientific) contribution in contrast to existing approaches / concepts / workflows. Related work is usually current research by others and you defend yourself against the statement: “Why is your thesis relevant? The problem was al- ready solved by XYZ.” If you have multiple related works, use subsections to separate them.
 // ]
 
-== Conv-TasNet
+== Conv-TasNet<related_work_conv_tasnet>
 
 - builds upon tasnet @luoTasNetTimedomainAudio2018 (roughly describe additions)
 - seperation using masking, primarly for speech signals

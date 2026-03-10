@@ -363,12 +363,10 @@
         label: "Conv1",
         name: "c1",
       ),
-
-      (type: "conv", height: 6, depth: 1, label: "Dilated Causal Conv", name: "c1", ),
-      (type: "conv", height: 6, depth: 1, label: "Weight Normalization", name: "c1", ),
-      (type: "conv", height: 6, depth: 1, label: "Dropout", name: "c1", ),
-      (type: "conv", height: 6, depth: 1, label: "Relu", name: "c1", ),
-
+      (type: "conv", height: 6, depth: 1, label: "Dilated Causal Conv", name: "c1"),
+      (type: "conv", height: 6, depth: 1, label: "Weight Normalization", name: "c1"),
+      (type: "conv", height: 6, depth: 1, label: "Dropout", name: "c1"),
+      (type: "conv", height: 6, depth: 1, label: "Relu", name: "c1"),
       // Upsampling path
       (
         type: "conv",
@@ -439,3 +437,8 @@
 )
 
 #TODO[https://typst.app/universe/package/neural-netz]
+
+
+== Placeholders
+=== SOMETHING WITH SEGMENT LENGTH<segment_length>
+=== LOSS FUNCTION SILENT MASK<loss_function_silent_mask>

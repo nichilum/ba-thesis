@@ -28,19 +28,19 @@
       + degree
       + "'s thesis is our own work and we have documented all sources and material used.",
   )
-  place(
-    right,
-    dx: 0cm,
-    dy: 1cm,
-    image("../signatures/jonathan.png", width: 40mm),
-  )
+  // place(
+  //   right,
+  //   dx: 0cm,
+  //   dy: 1cm,
+  //   image("../signatures/jonathan.png", width: 40mm),
+  // )
   
-  place(
-    right,
-    dx: -5cm,
-    dy: 1.4cm,
-    image("../signatures/leo.png", width: 30mm),
-  )
+  // place(
+  //   right,
+  //   dx: -5cm,
+  //   dy: 1.4cm,
+  //   image("../signatures/leo.png", width: 30mm),
+  // )
 
   v(35mm)
   grid(

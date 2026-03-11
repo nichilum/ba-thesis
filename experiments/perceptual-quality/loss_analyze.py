@@ -96,6 +96,7 @@ def main():
     results = list(map(mapper, tqdm(data.test_files)))
 
     metrics = [
+        "net_quality",
         "odg",
         "di",
         "pesq",
@@ -104,9 +105,9 @@ def main():
         "mae",
         "correlation",
         # "quality",
-        # "net_quality",
     ]
     metric_labels = {
+        "net_quality": "NN Quality",
         "odg": "ODG Norm",
         "di": "DI",
         "pesq": "PESQ",
@@ -115,7 +116,6 @@ def main():
         "mae": "MAE",
         "correlation": "Correlation",
         # "quality": "Quality",
-        # "net_quality": "NN Quality",
     }
 
     x_axes = [
@@ -223,7 +223,7 @@ def analyze_mask():
     quality_net = PerceptualQualityNet(sample_rate=sample_rate)
     quality_net.load_state_dict(
         torch.load(
-            "checkpoints/epoch_195-quality-perceptual_net_best.pth",
+            "checkpoints/epoch_61-quality-perceptual_net_best.pth",
             map_location=device,
             weights_only=True,
         )

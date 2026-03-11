@@ -178,7 +178,7 @@ Specifically, we first used Valhalla Supermassive in VST3 format, which was late
 
 When processing the data from our dataset, the desicion was made to reverberate all files in their native sample rate and then later upsample them to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and Freesound at 44.1 kHz.
 
-While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented due to the Nyquist theorem @shannonCommunicationPresenceNoise1949. #TODO[due is maybe wrong? The Nyquist theorem only explains it] While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation. The effects of these are discussed in @disc_upsampling.
+While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented as shown by the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation. The effects of these are discussed in @disc_upsampling.
 
 // - sample rate: upscaling downscaling possible??
 // - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)

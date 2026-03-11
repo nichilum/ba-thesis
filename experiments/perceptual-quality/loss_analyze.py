@@ -10,6 +10,7 @@ import numpy as np
 import seaborn as sns
 import sys
 from model.perceptual_qualitynet import PerceptualQualityNet
+import matplotlib.patches as mpatches
 
 
 def main():
@@ -106,6 +107,7 @@ def main():
     fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(10, 18))
     sns.set_theme(style="white")
     cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
+    cmap2 = sns.cubehelix_palette(start=2, light=1, as_cmap=True)
 
     for col_idx, (x_key, x_label, sort_fn) in enumerate(x_axes):
         sorted_data = sort_fn(results)
@@ -125,7 +127,7 @@ def main():
             sns.kdeplot(
                 x=x_vals,
                 y=y_vals,
-                cmap="Greys",
+                cmap=cmap2,
                 fill=True,
                 clip=((0, 1), (y_min, y_max)),
                 cut=5,
@@ -134,6 +136,7 @@ def main():
                 ax=ax,
             )
 
+            artists_before = set(ax.collections)
             sns.kdeplot(
                 x=x_vals,
                 y=y_vals,
@@ -141,13 +144,22 @@ def main():
                 fill=True,
                 clip=(
                     (0, 1),
-                    (p15, p85),
+                    (y_min, y_max),
                 ),
                 cut=5,
                 thresh=0,
                 levels=15,
                 ax=ax,
             )
+            inner_artists = set(ax.collections) - artists_before
+            clip_rect = mpatches.Rectangle(
+                xy=(min(x_vals), p15),
+                width=max(x_vals) - min(x_vals),
+                height=p85 - p15,
+                transform=ax.transData,
+            )
+            for artist in inner_artists:
+                artist.set_clip_path(clip_rect)
 
             # Compute regression line predicted values to find its range
             x_arr = np.array(x_vals)

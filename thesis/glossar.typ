@@ -71,6 +71,11 @@
     long: "objective difference grade",
     group: "Metrics",
   ),
+  SDG: (
+    short: "SDG",
+    long: "subjective difference grade",
+    group: "Metrics",
+  ),
   DI: (
     short: "DI",
     long: "distortion index",
@@ -99,6 +104,21 @@
   MAE: (
     short: "MAE",
     long: "mean absolute error",
+    group: "Metrics",
+  ),
+  BSD: (
+    short: "BSD",
+    long: "bark spectral distortion",
+    group: "Metrics",
+  ),
+  PSQM: (
+    short: "PSQM",
+    long: "perceptual speech quality measure",
+    group: "Metrics",
+  ),
+  PAQM: (
+    short: "PAQM",
+    long: "perceptual audio quality measure",
     group: "Metrics",
   ),
 )

@@ -39,12 +39,39 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
   - how to use this with nn as loss
 - what does loss even do
 -
-== Quality Metrics
-- @SI-SNR
-- @PEAQ and @PESQ
-- @ViSQOL
-- pemoq
-- correlation (is this a good metric for audio signals?)
-  - we used it for loss
+== Quality Metrics<fun_quality_metrics>
+
+- all metrics are analyzed from an acoustical nn standpoint
+
+=== MAE and MSE<fun_mae_mse>
+
+The @MAE
+
+$ "MAE" = ... $
+
+measures the average ... . The @MSE:long
+
+$ "MSE" = 1/n sum_(i=1)^n (Y_i - hat(Y)_i)^2 $
+
+measures the average squared difference between the predicted values and the ground truth value. Although both the @MSE and @MAE were used successfully as loss functions in e.g. music source separation approaches @defossezMusicSourceSeparation2019 @stollerWaveUNetMultiScaleNeural2018 @takahashiD3NetDenselyConnected2020 they fall short in generative and human-ear centered tasks as both unfairly penalize shifts in time and amplitude of the predicted signal and do not conform to the equal-loudness levels as perceived by the human ear @AcousticsNormalEqualloudnesslevel2023 and therefore overweight the importance of low frequencies.
+
+=== Correlation
+
+=== SI-SNR<fun_si-snr>
+
+The @SI-SNR:long
+
+$ "SI-SNR" = 10 log_10 ((||a s||^2)/(||a s - hat(s)||^2)), "where" a = (hat(s)^T s)/(||s||^2) $
+
+measures the level of distortion or noise in the predicted signal in a way that is invariant to the scaling of the signals. It has been used successfully in dereverberation tasks @luoConvTasNetSurpassingIdeal2019 but while providing invariance to signal scaling it too does not conform to the perceived loudness of the human ear.
+
+=== PESQ<fun_pesq>
+
+Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. It also maps the signal into a represantation of percieved loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the huamn auditory system.
 
 === PEAQ<fun_peaq>
+
+The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. It offers two metrics, namely the @ODG:both and @DI:both. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017 @thiedePEAQITUStandard2000.
+
+=== ViSQOL
+=== PEMO-Q

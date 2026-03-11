@@ -224,19 +224,19 @@ As we don't want our model to focus on generating silence a mask is generated fo
 == LOSS<loss_network>
 #jojo
 
-As described in @fun_loss_function a loss function is a qualitative function that is used to measure model performance by calculating the deviation of the model's prediction to their ground trouth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
+As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
 
-To optimize model performance this error must be minimized.
+As shown in @fun_loss_function different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
 
-- what loss functions are used
-- why own loss function
+In the time or waveform domain error-based regressive loss functions (e.g. @MSE, @SI-SNR and @PESQ) have identfied themselfs as well performing in the field of dereverberation (see @related_work and @fun_quality_metrics).
 
-@related_work
-- shows that SI-SNR has been used
-- shows that PESQ has been used
-- both are regressive, error based loss function
-- pesq tries a perceptually weighted approach
-- all general loss functions as shown in taxonomy (sisnr and pesq count too) are made for problem set and not singular specific problems @ciampiconiSurveyTaxonomyLoss2024
+=== Analyzation of Applicable Loss Functions
+
+The loss functions described above are not specific to our problem of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
+
+Since then multiple new models for objectively measuring signal quality have been created. State-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006. Comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 making it a valid option for a loss function.
+
+As we face a very specific problem we wanted to analyze different loss functions.
 
 - we wanted to analyze loss functions for our specific dereverberation problem
 - as explained in @preprocessing_reverberation our parameter reverb exposes size and wetness controls per sample
@@ -246,13 +246,31 @@ To optimize model performance this error must be minimized.
     - this should show which loss function would best approximate performance in the dereverberation task
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - as loss functions must be differentiable (see @fun_loss_function) it could be possible to use a neural network as a loss function. This would allow us to learn an algorithm that predicts a quality measure based on the objective values of size and wetness
 
 
 
 
 
-
+We place the following requirements on the loss network:
+- differentiable
+- wideband (up to 44100 Hz)
+- _good_ prediction of size and wetness parameters: use mse, corr metric here calculated by test script as indicator of good performance
 
 
 
@@ -305,7 +323,6 @@ Key takeaways:
 - si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
 - train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
 
-WE CAN STILL USE PEAQ: @delgadoCanWeStill2020 <\- compared to visqol pemo-q etc
 
 quality is here defined as:
 $ Q = "ODG"_"norm" dot (1 - "wet"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $

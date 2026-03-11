@@ -1,3 +1,12 @@
+@standard{AcousticsNormalEqualloudnesslevel2023,
+  title = {Acoustics — {{Normal}} Equal-Loudness-Level Contours},
+  date = {2023-03},
+  edition = {3},
+  number = {ISO 226:2023},
+  url = {https://www.iso.org/standard/83117.html},
+  urldate = {2026-11-03}
+}
+
 @online{AK5706ECB,
   title = {{{AK5706ECB}}},
   url = {https://www.akm.com/content/www/akm/eu/en/products/audio/audio-adc/ak5706ecb.html},
@@ -237,6 +246,17 @@
   langid = {english}
 }
 
+@article{defossezMusicSourceSeparation2019,
+  title = {Music {{Source Separation}} in the {{Waveform Domain}}},
+  author = {Défossez, Alexandre and Usunier, Nicolas and Bottou, Léon and Bach, Francis},
+  date = {2019},
+  doi = {10.48550/ARXIV.1911.13254},
+  abstract = {Source separation for music is the task of isolating contributions, or stems, from different instruments recorded individually and arranged together to form a song. Such components include voice, bass, drums and any other accompaniments.Contrarily to many audio synthesis tasks where the best performances are achieved by models that directly generate the waveform, the state-of-the-art in source separation for music is to compute masks on the magnitude spectrum. In this paper, we compare two waveform domain architectures. We first adapt Conv-Tasnet, initially developed for speech source separation,to the task of music source separation. While Conv-Tasnet beats many existing spectrogram-domain methods, it suffersfrom significant artifacts, as shown by human evaluations. We propose instead Demucs, a novel waveform-to-waveform model,with a U-Net structure and bidirectional LSTM.Experiments on the MusDB dataset show that, with proper data augmentation, Demucs beats allexisting state-of-the-art architectures, including Conv-Tasnet, with 6.3 SDR on average, (and up to 6.8 with 150 extra training songs, even surpassing the IRM oracle for the bass source).Using recent development in model quantization, Demucs can be compressed down to 120MBwithout any loss of accuracy.We also provide human evaluations, showing that Demucs benefit from a large advantagein terms of the naturalness of the audio. However, it suffers from some bleeding,especially between the vocals and other source.},
+  pubstate = {prepublished},
+  version = {2},
+  keywords = {Audio and Speech Processing (eess.AS),FOS: Computer and information sciences,FOS: Electrical engineering electronic engineering information engineering,Machine Learning (cs.LG),Machine Learning (stat.ML),Sound (cs.SD)}
+}
+
 @inproceedings{delgadoCanWeStill2020,
   title = {Can We Still Use {{PEAQ}}? {{A Performance Analysis}} of the {{ITU Standard}} for the {{Objective Assessment}} of {{Perceived Audio Quality}}},
   shorttitle = {Can We Still Use {{PEAQ}}?},
@@ -334,6 +354,31 @@
   doi = {10.1109/TASLP.2021.3133208},
   abstract = {Most existing datasets for sound event recognition (SER) are relatively small and/or domain-specific, with the exception of AudioSet, based on over 2 M tracks from YouTube videos and encompassing over 500 sound classes. However, AudioSet is not an open dataset as its official release consists of pre-computed audio features. Downloading the original audio tracks can be problematic due to YouTube videos gradually disappearing and usage rights issues. To provide an alternative benchmark dataset and thus foster SER research, we introduce FSD50K, an open dataset containing over 51 k audio clips totalling over 100 h of audio manually labeled using 200 classes drawn from the AudioSet Ontology. The audio clips are licensed under Creative Commons licenses, making the dataset freely distributable (including waveforms). We provide a detailed description of the FSD50K creation process, tailored to the particularities of Freesound data, including challenges encountered and solutions adopted. We include a comprehensive dataset characterization along with discussion of limitations and key factors to allow its audio-informed usage. Finally, we conduct sound event classification experiments to provide baseline systems as well as insight on the main factors to consider when splitting Freesound audio data for SER. Our goal is to develop a dataset to be widely adopted by the community as a new open benchmark for SER research.},
   keywords = {Audio dataset,Benchmark testing,classification,data collection,environmental sound,Labeling,Ontologies,recognition,sound event,Speech recognition,tagging,Task analysis,Videos,Vocabulary}
+}
+
+@article{fuMetricGANImprovedVersion2021,
+  title = {{{MetricGAN}}+: {{An Improved Version}} of {{MetricGAN}} for {{Speech Enhancement}}},
+  shorttitle = {{{MetricGAN}}+},
+  author = {Fu, Szu-Wei and Yu, Cheng and Hsieh, Tsun-An and Plantinga, Peter and Ravanelli, Mirco and Lu, Xugang and Tsao, Yu},
+  date = {2021},
+  doi = {10.48550/ARXIV.2104.03538},
+  abstract = {The discrepancy between the cost function used for training a speech enhancement model and human auditory perception usually makes the quality of enhanced speech unsatisfactory. Objective evaluation metrics which consider human perception can hence serve as a bridge to reduce the gap. Our previously proposed MetricGAN was designed to optimize objective metrics by connecting the metric with a discriminator. Because only the scores of the target evaluation functions are needed during training, the metrics can even be non-differentiable. In this study, we propose a MetricGAN+ in which three training techniques incorporating domain-knowledge of speech processing are proposed. With these techniques, experimental results on the VoiceBank-DEMAND dataset show that MetricGAN+ can increase PESQ score by 0.3 compared to the previous MetricGAN and achieve state-of-the-art results (PESQ score = 3.15).},
+  pubstate = {prepublished},
+  version = {2},
+  keywords = {Artificial Intelligence (cs.AI),Audio and Speech Processing (eess.AS),FOS: Computer and information sciences,FOS: Electrical engineering electronic engineering information engineering,Sound (cs.SD)}
+}
+
+@inproceedings{fuQualityNetEndtoEndNonintrusive2018,
+  title = {Quality-{{Net}}: {{An End-to-End Non-intrusive Speech Quality Assessment Model Based}} on {{BLSTM}}},
+  shorttitle = {Quality-{{Net}}},
+  booktitle = {Interspeech 2018},
+  author = {Fu, Szu-wei and Tsao, Yu and Hwang, Hsin-Te and Wang, Hsin-Min},
+  date = {2018-09-02},
+  pages = {1873--1877},
+  publisher = {ISCA},
+  doi = {10.21437/Interspeech.2018-1802},
+  eventtitle = {Interspeech 2018},
+  langid = {english}
 }
 
 @dataset{garofolojohns.CSRIWSJ0Complete2007,
@@ -465,6 +510,19 @@
   bibkey = {jeub09a},
   isbn = {978-1-4244-3298-1},
   langid = {english}
+}
+
+@inproceedings{khalifehPerceptualEvaluationAudio2017,
+  title = {Perceptual Evaluation of Audio Quality under Lossy Networks},
+  booktitle = {2017 {{International Conference}} on {{Wireless Communications}}, {{Signal Processing}} and {{Networking}} ({{WiSPNET}})},
+  author = {Khalifeh, Ala F. and Al-Tamimi, Abdel-Karim and Darabkh, Khalid A.},
+  date = {2017-03},
+  pages = {939--943},
+  publisher = {IEEE},
+  location = {Chennai},
+  doi = {10.1109/WiSPNET.2017.8299900},
+  eventtitle = {2017 {{International Conference}} on {{Wireless Communications}}, {{Signal Processing}} and {{Networking}} ({{WiSPNET}})},
+  isbn = {978-1-5090-4442-9}
 }
 
 @article{kingmaAdamMethodStochastic2017,
@@ -677,6 +735,19 @@
   langid = {english}
 }
 
+@book{mitchellMachineLearning2013,
+  title = {Machine Learning},
+  author = {Mitchell, Tom M.},
+  date = {2013},
+  series = {{{McGraw-Hill}} Series in {{Computer Science}}},
+  edition = {Nachdr.},
+  publisher = {McGraw-Hill},
+  location = {New York},
+  isbn = {978-0-07-042807-2 978-0-07-115467-3},
+  langid = {english},
+  pagetotal = {414}
+}
+
 @inproceedings{nakamuraAcousticalSoundDatabase2000,
   title = {Acoustical {{Sound Database}} in {{Real Environments}} for {{Sound Scene Understanding}} and {{Hands-Free Speech Recognition}}},
   booktitle = {Proceedings of the {{Second International Conference}} on {{Language Resources}} and {{Evaluation}} ({{LREC}}'00)},
@@ -837,6 +908,20 @@
   url = {https://www.ietf.org/rfc/rfc1321.txt}
 }
 
+@inproceedings{rixPerceptualEvaluationSpeech2001,
+  title = {Perceptual Evaluation of Speech Quality ({{PESQ}})-a New Method for Speech Quality Assessment of Telephone Networks and Codecs},
+  booktitle = {2001 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}}, and {{Signal Processing}}. {{Proceedings}} ({{Cat}}. {{No}}.{{01CH37221}})},
+  author = {Rix, A.W. and Beerends, J.G. and Hollier, M.P. and Hekstra, A.P.},
+  date = {2001},
+  volume = {2},
+  pages = {749--752},
+  publisher = {IEEE},
+  location = {Salt Lake City, UT, USA},
+  doi = {10.1109/ICASSP.2001.941023},
+  eventtitle = {2001 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}}, and {{Signal Processing}}. {{Proceedings}}},
+  isbn = {978-0-7803-7041-8}
+}
+
 @software{robertJiaaroPydub2026,
   title = {Jiaaro/Pydub},
   author = {Robert, James},
@@ -964,6 +1049,30 @@
   keywords = {audio,audio-processing,audio-unit,juce,python,vst}
 }
 
+@article{stollerWaveUNetMultiScaleNeural2018,
+  title = {Wave-{{U-Net}}: {{A Multi-Scale Neural Network}} for {{End-to-End Audio Source Separation}}},
+  shorttitle = {Wave-{{U-Net}}},
+  author = {Stoller, Daniel and Ewert, Sebastian and Dixon, Simon},
+  date = {2018},
+  publisher = {arXiv},
+  doi = {10.48550/ARXIV.1806.03185},
+  abstract = {Models for audio source separation usually operate on the magnitude spectrum, which ignores phase information and makes separation performance dependant on hyper-parameters for the spectral front-end. Therefore, we investigate end-to-end source separation in the time-domain, which allows modelling phase information and avoids fixed spectral transformations. Due to high sampling rates for audio, employing a long temporal input context on the sample level is difficult, but required for high quality separation results because of long-range temporal correlations. In this context, we propose the Wave-U-Net, an adaptation of the U-Net to the one-dimensional time domain, which repeatedly resamples feature maps to compute and combine features at different time scales. We introduce further architectural improvements, including an output layer that enforces source additivity, an upsampling technique and a context-aware prediction framework to reduce output artifacts. Experiments for singing voice separation indicate that our architecture yields a performance comparable to a state-of-the-art spectrogram-based U-Net architecture, given the same data. Finally, we reveal a problem with outliers in the currently used SDR evaluation metrics and suggest reporting rank-based statistics to alleviate this problem.},
+  version = {1},
+  keywords = {Audio and Speech Processing (eess.AS),FOS: Computer and information sciences,FOS: Electrical engineering electronic engineering information engineering,Machine Learning (stat.ML),Sound (cs.SD)}
+}
+
+@article{takahashiD3NetDenselyConnected2020,
+  title = {{{D3Net}}: {{Densely}} Connected Multidilated {{DenseNet}} for Music Source Separation},
+  shorttitle = {{{D3Net}}},
+  author = {Takahashi, Naoya and Mitsufuji, Yuki},
+  date = {2020},
+  doi = {10.48550/ARXIV.2010.01733},
+  abstract = {Music source separation involves a large input field to model a long-term dependence of an audio signal. Previous convolutional neural network (CNN)-based approaches address the large input field modeling using sequentially down- and up-sampling feature maps or dilated convolution. In this paper, we claim the importance of a rapid growth of a receptive field and a simultaneous modeling of multi-resolution data in a single convolution layer, and propose a novel CNN architecture called densely connected dilated DenseNet (D3Net). D3Net involves a novel multi-dilated convolution that has different dilation factors in a single layer to model different resolutions simultaneously. By combining the multi-dilated convolution with DenseNet architecture, D3Net avoids the aliasing problem that exists when we naively incorporate the dilated convolution in DenseNet. Experimental results on MUSDB18 dataset show that D3Net achieves state-of-the-art performance with an average signal to distortion ratio (SDR) of 6.01 dB.},
+  pubstate = {prepublished},
+  version = {4},
+  keywords = {Audio and Speech Processing (eess.AS),FOS: Computer and information sciences,FOS: Electrical engineering electronic engineering information engineering,Machine Learning (cs.LG),Sound (cs.SD)}
+}
+
 @online{TemporalConvolutionalNetworks,
   title = {Temporal {{Convolutional Networks}} and {{Forecasting}}},
   url = {https://unit8.com/resources/temporal-convolutional-networks-and-forecasting/},
@@ -971,6 +1080,17 @@
   abstract = {How a convolutional network with some simple adaptations can become a powerful tool for sequence modeling and forecasting.},
   langid = {english},
   organization = {Unit8}
+}
+
+@article{thiedePEAQITUStandard2000,
+  title = {{{PEAQ}} - the {{ITU}} Standard for Objective Measurement of Perceived Audio Quality},
+  author = {Thiede, T. and Treurniet, W. C. and Bitto, R. and Schmidmer, C. and Sporer, T. and Beerends, J. G. and Colomes, C. and Keyhl, M. and Stoll, G. and Brandenburg, K. and Feiten, B.},
+  date = {2000},
+  journaltitle = {Journal of the Audio Engineering Society},
+  url = {https://publica.fraunhofer.de/handle/publica/196639},
+  urldate = {2026-03-11},
+  abstract = {Perceptual coding of audio signals is increasingly used in the transmission and storage of high-quality digital audio, and there is a strong demand for an acceptable objective method to measure the quality of such signals. A new measurement method is described that combines ideas from several earlier methods. The method should meet the requirements of the user community, and it has been recommended by ITU Radiocommunication study groups.},
+  langid = {english}
 }
 
 @article{traerStatisticsNaturalReverberation2016,
@@ -1079,4 +1199,17 @@
   abstract = {This paper develops a deep learning method for linear and nonlinear filtering. The idea is to start with a nominal dynamic model and generate Monte Carlo sample paths. Then these samples are used to train a deep neutral network. A least square error is used as a loss function for network training. Then the resulting weights are applied to Monte Carlo sampl\textbackslash{} es from an actual dynamic model. The deep filter obtained in such a way compares favorably to the traditional Kalman filter in linear cases and the extended Kalman filter in nonlinear cases. Moreover, a switching model with jumps is studied to show the adaptiveness and power of our deep filtering method. A main advantage of deep filtering is its robustness when the nominal model and actual model differ. Another advantage of deep filtering is that real data can be used directly to train the deep neutral network. Therefore, one does not need to calibrate the model.},
   pubstate = {prepublished},
   keywords = {Mathematics - Optimization and Control}
+}
+
+@article{zwickerSubdivisionAudibleFrequency1961,
+  title = {Subdivision of the {{Audible Frequency Range}} into {{Critical Bands}} ({{Frequenzgruppen}})},
+  author = {Zwicker, E.},
+  date = {1961-02-01},
+  journaltitle = {The Journal of the Acoustical Society of America},
+  volume = {33},
+  number = {2},
+  pages = {248--248},
+  issn = {0001-4966, 1520-8524},
+  doi = {10.1121/1.1908630},
+  langid = {english}
 }

@@ -232,11 +232,19 @@ In the time or waveform domain error-based regressive loss functions (e.g. @MSE,
 
 === Analyzation of Applicable Loss Functions
 
-The loss functions described above are not specific to our problem of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
+The metrics described in @fun_quality_metrics can all be used a loss functions. The problem that all of them have in common it that non are specific to our task of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
 
-Since then multiple new models for objectively measuring signal quality have been created. State-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006. Comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 making it a valid option for a loss function.
+Other state-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 meaning that @ViSQOL and PEMO-Q were not further considered.
 
-As we face a very specific problem we wanted to analyze different loss functions.
+As explained in @preprocessing_reverberation the final dataset was reverberated offline using an implementation of the FreeVerb reverberator allowing for export of size and wetness parameters on a per sample basis. The wetness and size parameters are objective measurements which we know to be true:
+$ lim_("wet"arrow 1) "and" lim_("size"arrow 1) $
+means the signal is reverberated and
+$ lim_("wet"arrow 0) "or" lim_("size"arrow 0) $
+means the signal is dereverberated.
+
+#TODO[change formulas to make sense]
+
+This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task.
 
 - we wanted to analyze loss functions for our specific dereverberation problem
 - as explained in @preprocessing_reverberation our parameter reverb exposes size and wetness controls per sample

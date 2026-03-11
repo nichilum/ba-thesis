@@ -11,6 +11,7 @@ import seaborn as sns
 import sys
 from model.perceptual_qualitynet import PerceptualQualityNet
 import matplotlib.patches as mpatches
+from torchmetrics.audio import PerceptualEvaluationSpeechQuality
 
 
 def main():
@@ -28,16 +29,18 @@ def main():
     quality_net.eval()
     quality_net.to(device)
 
-    def load_audio(path):
+    wb_pesq = PerceptualEvaluationSpeechQuality(16000, "wb")
+
+    def load_audio(path, sr_param):
         waveform, sr = sf.read(path)
         waveform = torch.from_numpy(waveform).float()
 
         if waveform.ndim > 1:
             waveform = torch.mean(waveform, dim=1)
 
-        if sr != sample_rate:
+        if sr != sr_param:
             waveform = waveform.unsqueeze(0)
-            waveform = torchaudio.functional.resample(waveform, sr, sample_rate)
+            waveform = torchaudio.functional.resample(waveform, sr, sr_param)
             waveform = waveform.squeeze(0)
 
         return waveform
@@ -51,24 +54,37 @@ def main():
     data = load_data(Path(sys.argv[1]))
 
     def mapper(map_obj):
-        ref_audio = load_audio(map_obj["original_path"])
-        test_audio = load_audio(map_obj["reverberant_path"])
+        ref_audio = load_audio(map_obj["original_path"], sample_rate)
+        test_audio = load_audio(map_obj["reverberant_path"], sample_rate)
+
+        ref_audio_16k = torchaudio.functional.resample(
+            ref_audio.unsqueeze(0), sample_rate, 16000
+        ).squeeze(0)
+        test_audio_16k = torchaudio.functional.resample(
+            test_audio.unsqueeze(0), sample_rate, 16000
+        ).squeeze(0)
+
         metrics = mse_mae_corr(test_audio, ref_audio)
         wetness = map_obj["wetness"]
         size = map_obj["size"]
 
         odg_normalized = np.clip((map_obj["odg"] + 4.0) / 4.0, 0, 1)
-
         quality = odg_normalized * (1 - wetness * 0.4) * (1 - size * 0.3)
         quality = np.clip(quality, 0, 1)
 
         net_preds = predict_quality(test_audio)
+
+        try:
+            pesq_score = wb_pesq(test_audio_16k, ref_audio_16k).item()
+        except Exception:
+            pesq_score = float("nan")
 
         return {
             "size": size,
             "wetness": wetness,
             "odg": odg_normalized,
             "di": map_obj["di"],
+            "pesq": pesq_score,
             "sisnr": -si_snr(test_audio, ref_audio),
             "mse": metrics["mse"],
             "mae": metrics["mae"],
@@ -78,25 +94,28 @@ def main():
         }
 
     results = list(map(mapper, tqdm(data.test_files)))
+
     metrics = [
         "odg",
         "di",
+        "pesq",
         "sisnr",
         "mse",
         "mae",
         "correlation",
-        "quality",
-        "net_quality",
+        # "quality",
+        # "net_quality",
     ]
     metric_labels = {
         "odg": "ODG Norm",
         "di": "DI",
+        "pesq": "PESQ",
         "sisnr": "SI-SNR",
         "mse": "MSE",
         "mae": "MAE",
         "correlation": "Correlation",
-        "quality": "Quality",
-        "net_quality": "NN Quality",
+        # "quality": "Quality",
+        # "net_quality": "NN Quality",
     }
 
     x_axes = [
@@ -107,16 +126,16 @@ def main():
     fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(10, 18))
     sns.set_theme(style="white")
     cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
-    cmap2 = sns.cubehelix_palette(start=2, light=1, as_cmap=True)
 
     for col_idx, (x_key, x_label, sort_fn) in enumerate(x_axes):
         sorted_data = sort_fn(results)
 
-        x_vals = [r[x_key] for r in sorted_data]
-
         for row_idx, metric in enumerate(metrics):
             ax = axes[row_idx, col_idx]
-            y_vals = [float(r[metric]) for r in sorted_data]
+
+            valid_data = [r for r in sorted_data if not np.isnan(float(r[metric]))]
+            x_vals = [r[x_key] for r in valid_data]
+            y_vals = [float(r[metric]) for r in valid_data]
 
             p15 = np.percentile(y_vals, 15)
             p85 = np.percentile(y_vals, 85)
@@ -127,7 +146,7 @@ def main():
             sns.kdeplot(
                 x=x_vals,
                 y=y_vals,
-                cmap=cmap2,
+                cmap="Grays",
                 fill=True,
                 clip=((0, 1), (y_min, y_max)),
                 cut=5,
@@ -161,14 +180,12 @@ def main():
             for artist in inner_artists:
                 artist.set_clip_path(clip_rect)
 
-            # Compute regression line predicted values to find its range
             x_arr = np.array(x_vals)
             y_arr = np.array(y_vals)
             coeffs = np.polyfit(x_arr, y_arr, 1)
             x_line = np.linspace(x_arr.min(), x_arr.max(), 200)
             y_line = np.polyval(coeffs, x_line)
 
-            # Expand y limits to include regression line if it goes outside percentile range
             y_lower = min(p15, y_line.min())
             y_upper = max(p85, y_line.max())
 
@@ -193,6 +210,10 @@ def main():
 
     plt.tight_layout(rect=[0, 0, 1, 0.97])
     plt.savefig("plots/data_metrics.svg")
+
+
+if __name__ == "__main__":
+    main()
 
 
 def analyze_mask():
@@ -265,8 +286,3 @@ def analyze_mask():
     plt.xlabel("Percentage of zeros")
     plt.ylabel("Prediction")
     plt.savefig("plots/perceptual_net_zeros_preds.svg")
-
-
-if __name__ == "__main__":
-    # analyze_mask()
-    main()

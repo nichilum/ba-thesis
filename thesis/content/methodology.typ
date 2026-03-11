@@ -143,9 +143,9 @@ The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2
 
 Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls, making labeling of samples which are fed to our loss network (see @loss_network) difficult.
 
-Parameter based reverberation, like delay networks are fast and require little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to e.g. size and wetness controls that we can use for labeling (see @loss_network).
+Parameter based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @loss_network).
 
-In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done by either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unitys processing is also done in realtime, which makes it not feasable, as the runtime would be about 324 hours (cf. @dataset_comp).
+In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
 
 A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangable framework. Using this the original Conv-TasNet dataloader was adjusted to use the @RIR implementation.
 
@@ -176,9 +176,9 @@ Specifically, we first used Valhalla Supermassive in VST3 format, which was late
 //     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
 //     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
-When processing the data from our dataset, the desicion was made to reverberate all files in their native sample rate and then later upsampled to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and Freesound at 44.1 kHz.
+When processing the data from our dataset, the desicion was made to reverberate all files in their native sample rate and then later upsample them to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and Freesound at 44.1 kHz.
 
-While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented due to the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation. The effects of these are discussed in @disc_upsampling.
+While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented due to the Nyquist theorem @shannonCommunicationPresenceNoise1949. #TODO[due is maybe wrong? The Nyquist theorem only explains it] While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation. The effects of these are discussed in @disc_upsampling.
 
 // - sample rate: upscaling downscaling possible??
 // - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
@@ -231,8 +231,22 @@ To optimize model performance this error must be minimized.
 - what loss functions are used
 - why own loss function
 
+@related_work
+- shows that SI-SNR has been used
+- shows that PESQ has been used
+- both are regressive, error based loss function
+- pesq tries a perceptually weighted approach
+- all general loss functions as shown in taxonomy (sisnr and pesq count too) are made for problem set and not singular specific problems @ciampiconiSurveyTaxonomyLoss2024
+
+- we wanted to analyze loss functions for our specific dereverberation problem
+- as explained in @preprocessing_reverberation our parameter reverb exposes size and wetness controls per sample
+  - these are objective measures of the reverb (normalized)
+  - when size or wetness == 0 then there is no reverb, when size and wetness == 1 the reverb is maximized
+  - we plot different regressive error based loss functions against size and wetness parameters
+    - this should show which loss function would best approximate performance in the dereverberation task
 
 
+- as loss functions must be differentiable (see @fun_loss_function) it could be possible to use a neural network as a loss function. This would allow us to learn an algorithm that predicts a quality measure based on the objective values of size and wetness
 
 
 

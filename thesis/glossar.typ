@@ -108,17 +108,17 @@
   ),
   BSD: (
     short: "BSD",
-    long: "bark spectral distortion",
+    long: "Bark Spectral Distortion",
     group: "Metrics",
   ),
   PSQM: (
     short: "PSQM",
-    long: "perceptual speech quality measure",
+    long: "Perceptual Speech Quality Measure",
     group: "Metrics",
   ),
   PAQM: (
     short: "PAQM",
-    long: "perceptual audio quality measure",
+    long: "Perceptual Audio Quality Measure",
     group: "Metrics",
   ),
 )

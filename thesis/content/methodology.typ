@@ -232,24 +232,21 @@ In the time or waveform domain error-based regressive loss functions (e.g. @MSE,
 
 === Analyzation of Applicable Loss Functions
 
-The loss functions described above are not specific to our problem of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
+The metrics described in @fun_quality_metrics can all be used a loss functions. The problem that all of them have in common it that non are specific to our task of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
 
-Since then multiple new models for objectively measuring signal quality have been created. State-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006. Comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 making it a valid option for a loss function.
+Other state-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 meaning that @ViSQOL and PEMO-Q were not further considered.
 
-As we face a very specific problem we wanted to analyze different loss functions.
+As explained in @preprocessing_reverberation the final dataset was reverberated offline using an implementation of the FreeVerb reverberator allowing for export of size and wetness parameters on a per sample basis. The wetness and size parameters are objective measurements which we know to be true.
+A fully reverberated signal is defined as:
+$ ("wetness" = 1) and ("size"= 1) $
+. A fully dereverberated signal is defined as:
+$ ("wetness" = 1) or ("size"= 1) $
+. This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or in other words how well each metric estimates reverberation (and in turn dereverberation) of a signal.
 
-- we wanted to analyze loss functions for our specific dereverberation problem
-- as explained in @preprocessing_reverberation our parameter reverb exposes size and wetness controls per sample
-  - these are objective measures of the reverb (normalized)
-  - when size or wetness == 0 then there is no reverb, when size and wetness == 1 the reverb is maximized
-  - we plot different regressive error based loss functions against size and wetness parameters
-    - this should show which loss function would best approximate performance in the dereverberation task
-
-
-
-
-
-
+#figure(
+  caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset, data between the 15th and 85th percentile is shown in color],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
+)
 
 
 
@@ -291,15 +288,7 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
 
 - general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
 
-#figure(
-  caption: [Metrics usable as loss functions analyzed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
-  image("/experiments/perceptual-quality/plots/data_metrics_test_6236_15_85_percentile.svg"),
-)
 
-#figure(
-  caption: [Metrics usable as loss functions analyzed over 6236 datapoints from test dataset, outliers removed (data between 15th and 85th percentile)],
-  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
-)
 
 #TODO[
   - Show \<15 and >85 data in e.g. grey

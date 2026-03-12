@@ -44,22 +44,13 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 -
 == Quality Metrics<fun_quality_metrics>
 
-#TODO[
-  WHAT DO WE ACTUALLY NEED HERE?:
-  SISDR
-  Source-to-Artifact Ratio (SAR)
-  Source-to-Interference Ratio (SIR)
-  Source-to-Distortion Ratio (SDR)
-  Signal-to-Noise Ratio (SNR)
-]
-
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
-$ s $
-is defined as the ground truth, also named reference or true, signal.
 
-$ hat(s) $
-is defined as the predicted, also named test or processed, signal.
+
+
+/ $s$: is defined as the ground truth, also named reference or true, signal.
+/ $hat(s)$: is defined as the predicted, also named test or processed, signal.
 
 All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @loss_network.
 
@@ -81,14 +72,14 @@ measures the average squared difference between the predicted and the ground tru
 The Pearson's product-momentum coefficient is defined as:
 
 $
-  rho_(Y, hat(Y)) = "corr"(Y, hat(Y))="cov"(Y, hat(Y))/(sigma_Y sigma_hat(Y)) = ("E"[(Y-mu_Y)(hat(Y)-mu_hat(Y))])/(sigma_Y sigma_hat(Y)), "if" sigma_Y sigma_hat(Y) > 0
+  rho_(s, hat(s)) = "corr"(s, hat(s))="cov"(s, hat(s))/(sigma_s sigma_hat(s)) = ("E"[(s-mu_s)(hat(s)-mu_hat(s))])/(sigma_s sigma_hat(s)), "if" sigma_s sigma_hat(s) > 0
 $
 
-where $sigma_Y "and" sigma_hat(Y)$ are the standard deviations, $mu_Y "and" mu_hat(Y)$ the expected values and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp:
+where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_hat(s)$ the expected values and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp:
 
 #figure(caption: [Interpretation of the Pearson coefficient], table(
   columns: 3,
-  [*$rho_(Y, hat(Y))$*], [*$rho_(Y, hat(Y))$*], [*Association Between Variables*],
+  [*$rho_(s, hat(s))$*], [*$rho_(s, hat(s))$*], [*Association Between Variables*],
   [$+0.8 "to" +1.0$], [$-0.8 "to" -1.0$], [Very strong association],
   [$+0.6 "to" +0.8$], [$-0.6 "to" -0.8$], [Strong association],
   [$+0.4 "to" +0.6$], [$-0.4 "to" -0.6$], [Moderate association],
@@ -111,7 +102,7 @@ It can also be mentioned that there are other variants, like Source-to-Artifact 
 
 === PESQ<fun_pesq>
 
-Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. It also maps the signal into a representation of percieved loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
+Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. It also maps the signal into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
 #figure(caption: [Structure of @PESQ:both model taken from @rixPerceptualEvaluationSpeech2001], raw-render(
   ```dot
@@ -218,9 +209,3 @@ The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation
   ),
   height: 5cm,
 ))<audio_quality_pipeline>
-
-=== ViSQOL<fun_visqol>
-
-@chinenViSQOLV3Open2020
-
-=== PEMO-Q<fun_pemoq>

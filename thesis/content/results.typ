@@ -29,12 +29,15 @@
 }
 
 
-#let v(array, digits: 2, std_digits: 2) = [#calc.round(arrayAvg(array), digits: digits) #sym.plus.minus  #calc.round(arrayStd(array), digits: std_digits)]
+#let v(array, digits: 2, std_digits: 2) = [#calc.round(arrayAvg(array), digits: digits) #sym.plus.minus  #calc.round(
+    arrayStd(array),
+    digits: std_digits,
+  )]
 
 #let stormCSV = loadAnalysisCSV("../data/export20260204-125026.csv")
 #let convtasnetCSV = loadAnalysisCSV("../data/export20260205-120712.csv")
 
-= Results
+= Results<results>
 
 == Conv-TasNet
 
@@ -46,14 +49,14 @@ Three loss functions were evaluated. The @SI-SNR, which serves as the original C
   caption: [
     Training curves for Conv-TasNet with different loss functions. The @SI-SNR loss did not converge to a positive value, while the @MSE loss converged stably.
   ],
-  image("../figures/conv_tasnet_loss_comparison.svg")
+  image("../figures/conv_tasnet_loss_comparison.svg"),
 )
 
 #figure(
   caption: [
     Training curve for Conv-TasNet with @MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
   ],
-  image("../figures/conv_tasnet_mss_loss.svg")
+  image("../figures/conv_tasnet_mss_loss.svg"),
 )
 
 The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
@@ -62,7 +65,7 @@ The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as w
   caption: [
     Spectrogram comparison of input (left) and output (middle) of the @MSE\-trained Conv-TasNet on a speech (top) and music (bottom) sample.
   ],
-  image("../figures/spectrogram_comparison.png")
+  image("../figures/spectrogram_comparison.png"),
 )<spectrogram_comparison>
 
 On music and non-speech content, however, the model introduces noticeable timbral artifacts.
@@ -97,22 +100,54 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
   table(
     columns: 7,
     align: (left, center, center, center, center, center, center),
-    table.header(
-      [*Method*], [*WV-MOS*], [*PESQ*], [*ESTOI*], [*SI-SDR*], [*SI-SIR*], [*SI-SAR*],
-    ),
-    [Mixture],   [$1.78 plus.minus 0.99$], [$1.36 plus.minus 0.19$], [$0.46 plus.minus 0.12$], [$-7.3 plus.minus 5.5$],  [$-7.5 plus.minus 5.4$],  [---],
-    [SGMSE+],    [$3.49 plus.minus 0.39$], [$2.66 plus.minus 0.45$], [$0.85 plus.minus 0.06$], [$2.4 plus.minus 7.2$],   [$11.6 plus.minus 9.9$],  [$2.8 plus.minus 6.8$],
-    [NCSN++],    [$2.99 plus.minus 0.38$], [$2.08 plus.minus 0.47$], [$0.85 plus.minus 0.06$], [$6.1 plus.minus 3.8$],   [$21.4 plus.minus 7.0$],  [$6.1 plus.minus 3.7$],
-    [GaGNet],    [$2.40 plus.minus 0.52$], [$1.59 plus.minus 0.37$], [$0.68 plus.minus 0.09$], [$-0.5 plus.minus 4.8$],  [$7.7 plus.minus 4.0$],   [$0.2 plus.minus 5.1$],
-    [*StoRM*],   [$bold(3.73 plus.minus 0.32)$], [$bold(2.83 plus.minus 0.42)$], [$bold(0.88 plus.minus 0.04)$], [$bold(6.5 plus.minus 4.0)$], [$bold(22.9 plus.minus 8.2)$], [$bold(6.5 plus.minus 3.9)$],
-  )
+    table.header([*Method*], [*WV-MOS*], [*PESQ*], [*ESTOI*], [*SI-SDR*], [*SI-SIR*], [*SI-SAR*]),
+    [Mixture],
+    [$1.78 plus.minus 0.99$],
+    [$1.36 plus.minus 0.19$],
+    [$0.46 plus.minus 0.12$],
+    [$-7.3 plus.minus 5.5$],
+    [$-7.5 plus.minus 5.4$],
+    [---],
+
+    [SGMSE+],
+    [$3.49 plus.minus 0.39$],
+    [$2.66 plus.minus 0.45$],
+    [$0.85 plus.minus 0.06$],
+    [$2.4 plus.minus 7.2$],
+    [$11.6 plus.minus 9.9$],
+    [$2.8 plus.minus 6.8$],
+
+    [NCSN++],
+    [$2.99 plus.minus 0.38$],
+    [$2.08 plus.minus 0.47$],
+    [$0.85 plus.minus 0.06$],
+    [$6.1 plus.minus 3.8$],
+    [$21.4 plus.minus 7.0$],
+    [$6.1 plus.minus 3.7$],
+
+    [GaGNet],
+    [$2.40 plus.minus 0.52$],
+    [$1.59 plus.minus 0.37$],
+    [$0.68 plus.minus 0.09$],
+    [$-0.5 plus.minus 4.8$],
+    [$7.7 plus.minus 4.0$],
+    [$0.2 plus.minus 5.1$],
+
+    [*StoRM*],
+    [$bold(3.73 plus.minus 0.32)$],
+    [$bold(2.83 plus.minus 0.42)$],
+    [$bold(0.88 plus.minus 0.04)$],
+    [$bold(6.5 plus.minus 4.0)$],
+    [$bold(22.9 plus.minus 8.2)$],
+    [$bold(6.5 plus.minus 3.9)$],
+  ),
 )<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female " @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
 
 #figure(
   caption: [
     Spectrogram comparison of input (left) and output (middle) of StoRM on a speech (top) and music (bottom) sample.
   ],
-  image("../figures/spectrogram_comparison_storm.png")
+  image("../figures/spectrogram_comparison_storm.png"),
 )<spectrogram_comparison_storm>
 #TODO[Search for better music example, as the dry and reverberant are basically the same, and no good transients are visible in the spectogram]
 
@@ -185,7 +220,9 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
 
 #figure(
   caption: [],
-  image("../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png")
+  image(
+    "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png",
+  ),
 )
 
 - gating effect

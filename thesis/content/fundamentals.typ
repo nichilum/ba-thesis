@@ -42,6 +42,14 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 -
 == Quality Metrics<fun_quality_metrics>
 
+#TODO[
+  WHAT DO WE ACTUALLY NEED HERE?:
+  SISDR
+  Source-to-Artifact Ratio (SAR)
+  Source-to-Interference Ratio (SIR)
+  Source-to-Distortion Ratio (SDR)
+  Signal-to-Noise Ratio (SNR)
+]
 
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
@@ -51,7 +59,8 @@ is defined as the ground truth, also named reference or true, signal.
 $ hat(s) $
 is defined as the predicted, also named test or processed, signal.
 
-All measures are investigated for general usability in audio adjacent machine learning tasks. A specific comparison for our dereverberation network is found in @loss_network.
+All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @loss_network.
+
 
 === MAE and MSE<fun_mae_mse>
 
@@ -65,7 +74,28 @@ $ "MSE" = 1/n sum_(i=1)^n (s_i - hat(s)_i)^2 $
 
 measures the average squared difference between the predicted and the ground truth signal. Although both the @MSE and @MAE were used successfully as loss functions in e.g. music source separation approaches @defossezMusicSourceSeparation2019 @stollerWaveUNetMultiScaleNeural2018 @takahashiD3NetDenselyConnected2020 they fall short in generative and human-ear centered tasks as both unfairly penalize shifts in time and amplitude of the predicted signal and do not conform to the equal-loudness levels as perceived by the human ear @AcousticsNormalEqualloudnesslevel2023 and therefore overweight the importance of low frequencies.
 
-=== Correlation
+=== Correlation<fun_corr>
+
+The Pearson's product-momentum coefficient is defined as:
+
+$
+  rho_(Y, hat(Y)) = "corr"(Y, hat(Y))="cov"(Y, hat(Y))/(sigma_Y sigma_hat(Y)) = ("E"[(Y-mu_Y)(hat(Y)-mu_hat(Y))])/(sigma_Y sigma_hat(Y)), "if" sigma_Y sigma_hat(Y) > 0
+$
+
+where $sigma_Y "and" sigma_hat(Y)$ are the standard deviations, $mu_Y "and" mu_hat(Y)$ the expected values and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp:
+
+#figure(caption: [Interpretation of the Pearson coefficient], table(
+  columns: 3,
+  [*$rho_(Y, hat(Y))$*], [*$rho_(Y, hat(Y))$*], [*Association Between Variables*],
+  [$+0.8 "to" +1.0$], [$-0.8 "to" -1.0$], [Very strong association],
+  [$+0.6 "to" +0.8$], [$-0.6 "to" -0.8$], [Strong association],
+  [$+0.4 "to" +0.6$], [$-0.4 "to" -0.6$], [Moderate association],
+  [$+0.2 "to" +0.4$], [$-0.2 "to" -0.4$], [Weak association],
+  [$+0.0 "to" +0.2$], [$-0.0 "to" -0.2$], [Very weak or no association],
+))<p_coeff_interp>
+
+
+The problem is that both input signals are assumed to be two random variables which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019 using a statistical relationship to compare a reference to a test signal proved challenging (see @loss_network).
 
 === SI-SNR<fun_si-snr>
 
@@ -88,5 +118,5 @@ The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation
 
 #TODO[Add some graphics from the @thiedePEAQITUStandard2000 paper and bark scale]
 
-=== ViSQOL
-=== PEMO-Q
+=== ViSQOL<fun_visqol>
+=== PEMO-Q<fun_pemoq>

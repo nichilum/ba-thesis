@@ -2,51 +2,18 @@
 #import "@preview/statastic:1.0.0": arrayAvg, arrayStd
 #import "@preview/lilaq:0.5.0" as lq
 
-= Results<results>
+#let d(storm, tasnet, ylabel) = {
+  lq.diagram(
+    xaxis: (
+      ticks: range(1, 3).zip(([StoRM], [Conv-TasNet])),
+      subticks: none,
+    ),
+    ylabel: ylabel,
 
-== Conv-TasNet
-
-=== Loss Function
-
-Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs. A multi-scale spectral loss likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs. Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs.
-
-//TODO: we do not know the reason for this, might be a user error
-
-#figure(
-  caption: [
-    Training curves for Conv-TasNet with different loss functions. The SI-SNR loss did not converge to a positive value, while the MSE loss converged stably.
-  ],
-  image("../figures/conv_tasnet_loss_comparison.svg"),
-)
-
-#figure(
-  caption: [
-    Training curve for Conv-TasNet with MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
-  ],
-  image("../figures/conv_tasnet_mss_loss.svg"),
-)
-
-The MSE-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB.
-
-On music and non-speech content, however, the model introduces noticeable timbral artifacts.
-
-#figure(
-  caption: [
-    Spectrogram comparison of input (left) and output (middle) of the MSE-trained Conv-TasNet on a speech (top) and music (bottom) sample.
-  ],
-  image("../figures/spectrogram_comparison.png"),
-)
-
-
-#TODO[other word than failure? maybe "instability"?]
-These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the failure of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
-
-#figure(
-  caption: [],
-  image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
-)
-
-
+    lq.boxplot(storm, outliers: none, median: rgb(171, 105, 144)),
+    lq.boxplot(tasnet, outliers: none, x: 2, median: rgb(171, 105, 144)),
+  )
+}
 
 #let loadAnalysisCSV(filename) = {
   let input = csv(filename)
@@ -70,6 +37,126 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
 #let stormCSV = loadAnalysisCSV("../data/export20260204-125026.csv")
 #let convtasnetCSV = loadAnalysisCSV("../data/export20260205-120712.csv")
 
+= Results
+
+== Conv-TasNet
+
+Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs. A multi-scale spectral loss likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs. Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs.
+
+//TODO: we do not know the reason for this, might be a user error
+
+#figure(
+  caption: [
+    Training curves for Conv-TasNet with different loss functions. The SI-SNR loss did not converge to a positive value, while the MSE loss converged stably.
+  ],
+  image("../figures/conv_tasnet_loss_comparison.svg"),
+)
+
+#figure(
+  caption: [
+    Training curve for Conv-TasNet with MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
+  ],
+  image("../figures/conv_tasnet_mss_loss.svg"),
+)
+
+The MSE-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+
+#figure(
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of the MSE-trained Conv-TasNet on a speech (top) and music (bottom) sample.
+  ],
+  image("../figures/spectrogram_comparison.png"),
+)<spectrogram_comparison>
+
+On music and non-speech content, however, the model introduces noticeable timbral artifacts.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto, auto),
+    align: (left, right, right, right, right),
+    table.header([*Metric*], [*Mean*], [*Std*], [*Min*], [*Max*]),
+    [SI-SNR], [31.311], [11.014], [8.808], [72.779],
+    [SI-SDR], [31.236], [10.715], [8.824], [65.070],
+    [PESQ], [1.453], [0.374], [1.136], [3.120],
+    [WV-MOS], [1.468], [0.302], [1.233], [2.571],
+  ),
+  caption: [Conv-TasNet dereverberation metrics (N = 179)],
+)<conv_tasnet_metrics>
+
+These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
+
+#TODO[Si-SNR metric in @conv_tasnet_metrics is propably wrong (almost double the value mentioned in the paper)]
+
+== StoRM
+
+Unlike Conv-TasNet, StoRM was not trained from scratch. We used the official pretrained dereverberation checkpoint provided by the authors, trained on the WSJ0 corpus reverberated with the REVERB challenge dataset @lemercierStoRMDiffusionbasedStochastic2023 @kinoshitaReverbChallengeCommon2013 @garofolojohns.CSRIWSJ0Complete2007. The training data consists of speech recordings sampled at 16 kHz, establishing an 8 kHz frequency ceiling. Architecturally, StoRM follows a generative stochastic regeneration approach: a discriminative denoiser first produces an initial estimate of the clean signal, which a score-based diffusion model then refines through a learned reverse process @lemercierStoRMDiffusionbasedStochastic2023. This contrasts with Conv-TasNet's discriminative masking, and the iterative inference required by the diffusion component has direct implications for computational cost.
+
+On in-domain speech signals, StoRM achieves strong dereverberation quality. @storm_paper_metrics shows the evaluation from the original paper. These numbers serve as an upper bound for speech dereverberation quality achievable with this model.
+
+#figure(
+  caption: [StoRM dereverberation metrics on the WSJ0+REVERB test set, reproduced from @lemercierStoRMDiffusionbasedStochastic2023.],
+  table(
+    columns: 7,
+    align: (left, center, center, center, center, center, center),
+    table.header([*Method*], [*WV-MOS*], [*PESQ*], [*ESTOI*], [*SI-SDR*], [*SI-SIR*], [*SI-SAR*]),
+    [Mixture],
+    [$1.78 plus.minus 0.99$],
+    [$1.36 plus.minus 0.19$],
+    [$0.46 plus.minus 0.12$],
+    [$-7.3 plus.minus 5.5$],
+    [$-7.5 plus.minus 5.4$],
+    [---],
+
+    [SGMSE+],
+    [$3.49 plus.minus 0.39$],
+    [$2.66 plus.minus 0.45$],
+    [$0.85 plus.minus 0.06$],
+    [$2.4 plus.minus 7.2$],
+    [$11.6 plus.minus 9.9$],
+    [$2.8 plus.minus 6.8$],
+
+    [NCSN++],
+    [$2.99 plus.minus 0.38$],
+    [$2.08 plus.minus 0.47$],
+    [$0.85 plus.minus 0.06$],
+    [$6.1 plus.minus 3.8$],
+    [$21.4 plus.minus 7.0$],
+    [$6.1 plus.minus 3.7$],
+
+    [GaGNet],
+    [$2.40 plus.minus 0.52$],
+    [$1.59 plus.minus 0.37$],
+    [$0.68 plus.minus 0.09$],
+    [$-0.5 plus.minus 4.8$],
+    [$7.7 plus.minus 4.0$],
+    [$0.2 plus.minus 5.1$],
+
+    [*StoRM*],
+    [$bold(3.73 plus.minus 0.32)$],
+    [$bold(2.83 plus.minus 0.42)$],
+    [$bold(0.88 plus.minus 0.04)$],
+    [$bold(6.5 plus.minus 4.0)$],
+    [$bold(22.9 plus.minus 8.2)$],
+    [$bold(6.5 plus.minus 3.9)$],
+  ),
+)<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female " @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
+
+#figure(
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of StoRM on a speech (top) and music (bottom) sample.
+  ],
+  image("../figures/spectrogram_comparison_storm.png"),
+)<spectrogram_comparison_storm>
+#TODO[Search for better music example, as the dry and reverberant are basically the same, and no good transients are visible in the spectogram]
+
+On music and other non-speech content, the model's behaviour is less predictable. As the pretrained checkpoint has no exposure to non-speech signals during training, generalisation is limited to the extent that spectral patterns of broadband audio are covered by the speech-domain prior. In listening tests, music samples processed by StoRM tend to exhibit subtle timbral changes compared to the unprocessed input, without achieving a consistent reduction of the reverberant tail. This out-of-domain degradation is expected given the training data composition and is explored further in the quantitative comparison in the next section.
+
+The iterative reverse diffusion inference requires many sequential neural network evaluations per sample, making StoRM substantially more expensive than Conv-TasNet. On a single H100 GPU (CLAIX-2023-ML), processing 2048 AudioSet samples took 6 h 14 m 51 s, compared to 4 m 15 s for Conv-TasNet --- approximately $88times$ slower (cf. @conv_tasnet_storm_comparison). Real-time application of this pretrained model is therefore not feasible without architectural modifications such as reducing the number of reverse diffusion steps or distillation.
+
+
+== Comparison of Conv-TasNet and StoRM for diverse signals
+
+Both Conv-TasNet and StoRM were trained exclusively on speech recordings and have no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
 
 #figure(
   caption: [
@@ -90,28 +177,10 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
       [*Runtime*], [6:14:51], [0:04:15],
     )
   },
-)
+)<conv_tasnet_storm_comparison>
 
-#TODO[Spectogram of our output (storm and convtasnet) for audioset samples]
-
-- high std in some metrics, especially in SISNR and MSE
-- overall low odg and di
-- low-ish pesq score
-- good SISNR score, but high std
-- _compare metrics to storm and convtasnet paper metrics with speech-samples_
-
-#let d(storm, tasnet, ylabel) = {
-  lq.diagram(
-    xaxis: (
-      ticks: range(1, 3).zip(([StoRM], [Conv-TasNet])),
-      subticks: none,
-    ),
-    ylabel: ylabel,
-
-    lq.boxplot(storm, outliers: none, median: rgb(171, 105, 144)),
-    lq.boxplot(tasnet, outliers: none, x: 2, median: rgb(171, 105, 144)),
-  )
-}
+Across all metrics both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistens, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model.
+A recurring informal observation from listening tests and viewing spectograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison, @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
 
 #figure(
   caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
@@ -124,9 +193,20 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
     d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"), d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
     d(stormCSV.odg, convtasnetCSV.odg, "ODG"), d(stormCSV.di, convtasnetCSV.di, "DI"),
   ),
-)
+)<boxplot_comparison>
 
 #TODO[Think about outliers in boxplots (only show some?)]
+
+When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$). The SI-SNR values appear nearly identical ($31.39$ vs. $31.26$) but, as also noted for @conv_tasnet_metrics, these figures are likely incorrect. Their magnitude differs significantly from in-domain speech results from the respective original papers, which is implausible for an out-of-domain test set. The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s, while StoRM requires $6$ h $14$ m $51$ s --- approximately $88 times$ the inference time.
+
+== Quality Network
+
+#figure(
+  caption: [],
+  image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
+)
+
+== Our implementation
 
 #figure(
   caption: [],
@@ -142,3 +222,6 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
   - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
 - if the input signal is not so reverberant, the output only gets dereverberated very little
 - quality of dereverberation is highly dependent on the quality of the input signal
+
+
+

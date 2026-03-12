@@ -106,6 +106,11 @@
     long: "mean absolute error",
     group: "Metrics",
   ),
+  MSS: (
+    short: "MSS",
+    long: "multi-scale spectral loss",
+    group: "Metrics",
+  ),
   BSD: (
     short: "BSD",
     long: "Bark Spectral Distortion",

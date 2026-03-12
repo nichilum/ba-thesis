@@ -185,6 +185,7 @@ class PerceptualNetTrainer:
 
     @staticmethod
     def _loss_mat(loss_quality, loss_odg, loss_size, loss_wetness):
+        return loss_quality
         return (
             2.0 * loss_quality + 1.0 * loss_odg + 0.75 * loss_size + 0.75 * loss_wetness
         )

@@ -108,6 +108,22 @@
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Machine Learning}
 }
 
+@incollection{benestyPearsonCorrelationCoefficient2009,
+  title = {Pearson {{Correlation Coefficient}}},
+  booktitle = {Noise {{Reduction}} in {{Speech Processing}}},
+  author = {Benesty, Jacob and Chen, Jingdong and Huang, Yiteng and Cohen, Israel},
+  editor = {Cohen, Israel and Huang, Yiteng and Chen, Jingdong and Benesty, Jacob},
+  date = {2009},
+  pages = {1--4},
+  publisher = {Springer},
+  location = {Berlin, Heidelberg},
+  doi = {10.1007/978-3-642-00296-0_5},
+  abstract = {This chapter develops several forms of the Pearson correlation coefficient in the different domains. This coefficient can be used as an optimization criterion to derive different optimal noise reduction filters [14], but is even more useful for analyzing these optimal filters for their noise reduction performance.},
+  isbn = {978-3-642-00296-0},
+  langid = {english},
+  keywords = {Complex Conjugation,Noise Reduction,Optimization Criterion,Pearson Correlation,Random Vector}
+}
+
 @online{benIPhoneMicrophoneFrequency2009,
   title = {{{iPhone Microphone Frequency Response Comparison}}},
   author = {{ben}},
@@ -187,6 +203,22 @@
   abstract = {Most state-of-the-art machine learning techniques revolve around the optimisation of loss functions. Defining appropriate loss functions is therefore critical to successfully solving problems in this field. In this survey, we present a comprehensive overview of the most widely used loss functions across key applications, including regression, classification, generative modeling, ranking, and energy-based modeling. We introduce 43 distinct loss functions, structured within an intuitive taxonomy that clarifies their theoretical foundations, properties, and optimal application contexts. This survey is intended as a resource for undergraduate, graduate, and Ph.D. students, as well as researchers seeking a deeper understanding of loss functions.},
   pubstate = {prepublished},
   keywords = {Computer Science - Machine Learning}
+}
+
+@inproceedings{cordourierGCCPHATCrossCorrelationAudio2019,
+  title = {{{GCC-PHAT Cross-Correlation Audio Features}} for {{Simultaneous Sound Event Localization}} and {{Detection}} ({{SELD}}) on {{Multiple Rooms}}},
+  booktitle = {Proceedings of the {{Detection}} and {{Classification}} of {{Acoustic Scenes}} and             {{Events}} 2019 {{Workshop}} ({{DCASE2019}})},
+  author = {Cordourier, Hector and Lopez Meyer, Paulo and Huang, Jonathan and Del Hoyo Ontiveros, Juan and Lu, Hong},
+  date = {2019},
+  eprint = {2451/60727},
+  eprinttype = {hdl},
+  pages = {55--58},
+  publisher = {New York University},
+  doi = {10.33682/3re4-nd65},
+  abstract = {In this work, we show a simultaneous sound event localization and detection (SELD) system, with enhanced acoustic features, in which we propose using the well-known Generalized Cross Correlation (GCC) PATH algorithm, to augment the magnitude and phase regular Fourier spectra features at each frame. GCC has already been used for some time to calculate the Time Difference of Arrival (TDOA) in simultaneous audio signals, in moderately reverberent environments, using classic signal processing techniques, and can assist audio source localization in current deep learning machines. The neural net architecture we used is a Convolutional Recurrent Neural Network (CRNN), and is tested using the sound database prepared for the Task 3 of the 2019 DCASE Challenge. Our proposed system is able to achieve 20.4 of direction of arrival error, 86.4\% frame recall, 87.1\% F-score and 0.20 error rate detection in testing samples.},
+  eventtitle = {4th {{Workshop}} on {{Detection}} and {{Classification}} of {{Acoustic Scenes}} and {{Events}}             ({{DCASE}} 2019)},
+  isbn = {978-0-578-59596-2},
+  langid = {english}
 }
 
 @article{cueilleEffectsReverberationSpeech2022,
@@ -537,6 +569,14 @@
   abstract = {We introduce Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions, based on adaptive estimates of lower-order moments. The method is straightforward to implement, is computationally efficient, has little memory requirements, is invariant to diagonal rescaling of the gradients, and is well suited for problems that are large in terms of data and/or parameters. The method is also appropriate for non-stationary objectives and problems with very noisy and/or sparse gradients. The hyper-parameters have intuitive interpretations and typically require little tuning. Some connections to related algorithms, on which Adam was inspired, are discussed. We also analyze the theoretical convergence properties of the algorithm and provide a regret bound on the convergence rate that is comparable to the best known results under the online convex optimization framework. Empirical results demonstrate that Adam works well in practice and compares favorably to other stochastic optimization methods. Finally, we discuss AdaMax, a variant of Adam based on the infinity norm.},
   pubstate = {prepublished},
   keywords = {Computer Science - Machine Learning}
+}
+
+@inproceedings{kinoshitaReverbChallengeCommon2013,
+  title = {The Reverb Challenge: A Common Evaluation Framework for Dereverberation and Recognition of Reverberant Speech},
+  booktitle = {{{IEEE}} Workshop on Applications of Signal Processing to Audio and Acoustics},
+  author = {Kinoshita, Keisuke and Delcroix, Marc and Yoshioka, Takuya and Nakatani, Tomohiro and Habets, Emanuel and Haeb-Umbach, Reinhold and Leutnant, Volker and Sehr, Armin and Kellermann, Walter and Maas, Roland and {al.}, et},
+  date = {2013},
+  pages = {22--23}
 }
 
 @article{kolbaekLossFunctionsSupervised2020,
@@ -981,6 +1021,20 @@
   abstract = {Complex-valued processing has brought deep learning-based speech enhancement and signal extraction to a new level. Typically, the process is based on a time-frequency (TF) mask which is applied to a noisy spectrogram, while complex masks (CM) are usually preferred over real-valued masks due to their ability to modify the phase. Recent work proposed to use a complex filter instead of a point-wise multiplication with a mask. This allows to incorporate information from previous and future time steps exploiting local correlations within each frequency band. In this work, we propose DeepFilterNet, a two stage speech enhancement framework utilizing deep filtering. First, we enhance the spectral envelope using ERB-scaled gains modeling the human frequency perception. The second stage employs deep filtering to enhance the periodic components of speech. Additionally to taking advantage of perceptual properties of speech, we enforce network sparsity via separable convolutions and extensive grouping in linear and recurrent layers to design a low complexity architecture. We further show that our two stage deep filtering approach outperforms complex masks over a variety of frequency resolutions and latencies and demonstrate convincing performance compared to other state-of-the-art models.},
   pubstate = {prepublished},
   keywords = {Computer Science - Machine Learning,Electrical Engineering and Systems Science - Audio and Speech Processing,Electrical Engineering and Systems Science - Signal Processing}
+}
+
+@article{schwarMultiScaleSpectralLoss2023,
+  title = {Multi-{{Scale Spectral Loss Revisited}}},
+  author = {Schwär, Simon and Müller, Meinard},
+  date = {2023},
+  journaltitle = {IEEE Signal Processing Letters},
+  shortjournal = {IEEE Signal Process. Lett.},
+  volume = {30},
+  pages = {1712--1716},
+  issn = {1070-9908, 1558-2361},
+  doi = {10.1109/LSP.2023.3333205},
+  abstract = {The Multi-Scale Spectral (MSS) loss is commonly used for comparing audio signals, as it provides a good trade-off between temporal and spectral resolution. However, some configuration choices, including window type and size, magnitude compression, as well as the distance between spectrograms, are often set implicitly, even though they can significantly impact the loss properties and the convergence of trained models. Particularly in the context of differentiable digital signal processing (DDSP), where learned parameters may explicitly control the frequency of synthesis components, the MSS loss often fails to provide informative gradients. The main goal of this letter is to gain a better understanding of how different configurations of the MSS loss affect this problem. As an illustrative example, we analyze the task of sinusoid frequency estimation via gradient descent to compare different configurations and their effect on the loss properties. Furthermore, we show that favorable configurations can also facilitate unsupervised training of a more complex DDSP additive synthesis autoencoder. Our results indicate that a careful configuration may benefit many applications where the MSS loss is utilized.},
+  langid = {english}
 }
 
 @article{schwarzRealTimeDereverberationDeep2015,

@@ -2,7 +2,7 @@
 #import "@preview/statastic:1.0.0": arrayAvg, arrayStd
 #import "@preview/lilaq:0.5.0" as lq
 
-= Results
+= Results<results>
 
 == Conv-TasNet
 
@@ -16,14 +16,14 @@ Three loss functions were evaluated. The @SI-SNR, which serves as the original C
   caption: [
     Training curves for Conv-TasNet with different loss functions. The SI-SNR loss did not converge to a positive value, while the MSE loss converged stably.
   ],
-  image("../figures/conv_tasnet_loss_comparison.svg")
+  image("../figures/conv_tasnet_loss_comparison.svg"),
 )
 
 #figure(
   caption: [
     Training curve for Conv-TasNet with MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
   ],
-  image("../figures/conv_tasnet_mss_loss.svg")
+  image("../figures/conv_tasnet_mss_loss.svg"),
 )
 
 The MSE-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB.
@@ -34,7 +34,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
   caption: [
     Spectrogram comparison of input (left) and output (middle) of the MSE-trained Conv-TasNet on a speech (top) and music (bottom) sample.
   ],
-  image("../figures/spectrogram_comparison.png")
+  image("../figures/spectrogram_comparison.png"),
 )
 
 
@@ -62,7 +62,10 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
 }
 
 
-#let v(array, digits: 2, std_digits: 2) = [#calc.round(arrayAvg(array), digits: digits) #sym.plus.minus  #calc.round(arrayStd(array), digits: std_digits)]
+#let v(array, digits: 2, std_digits: 2) = [#calc.round(arrayAvg(array), digits: digits) #sym.plus.minus  #calc.round(
+    arrayStd(array),
+    digits: std_digits,
+  )]
 
 #let stormCSV = loadAnalysisCSV("../data/export20260204-125026.csv")
 #let convtasnetCSV = loadAnalysisCSV("../data/export20260205-120712.csv")
@@ -117,20 +120,19 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
     column-gutter: 1cm,
     row-gutter: .5cm,
     align: right,
-    d(stormCSV.mse, convtasnetCSV.mse, "MSE"),
-    d(stormCSV.si_snr, convtasnetCSV.si_snr, "SI-SNR"),
-    d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"),
-    d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
-    d(stormCSV.odg, convtasnetCSV.odg, "ODG"),
-    d(stormCSV.di, convtasnetCSV.di, "DI"),
-  )
+    d(stormCSV.mse, convtasnetCSV.mse, "MSE"), d(stormCSV.si_snr, convtasnetCSV.si_snr, "SI-SNR"),
+    d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"), d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
+    d(stormCSV.odg, convtasnetCSV.odg, "ODG"), d(stormCSV.di, convtasnetCSV.di, "DI"),
+  ),
 )
 
 #TODO[Think about outliers in boxplots (only show some?)]
 
 #figure(
   caption: [],
-  image("../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png")
+  image(
+    "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png",
+  ),
 )
 
 - gating effect

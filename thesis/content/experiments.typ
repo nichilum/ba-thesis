@@ -3,7 +3,7 @@
 
 = Implementation & Experimental Setup
 
-== Conv-TasNet for diverse audio dereverberation
+== Conv-TasNet for diverse audio dereverberation<impl_conv_tasnet>
 
 Conv-TasNet @luoConvTasNetSurpassingIdeal2019 operates in the time domain using a learned encoder--TCN--decoder architecture, where a temporal convolutional network estimates a multiplicative mask over the encoded signal to isolate a target source (cf. @related_work_conv_tasnet). Although originally designed for speech source separation, the masking paradigm is conceptually compatible with dereverberation. Late reflections overlap with the direct sound in the encoder representation, and a mask can in principle suppress this reverberant energy while retaining the direct component.
 

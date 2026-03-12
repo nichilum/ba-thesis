@@ -41,7 +41,9 @@
 
 == Conv-TasNet
 
-Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs. A @MSS likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs. Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs.
+Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). The unusual high value could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose").
+
+Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs (cf. @conv_tasnet_loss_comparison).
 
 //TODO: we do not know the reason for this, might be a user error
 
@@ -50,16 +52,18 @@ Three loss functions were evaluated. The @SI-SNR, which serves as the original C
     Training curves for Conv-TasNet with different loss functions. The @SI-SNR loss did not converge to a positive value, while the @MSE loss converged stably.
   ],
   image("../figures/conv_tasnet_loss_comparison.svg"),
-)
+)<conv_tasnet_loss_comparison>
 
 #figure(
   caption: [
     Training curve for Conv-TasNet with @MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
   ],
   image("../figures/conv_tasnet_mss_loss.svg"),
-)
+)<conv_tasnet_mss_loss>
 
 The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+
+#TODO[write about @conv_tasnet_metrics, and how it may show signs of dereverberation (or it doesnt, but its purely audible)]
 
 #figure(
   caption: [
@@ -82,7 +86,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
     [PESQ],   [1.453],  [0.374],  [1.136], [3.120],
     [WV-MOS], [1.468],  [0.302],  [1.233], [2.571],
   ),
-  caption: [Conv-TasNet dereverberation metrics (N = 179)],
+  caption: [Conv-TasNet dereverberation metrics on LibriSpeech `test-clean` (N = 179)],
 )<conv_tasnet_metrics>
 
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
@@ -162,7 +166,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
 
 #figure(
   caption: [
-    Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) #footnote([https://help.itc.rwth-aachen.de/service/rhr4fjjutttf/article/fbd107191cf14c4b8307f44f545cf68a/]) with 2048 Random AudioSet Samples.
+    Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) @CLAIX2023RWTHHigh) with 2048 Random AudioSet Samples.
   ],
   {
     // set text(size: 7pt)

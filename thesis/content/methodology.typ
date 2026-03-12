@@ -64,7 +64,7 @@ Another dataset of @RIR:pl was gathered, which was later in part used for reverb
 //   - IN THEORY ILLEGAL: DMCA 1201 / (Urheberrechtsgesetz) § 95a Schutz technischer Maßnahmen
 // - talk about size and what we managed to download
 
-=== Data Preprocessing
+=== Dataset Creation
 
 A supervised training approach (as explained in @supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
@@ -196,9 +196,9 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 
 
 
-==== PEAQ<preprocessing_peaq>
+==== Calculation of @PEAQ Scores<preprocessing_peaq>
 
-As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 44.8 kHz for use with @PEAQ.
+As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
 
 ==== Non-Silent Parts
 

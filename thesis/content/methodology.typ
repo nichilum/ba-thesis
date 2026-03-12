@@ -232,9 +232,9 @@ In the time or waveform domain error-based regressive loss functions (e.g. @MSE,
 
 === Analyzation of Applicable Loss Functions
 
-The metrics described in @fun_quality_metrics can all be used a loss functions. The problem that all of them have in common it that non are specific to our task of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
+The metrics described in @fun_quality_metrics can all be used a loss functions. The problem that all of them have in common it that non are specific to our task of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date") write: "Certain other applications have not yet been fully characterised or may need parts of the model to be changed. These include: music quality [...]". An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
 
-Other state-of-the-art measures include Google's @ViSQOL as well as PEMO-Q @GoogleVisqol2026 @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 meaning that @ViSQOL and PEMO-Q were not further considered.
+Other state-of-the-art measures include Google's @ViSQOL @chinenViSQOLV3Open2020 as well as PEMO-Q @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 meaning that @ViSQOL and PEMO-Q were not further considered.
 
 As explained in @preprocessing_reverberation the final dataset was reverberated offline using an implementation of the FreeVerb reverberator allowing for export of size and wetness parameters on a per sample basis. The wetness and size parameters are objective measurements which we know to be true.
 A fully reverberated signal is defined as:

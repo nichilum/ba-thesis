@@ -41,7 +41,11 @@
 
 == Conv-TasNet
 
-Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at a unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). The unusual high value could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
+#TODO[
+  explain why conv tasnet was self trained (as explained in @impl_conv_tasnet)
+]
+
+Three loss functions were evaluated. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at an unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). This could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
 
 Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs (cf. @conv_tasnet_loss_comparison).
 
@@ -49,19 +53,19 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
 
 #figure(
   caption: [
-    Training curves for Conv-TasNet with different loss functions. The @SI-SNR loss did not converge to a positive value, while the @MSE loss converged stably.
+    Training curves for Conv-TasNet with different loss functions. The @SI-SNR loss did not converge to a positive value, while the @MSE loss converged stably. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
   image("../figures/conv_tasnet_loss_comparison.svg"),
 )<conv_tasnet_loss_comparison>
 
 #figure(
   caption: [
-    Training curve for Conv-TasNet with @MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions.
+    Training curve for Conv-TasNet with @MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
   image("../figures/conv_tasnet_mss_loss.svg"),
 )<conv_tasnet_mss_loss>
 
-The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse held-out set covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
 
 #TODO[write about @conv_tasnet_metrics, and how it may show signs of dereverberation (or it doesnt, but its purely audible)]
 
@@ -78,13 +82,11 @@ On music and non-speech content, however, the model introduces noticeable timbra
   table(
     columns: (auto, auto, auto, auto, auto),
     align: (left, right, right, right, right),
-    table.header(
-      [*Metric*], [*Mean*], [*Std*], [*Min*], [*Max*],
-    ),
+    table.header([*Metric*], [*Mean*], [*Std*], [*Min*], [*Max*]),
     [SI-SNR], [-31.311], [-11.014], [-72.779], [-8.808],
     [SI-SDR], [-31.236], [-10.715], [-65.070], [-8.824],
-    [PESQ],   [1.453],  [0.374],  [1.136], [3.120],
-    [WV-MOS], [1.468],  [0.302],  [1.233], [2.571],
+    [PESQ], [1.453], [0.374], [1.136], [3.120],
+    [WV-MOS], [1.468], [0.302], [1.233], [2.571],
   ),
   caption: [Conv-TasNet dereverberation metrics on LibriSpeech `test-clean` (N = 179)],
 )<conv_tasnet_metrics>
@@ -92,6 +94,11 @@ On music and non-speech content, however, the model introduces noticeable timbra
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
 
 #TODO[Si-SNR metric in @conv_tasnet_metrics is propably wrong (almost double the value mentioned in the paper)]
+
+#TODO[
+
+  explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+]
 
 == StoRM
 
@@ -195,21 +202,18 @@ A recurring informal observation from listening tests and viewing spectograms is
     column-gutter: 1cm,
     row-gutter: .5cm,
     align: right,
-    d(stormCSV.mse, convtasnetCSV.mse, "MSE"),
-    d(stormCSV.si_snr, convtasnetCSV.si_snr, "SI-SNR (dB)"),
-    d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"),
-    d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
-    d(stormCSV.odg, convtasnetCSV.odg, "ODG"),
-    d(stormCSV.di, convtasnetCSV.di, "DI"),
-  )
+    d(stormCSV.mse, convtasnetCSV.mse, "MSE"), d(stormCSV.si_snr, convtasnetCSV.si_snr, "SI-SNR (dB)"),
+    d(stormCSV.pesq_wb, convtasnetCSV.pesq_wb, "PESQ-WB"), d(stormCSV.pesq_nb, convtasnetCSV.pesq_nb, "PESQ-NB"),
+    d(stormCSV.odg, convtasnetCSV.odg, "ODG"), d(stormCSV.di, convtasnetCSV.di, "DI"),
+  ),
 )<boxplot_comparison>
 
 #TODO[Think about outliers in boxplots (only show some?)]
 
-When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$). 
+When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$).
 
 #TODO[Think about this, maybe -31 dB is actually plausible for an out of domain test?]
-The SI-SNR values appear nearly identical ($-31.39$ dB vs. $-31.26$ dB) but, as also noted for @conv_tasnet_metrics, these figures are likely incorrect. Their magnitude differs so significantly from in-domain speech results that it raises a question of plausibility. 
+The SI-SNR values appear nearly identical ($-31.39$ dB vs. $-31.26$ dB) but, as also noted for @conv_tasnet_metrics, these figures are likely incorrect. Their magnitude differs so significantly from in-domain speech results that it raises a question of plausibility.
 
 The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s, while StoRM requires $6$ h $14$ m $51$ s --- approximately $88 times$ the inference time.
 

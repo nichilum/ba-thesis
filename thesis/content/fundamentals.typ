@@ -44,15 +44,6 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 -
 == Quality Metrics<fun_quality_metrics>
 
-#TODO[
-  WHAT DO WE ACTUALLY NEED HERE?:
-  SISDR
-  Source-to-Artifact Ratio (SAR)
-  Source-to-Interference Ratio (SIR)
-  Source-to-Distortion Ratio (SDR)
-  Signal-to-Noise Ratio (SNR)
-]
-
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
 $ s $

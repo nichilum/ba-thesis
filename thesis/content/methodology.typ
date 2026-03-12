@@ -196,7 +196,7 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 
 
 
-==== Calculation of @PEAQ Scores<preprocessing_peaq>
+==== Calculation of @PEAQ:short Scores<preprocessing_peaq>
 
 As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
 

@@ -35,6 +35,10 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 === Self-Supervised Learning<self_supervised>
 
 === Loss Function<fun_loss_function>
+
+- Gradient Descent
+- Backwardpropagation
+- Autograd
 - in general training of neural net with loss function:
   - partial derivatives, gradient, jacobi matrix (analytical)
   - gradient descent explaination
@@ -46,14 +50,10 @@ The idea of autoencoders has been part of the historical landscape of neuralnetw
 
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
-
-
-
 / $s$: is defined as the ground truth, also named reference or true, signal.
 / $hat(s)$: is defined as the predicted, also named test or processed, signal.
 
 All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @loss_network.
-
 
 === MAE and MSE<fun_mae_mse>
 

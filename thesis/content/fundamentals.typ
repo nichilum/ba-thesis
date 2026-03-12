@@ -178,9 +178,7 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
 
 === PEAQ<fun_peaq>
 
-The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. It offers two metrics, namely the @ODG:both and @DI:both. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017 @thiedePEAQITUStandard2000.
-
-#TODO[short text about ear model]
+The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general it compares two time aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
 
 #figure(caption: [High-level representation of the @PEAQ:both model taken from @thiedePEAQITUStandard2000], raw-render(
   ```dot
@@ -222,4 +220,7 @@ The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation
 ))<audio_quality_pipeline>
 
 === ViSQOL<fun_visqol>
+
+@chinenViSQOLV3Open2020
+
 === PEMO-Q<fun_pemoq>

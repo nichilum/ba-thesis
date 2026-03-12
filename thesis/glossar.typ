@@ -126,4 +126,9 @@
     long: "Perceptual Audio Quality Measure",
     group: "Metrics",
   ),
+  KDE: (
+    short: "KDE",
+    long: "kernel density estimation",
+    group: "Metrics",
+  ),
 )

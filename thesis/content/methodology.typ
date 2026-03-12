@@ -52,7 +52,19 @@ $
   )
 $
 
-With $S_"train"=0.7 "and" S_"val"=0.15$.
+With $S_"train"=0.7 "and" S_"val"=0.15$. A final distribution as can be seen in @subset_comp was achieved.
+
+#TODO[LEO bitti script anpassen:]
+
+#figure(caption: [Subset composition], table(
+  columns: 3,
+  align: (left, center, center),
+  [*Subset*], [*Number of Files*], [*Length of Files*],
+  [_Train_], [76234 (70.08 %)], [],
+  [_Validation_], [16120 (14.82 %)], [],
+  [_Testing_], [16421 (15.1 %)], [],
+  [_Total_], [108775], [324h 44m 49s],
+))<subset_comp>
 
 Another dataset of @RIR:pl was gathered, which was later in part used for reverberation purposes. The @RIR:pl were collected from the @AIR dataset @jeub09a as well as from the "Hybrid Reverb" plugin in Ableton Live 12 #footnote[https://www.ableton.com/en/packs/hybrid-reverb/]. The @AIR dataset contains 433 individual @RIR:pl with different acoustical properties, such as reverberation time and room volume.
 
@@ -198,7 +210,7 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 
 ==== Calculation of @PEAQ:short Scores<preprocessing_peaq>
 
-As explained in @loss_network for every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
+For every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
 
 ==== Non-Silent Parts
 
@@ -244,51 +256,44 @@ $ ("wetness" = 1) or ("size"= 1) $
 . This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or in other words how well each metric estimates reverberation (and in turn dereverberation) of a signal.
 
 #figure(
-  caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset, data between the 15th and 85th percentile is shown in color],
+  caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
-)
+)<plot_metrics_against_size_and_wet>
 
+@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters.
 
+A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
 
+The dotted blue line represents a linear regression over all data points including outliers. The light blue confidence interval band represents the 95% confidence interval for the regression line.
 
+All tested signals were time and amplitude aligned. The only difference being the reverberation of the processed signal. Wetness and size values of the reverberator are selected randomly from a uniform distribution.
 
+/ @ODG: #[
+    Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @percep_quality_net.
+    @plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values meaning that most test signals even those with little reverberation were classified as annoyingly impaired.
+  ]
+/ @DI: #[
+    The @DI score was not normalized as exact value range is unkown to us. It behaved similarily to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter where many strongly reverberated signals are classified as "good".
+  ]
+/ @PESQ: #[
+    Although @PESQ was only proven to work on speech signals it showed a slightly improved performance compared to the @DI score.
+  ]
+/ @SI-SNR: #[
+    It is evident that the @SI-SNR metric performs best as a judgement of dereverberation performance. The wetness @KDE plot show a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution the @SI-SNR density stays mostly the same over the entire wetness range which is the desired behavior.
 
-
-
-
-
-
-- as loss functions must be differentiable (see @fun_loss_function) it could be possible to use a neural network as a loss function. This would allow us to learn an algorithm that predicts a quality measure based on the objective values of size and wetness
-
-
-
-
-
-We place the following requirements on the loss network:
-- differentiable
-- wideband (up to 44100 Hz)
-- _good_ prediction of size and wetness parameters: use mse, corr metric here calculated by test script as indicator of good performance
-
-
-
-
-
-
-
-
-
-
-- why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
-- why mel scale not bark etc.
-go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
-
-- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
-  - why our loss model was based on CNN14
-  - runtime (inference) evaluation
-
-- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
-
-
+    Although more outlier data is present in the size plot a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
+  ]
+/ @MSE: #[
+    The @MSE metric shows not only no real predictive performance in the @KDE plot but also a broad confidence interval negating the expression of the regression line in some sense.
+  ]
+/ @MAE: #[
+    In similar fashion to the @MSE metric, the @MAE shows poor performance against the size parameter. Against
+  ]
+/ Correlation: #[
+    - basically good
+    - but weird value range
+    - and weird density distribution in wetness plot
+  ]
 
 #TODO[
   - Show \<15 and >85 data in e.g. grey
@@ -305,12 +310,45 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
 ]
 
 Key takeaways:
-- wetness and size are objective measurements which we know to be true: $lim_("wet"arrow 1)$ and $lim_("size"arrow 1)$ means the signal is badly reverberated and $lim_("wet"arrow 0)$ and $lim_("size"arrow 0)$ means the signal is dereverberated
 - correlation, mae and mse are bad loss functions as they do not accurately predict wetness or size values
 - odg shows more "bad" (close to 0) values around higher wetness or size values, which is what we "need" from a loss function
 - di does it similarily but we cannot normalize it that well
 - si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
+
+
+
+
+=== Perceptual Quality Network<percep_quality_net>
+
 - train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
+
+- as loss functions must be differentiable (see @fun_loss_function) it could be possible to use a neural network as a loss function. This would allow us to learn an algorithm that predicts a quality measure based on the objective values of size and wetness
+
+
+
+
+
+We place the following requirements on the loss network:
+- differentiable
+- wideband (up to 44100 Hz)
+- _good_ prediction of size and wetness parameters: use mse, corr metric here calculated by test script as indicator of good performance
+
+
+
+
+- why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
+- why mel scale not bark etc.
+go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
+
+- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
+  - why our loss model was based on CNN14
+  - runtime (inference) evaluation
+
+- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
+
+
+
+
 
 
 quality is here defined as:
@@ -320,3 +358,8 @@ $ Q = "ODG"_"norm" dot (1 - "wet"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3
 
 
 LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
+
+=== Objective Quality Network<obj_quality_net>
+
+- same structure net as above but quality is defined without peaq because further analysis has led us ASTRAY
+

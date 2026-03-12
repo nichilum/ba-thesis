@@ -31,7 +31,7 @@ from torchmetrics.audio import (
 
 # ── paths ─────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).parents[2]
-OUTPUT_DIR = ROOT / "baseline" / "Conv-TasNet" / "output"
+OUTPUT_DIR = ROOT / "baseline" / "Conv-TasNet_MSE" / "output"
 TARGET_SR = 8_000   # Conv-TasNet output is 8 kHz
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -85,12 +85,12 @@ def align_signals(est: torch.Tensor, ref: torch.Tensor, max_lag_ms: float = 100.
 
 def si_snr(est: torch.Tensor, ref: torch.Tensor) -> float:
     metric = ScaleInvariantSignalNoiseRatio()
-    return -metric(est, ref).item()
+    return metric(est, ref).item()
 
 
 def si_sdr(est: torch.Tensor, ref: torch.Tensor) -> float:
     metric = ScaleInvariantSignalDistortionRatio()
-    return -metric(est, ref).item()
+    return metric(est, ref).item()
 
 
 def si_sar(est: torch.Tensor, ref: torch.Tensor) -> float:

@@ -268,54 +268,22 @@ The dotted blue line represents a linear regression over all data points includi
 
 All tested signals were time and amplitude aligned. The only difference being the reverberation of the processed signal. Wetness and size values of the reverberator are selected randomly from a uniform distribution.
 
-/ @ODG: #[
-    Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @percep_quality_net.
-    @plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values meaning that most test signals even those with little reverberation were classified as annoyingly impaired.
-  ]
-/ @DI: #[
-    The @DI score was not normalized as exact value range is unkown to us. It behaved similarily to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter where many strongly reverberated signals are classified as "good".
-  ]
-/ @PESQ: #[
-    Although @PESQ was only proven to work on speech signals it showed a slightly improved performance compared to the @DI score.
-  ]
-/ @SI-SNR: #[
-    It is evident that the @SI-SNR metric performs best as a judgement of dereverberation performance. The wetness @KDE plot show a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution the @SI-SNR density stays mostly the same over the entire wetness range which is the desired behavior.
+Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @percep_quality_net.
+@plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values meaning that most test signals even those with little reverberation were classified as annoyingly impaired.
 
-    Although more outlier data is present in the size plot a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
-  ]
-/ @MSE: #[
-    The @MSE metric shows not only no real predictive performance in the @KDE plot but also a broad confidence interval negating the expression of the regression line in some sense.
-  ]
-/ @MAE: #[
-    In similar fashion to the @MSE metric, the @MAE shows poor performance against the size parameter. Against
-  ]
-/ Correlation: #[
-    - basically good
-    - but weird value range
-    - and weird density distribution in wetness plot
-  ]
+The @DI score was not normalized as exact value range is unkown to us. It behaved similarily to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter where many strongly reverberated signals are classified as "good".
 
-#TODO[
-  - Show \<15 and >85 data in e.g. grey
-  - MSE: shit, HIGH DEVIATION FROM REGRESSION = bad
-  - MAE: eh, ok for wetness, although extreme FEATHERING/spread out
-  - corr: very good for wetness, weird range 0.8 is still technically correlating
-  - PUT QUALTIY IN ANOTHER PLOT
-    - make argument for why first quality score was using peaq (just because it should theoretically be the best)
-    - also storm was using pesq: ALSO ADD PESQ TO PLOT FOR COMPARISON WITH PEAQ
-    - then make argument why we removed PEAQ from quality score: in actuallity "bad" performance
-    - SISNR is hard to normalize which is theoretically not needed for loss function, value range makes sense here (unlike corr or ODG norm)
-  - maybe a plot for PESQ for only speech signals for reverberation
-  - PEAQ is just not a good metric for reverberation
-]
+Although @PESQ was only proven to work on speech signals it showed a slightly improved performance compared to the @DI score.
 
-Key takeaways:
-- correlation, mae and mse are bad loss functions as they do not accurately predict wetness or size values
-- odg shows more "bad" (close to 0) values around higher wetness or size values, which is what we "need" from a loss function
-- di does it similarily but we cannot normalize it that well
-- si snr could also be used but experiments with tasNet showed even it inferior or close to just the standard mse
+It is evident that the @SI-SNR metric performs best as a judgement of dereverberation performance. The wetness @KDE plot show a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution the @SI-SNR density stays mostly the same over the entire wetness range which is the desired behavior.
 
+Although more outlier data is present in the size plot a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
 
+The @MSE metric shows not only no real predictive performance in the @KDE plot but also a broad confidence interval negating the expression of the regression line.
+
+In similar fashion, the @MAE shows poor performance against the size parameter. The wetness plot shows a slight increase of @MAE against increasing wetness values. The problem being that this increase happens all below 0.04 meaning that every wetness value is a assigned a very low error value or in other words is interpreted as "good".
+
+The correlation metric exhibits a similar problem where not only the size plot shows subpar performance but the values in the wetness plot range from 1 to 0.8 which signifies a "very strong association" across the entire wetness range (cf. @fun_corr) making interpretation of the correlation value with respect to reverberation challenging. Furthermore the density of the correlatin-wetness plot does not align with the uniform distribution.
 
 
 === Perceptual Quality Network<percep_quality_net>

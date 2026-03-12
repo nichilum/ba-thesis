@@ -209,9 +209,3 @@ The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation
   ),
   height: 5cm,
 ))<audio_quality_pipeline>
-
-=== ViSQOL<fun_visqol>
-
-@chinenViSQOLV3Open2020
-
-=== PEMO-Q<fun_pemoq>

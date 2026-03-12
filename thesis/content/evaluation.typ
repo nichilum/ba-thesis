@@ -10,3 +10,7 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 == (An)echoic dataset
 - AudioSet and FSD50K are not "dry" datasets. they contain samples that are recorded under echoic conditions. 
 - The model is not shown fully dereverberated sample pairs during training
+
+== SI-SNR Calculations
+- we did some fucky wucky here
+- maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected

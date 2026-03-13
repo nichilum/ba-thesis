@@ -58,10 +58,10 @@
     entries.push((authorField, authors.join(", ")))
   }
 
-  entries.push(("Examiner", examiner))
+  entries.push(("Submitted to", examiner))
   // Only show supervisors if there are any
   if supervisors.len() > 0 {
-    let supervisorField = "Supervisor" + if supervisors.len() > 1 [s]
+    let supervisorField = "Second reviewer" + if supervisors.len() > 1 [s]
     entries.push((supervisorField, supervisors.join(", ")))
   }
   entries.push(("Start Date", startDate.display("[day].[month].[year]")))

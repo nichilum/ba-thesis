@@ -4,6 +4,10 @@
 
 == Perceptual Quality Net<eval_percep_quality_net>
 
+#figure(
+  caption: [Quality score prediction analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
+)<plot_nn_qual_against_size_and_wet>
 
 - ReLU: not entirely differentiable
 

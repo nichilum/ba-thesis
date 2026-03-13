@@ -258,12 +258,7 @@ $ ("wetness" = 1) or ("size"= 1) $
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>
 
-@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters.
-
-#TODO[Add $"size" dot "wetness"$ plot
-
-  - it is possible that samples with high wetness values have small size values and vice verca
-]
+@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefor are not reverberant. The "$"size" dot "wetness"$" plot corrects for that.
 
 A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
 
@@ -296,8 +291,6 @@ Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities
 We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection) it must support wideband analysis up to 44.1 kHz.
 
 Differentiability is given by the fact that the computations of a nerual network are differentiable. The only exception being the activation function `ReLU` which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero so this was ignored.
-
-#TODO[retrain maybe with sigmoid?]
 
 Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018 which estimates a @PESQ score for a given signal (see @related_quality_net) our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore our model combines a perceptual and an objective approach.
 

@@ -55,7 +55,7 @@ The following section will present different quality metrics desgined for compar
 
 All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @loss_network.
 
-=== MAE and MSE<fun_mae_mse>
+=== @MAE:short and @MSE:short<fun_mae_mse>
 
 The @MAE
 
@@ -90,7 +90,7 @@ where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_h
 
 The problem is that both input signals are assumed to be two random variables which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019 using a statistical relationship to compare a reference to a test signal proved challenging (see @loss_network).
 
-=== SI-SNR<fun_si-snr>
+=== @SI-SNR:short<fun_si-snr>
 
 The @SI-SNR:long
 
@@ -100,7 +100,7 @@ measures the level of distortion or noise in the predicted signal in a way that 
 
 It can also be mentioned that there are other variants, like Source-to-Artifact Ratio (SAR), Source-to-Interference Ratio (SIR), Source-to-Distortion Ratio (SDR) and Signal-to-Noise Ratio (SNR), each with Scale-Invariant (SI) forms, which are used in the field of source separation and speech enhancement, but are all inspired by the usual definition of the SNR @vincentPerformanceMeasurementBlind2006.
 
-=== PESQ<fun_pesq>
+=== @PESQ:short<fun_pesq>
 
 Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. It also maps the signal into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
@@ -167,7 +167,7 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
   width: 15cm,
 ))<speech_quality_pipeline>
 
-=== PEAQ<fun_peaq>
+=== @PEAQ:short<fun_peaq>
 
 The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general it compares two time aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
 

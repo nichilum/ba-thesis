@@ -93,7 +93,7 @@ def main():
             "net_quality": net_preds["quality"],
         }
 
-    results = list(map(mapper, tqdm(data.test_files[:10])))
+    results = list(map(mapper, tqdm(data.test_files)))
 
     metrics = [
         "net_quality",
@@ -120,8 +120,6 @@ def main():
 
     for r in results:
         r["size_wetness"] = r["size"] * r["wetness"]
-
-    print(results)
 
     x_axes = [
         ("size", "size", lambda d: sorted(d, key=lambda r: r["size"])),

@@ -54,15 +54,13 @@ $
 
 With $S_"train"=0.7 "and" S_"val"=0.15$. A final distribution as can be seen in @subset_comp was achieved.
 
-#TODO[LEO bitti script anpassen:]
-
 #figure(caption: [Subset composition], table(
   columns: 3,
   align: (left, center, center),
   [*Subset*], [*Number of Files*], [*Length of Files*],
-  [_Train_], [76234 (70.08 %)], [],
-  [_Validation_], [16120 (14.82 %)], [],
-  [_Testing_], [16421 (15.1 %)], [],
+  [_Train_], [76234 (70.08 %)], [227h 45m 06s (70.13 %)],
+  [_Validation_], [16120 (14.82 %)], [48h 16m 47s (14.87 %)],
+  [_Testing_], [16421 (15.1 %)], [48h 42m 54s (15.0 %)],
   [_Total_], [108775], [324h 44m 49s],
 ))<subset_comp>
 

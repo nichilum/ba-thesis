@@ -291,7 +291,7 @@ The correlation metric exhibits a similar problem where not only the size plot s
 
 === Perceptual Quality Network<percep_quality_net>
 
-Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is near impossible #TODO[CITE]. The @SI-SNR like all metrics introduced in @fun_quality_metrics suffers from the need of a "golden" reference which as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings we introduce our own loss network initially coined "Perceptual Quality Network".
+Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is near impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR like all metrics introduced in @fun_quality_metrics suffers from the need of a "golden" reference which as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings we introduce our own loss network initially coined "Perceptual Quality Network".
 
 We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection) it must support wideband analysis up to 44.1 kHz.
 
@@ -301,41 +301,15 @@ Differentiability is given by the fact that the computations of a nerual network
 
 Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018 which estimates a @PESQ score for a given signal (see @related_quality_net) our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore our model combines a perceptual and an objective approach.
 
-- train network on combination of odg, size and wetness resulting in quality score (lowest graph), which accurately predicts size and wetness
 
+Every training example combines a reverberated audio sample as the input for the neural network,
+the normalized size and wetness parameters used for the reverberation of the input audio sample, the normalized @ODG score taken from the comparison to the original sample using @PEAQ and a quality score defined as:
 
+$ "quality" = "ODG"_"norm" dot (1 - "wetness"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $
 
+. This quality score is used as a loss in the dereverberation network (see @impl_derev_net).
 
-We place the following requirements on the loss network:
-- differentiable
-- wideband (up to 44100 Hz)
-- _good_ prediction of size and wetness parameters: use mse, corr metric here calculated by test script as indicator of good performance
-
-
-
-
-- why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
-- why mel scale not bark etc.
-go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
-
-- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
-  - why our loss model was based on CNN14
-  - runtime (inference) evaluation
-
-- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
-
-
-
-
-
-
-quality is here defined as:
-$ Q = "ODG"_"norm" dot (1 - "wet"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $
-
-- plot is little pointless here: akin to plotting wetness and size against theirselfs, BUT in the end this quality function will be estimated using Neural Network
-
-
-LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
+Implementation details regarding model architecture and loss functions used qualify @ODG, size, wetness and quality predictions are discussed in @impl_percep_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance of the perceptual quality net is found in @eval_percep_quality_net.
 
 === Objective Quality Network<obj_quality_net>
 

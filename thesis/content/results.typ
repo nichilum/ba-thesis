@@ -213,7 +213,7 @@ When comparing the two models against each other, the differences across most me
 
 The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s, while StoRM requires $6$ h $14$ m $51$ s --- approximately $88 times$ the inference time.
 
-== Quality Network
+== Perceptual Quality Network<results_percep_quality_net>
 
 #figure(
   caption: [],

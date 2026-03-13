@@ -19,7 +19,24 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
 
 #import "@preview/neural-netz:0.3.0": draw-network
 
-== PerceptualQualityNet Architecture
+== Perceptual Quality Network<impl_percep_quality_network>
+
+
+- why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
+- why mel scale not bark etc.
+go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
+
+- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
+  - why our loss model was based on CNN14
+  - runtime (inference) evaluation
+
+- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
+
+
+- plot is little pointless here: akin to plotting wetness and size against theirselfs, BUT in the end this quality function will be estimated using Neural Network
+
+
+LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
 
 
 // ── Main backbone ──────────────────────────────────────────────────────────
@@ -34,7 +51,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Audio",
       name: "audio",
     ),
-
     // ── MelSpectrogram ─────────────────────────────────────────────────────
     (
       type: "custom",
@@ -48,7 +64,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       offset: 1.5,
       legend: "Feature Extractor (frozen)",
     ),
-
     // ── BN0 ────────────────────────────────────────────────────────────────
     (
       type: "custom",
@@ -62,7 +77,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       offset: 1.5,
       legend: "Batch Normalization",
     ),
-
     // ── Conv Block 1 ───────────────────────────────────────────────────────
     (
       type: "conv",
@@ -82,7 +96,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Avg\n2×2",
       name: "pool1",
     ),
-
     // ── Conv Block 2 ───────────────────────────────────────────────────────
     (
       type: "conv",
@@ -102,7 +115,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Avg\n2×2",
       name: "pool2",
     ),
-
     // ── Conv Block 3 ───────────────────────────────────────────────────────
     (
       type: "conv",
@@ -122,7 +134,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Avg\n2×2",
       name: "pool3",
     ),
-
     // ── Conv Block 4 ───────────────────────────────────────────────────────
     (
       type: "conv",
@@ -142,7 +153,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Avg\n2×2",
       name: "pool4",
     ),
-
     // ── Conv Block 5 ───────────────────────────────────────────────────────
     (
       type: "conv",
@@ -162,7 +172,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       label: "Avg\n2×2",
       name: "pool5",
     ),
-
     // ── Global Pooling ─────────────────────────────────────────────────────
     (
       type: "custom",
@@ -176,7 +185,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       offset: 2,
       legend: "Global Pooling",
     ),
-
     // ── FC Shared ──────────────────────────────────────────────────────────
     (
       type: "fc",
@@ -187,7 +195,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       name: "fc_shared",
       offset: 2,
     ),
-
     // ── ODG Head ───────────────────────────────────────────────────────────
     (
       type: "custom",
@@ -201,7 +208,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       offset: 3,
       legend: "Task Head",
     ),
-
     // ── Size Head ──────────────────────────────────────────────────────────
     (
       type: "custom",
@@ -216,7 +222,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       show-connection: false,
       legend: "Task Head (size/wet)",
     ),
-
     // ── Wetness Head ───────────────────────────────────────────────────────
     (
       type: "custom",
@@ -230,7 +235,6 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
       offset: 1.5,
       show-connection: false,
     ),
-
     // ── Quality Head ───────────────────────────────────────────────────────
     (
       type: "custom",
@@ -247,11 +251,11 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
   ),
 
   connections: (
-    (from: "fc_shared", to: "size",    type: "skip", mode: "air", label: "512", pos: 4),
+    (from: "fc_shared", to: "size", type: "skip", mode: "air", label: "512", pos: 4),
     (from: "fc_shared", to: "wetness", type: "skip", mode: "air", label: "512", pos: 5),
-    (from: "odg",       to: "quality", type: "skip", mode: "air", label: "cat+3", pos: 5),
-    (from: "size",      to: "quality", type: "skip", mode: "air", pos: 4),
-    (from: "wetness",   to: "quality", type: "skip", mode: "air", pos: 3),
+    (from: "odg", to: "quality", type: "skip", mode: "air", label: "cat+3", pos: 5),
+    (from: "size", to: "quality", type: "skip", mode: "air", pos: 4),
+    (from: "wetness", to: "quality", type: "skip", mode: "air", pos: 3),
     (from: "fc_shared", to: "quality", type: "skip", mode: "depth", label: "512", pos: 7),
   ),
 
@@ -417,7 +421,7 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
   ),
 )
 
-== Own Implementation
+== Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
   - show plots
 

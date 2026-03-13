@@ -158,7 +158,6 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
   ],
   image("../figures/spectrogram_comparison_storm.png"),
 )<spectrogram_comparison_storm>
-#TODO[Search for better music example, as the dry and reverberant are basically the same, and no good transients are visible in the spectogram]
 
 On music and other non-speech content, the model's behaviour is less predictable. As the pretrained checkpoint has no exposure to non-speech signals during training, generalisation is limited to the extent that spectral patterns of broadband audio are covered by the speech-domain prior. In listening tests, music samples processed by StoRM tend to exhibit subtle timbral changes compared to the unprocessed input, without achieving a consistent reduction of the reverberant tail. This out-of-domain degradation is expected given the training data composition and is explored further in the quantitative comparison in the next section.
 

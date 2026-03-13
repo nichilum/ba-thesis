@@ -26,11 +26,11 @@ SPEECH_STEM = SPEECH_OUT_NAME.split("_")[0]  # "4481-17498-0004"
 
 METADATA = ROOT / "experiments" / "perceptual-quality" / "data" / "metadata.jsonl"
 
-MUSIC_ID = "-0a4gn2ob_E ('Guitar', 'Music', 'Musical instrument').wav"
+MUSIC_ID = "-0dr4eWtWtQ ('Jingle bell',).wav"
 MUSIC_DRY = ROOT / "analysis" / "refs"       / MUSIC_ID
-MUSIC_OUT_ID = "-0a4gn2ob_E ('Guitar', 'Music', 'Musical instrument')_with_air_stairway_0_1_2_90_mls.wav"
+MUSIC_OUT_ID = "-0dr4eWtWtQ ('Jingle bell',)_with_Hybrid_Chambers_and_Large_Rooms_Gregorian Monks Choir Room L.wav"
 MUSIC_OUT = ROOT / "analysis" / "tests_storm" / MUSIC_OUT_ID
-MUSIC_WET = ROOT / "experiments" / "perceptual-quality" / "data" / "audio" / "33" / MUSIC_ID
+MUSIC_WET = ROOT / "experiments" / "perceptual-quality" / "data" / "audio" / "01" / MUSIC_ID
 
 OUT_PATH = ROOT / "thesis" / "figures" / "spectrogram_comparison_storm.png"
 

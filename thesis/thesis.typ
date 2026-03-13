@@ -21,7 +21,7 @@
 
 
 #include "/thesis/content/introduction.typ"
-#include "/thesis/content/background.typ"
+// #include "/thesis/content/background.typ"
 #include "/thesis/content/related_work.typ"
 
 #include "/thesis/content/fundamentals.typ"

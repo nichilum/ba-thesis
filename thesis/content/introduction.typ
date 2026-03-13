@@ -71,3 +71,9 @@ The performance of different quality metrics is assessed and their qualitative p
 
 // == Outline
 //   Describe the outline of your thesis
+
+== Background
+
+- Filter Approaches
+- Frequency-Domain Approaches
+- Time-Domain Approaches

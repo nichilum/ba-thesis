@@ -248,9 +248,9 @@ Other state-of-the-art measures include Google's @ViSQOL @chinenViSQOLV3Open2020
 
 As explained in @preprocessing_reverberation the final dataset was reverberated offline using an implementation of the FreeVerb reverberator allowing for export of size and wetness parameters on a per sample basis. The wetness and size parameters are objective measurements which we know to be true.
 A fully reverberated signal is defined as:
-$ ("wetness" = 1) and ("size"= 1) $
+$ ("wetness" = 1) and ("size"= 1) $<size_and_wetness_eq>
 . A fully dereverberated signal is defined as:
-$ ("wetness" = 1) or ("size"= 1) $
+$ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
 . This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or in other words how well each metric estimates reverberation (and in turn dereverberation) of a signal.
 
 #figure(
@@ -258,7 +258,7 @@ $ ("wetness" = 1) or ("size"= 1) $
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>
 
-@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefor are not reverberant. The "$"size" dot "wetness"$" plot corrects for that.
+@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
 
 A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
 

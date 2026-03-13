@@ -107,7 +107,7 @@ A supervised training approach (as explained in @supervised_learning) was chosen
 ))<derev_process_pipeline>
 
 
-Additional labels used for the perceptual loss model (see @loss_network) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
+Additional labels used for the perceptual loss model (see @meth_percep_quality_net) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
 
 #figure(caption: [Perceptual Loss Preprocessing Pipeline], raw-render(
   ```dot
@@ -151,9 +151,9 @@ The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2
 - delay networks
 - computational acoustics
 
-Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls, making labeling of samples which are fed to our loss network (see @loss_network) difficult.
+Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls, making labeling of samples which are fed to our loss network (see @meth_percep_quality_net) difficult.
 
-Parameter based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @loss_network).
+Parameter based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @meth_percep_quality_net).
 
 In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
 
@@ -231,7 +231,7 @@ As we don't want our model to focus on generating silence a mask is generated fo
 )<silent_mask_signal>
 
 
-== Loss<loss_network>
+== Analyzation of Applicable Loss Functions<analyze_loss_functions>
 #jojo
 
 As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
@@ -240,7 +240,6 @@ As shown in @fun_loss_function different loss functions exist for different prob
 
 In the time or waveform domain error-based regressive loss functions (e.g. @MSE, @SI-SNR and @PESQ) have identfied themselfs as well performing in the field of dereverberation (see @related_work and @fun_quality_metrics).
 
-=== Analyzation of Applicable Loss Functions<analyze_loss_functions>
 
 The metrics described in @fun_quality_metrics can all be used a loss functions. The problem that all of them have in common it that non are specific to our task of dereverberation. @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date") write: "Certain other applications have not yet been fully characterised or may need parts of the model to be changed. These include: music quality [...]". An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
 
@@ -266,7 +265,7 @@ The dotted blue line represents a linear regression over all data points includi
 
 All tested signals were time and amplitude aligned. The only difference being the reverberation of the processed signal. Wetness and size values of the reverberator are selected randomly from a uniform distribution.
 
-Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @percep_quality_net.
+Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @meth_percep_quality_net.
 @plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values meaning that most test signals even those with little reverberation were classified as annoyingly impaired.
 
 The @DI score was not normalized as exact value range is unkown to us. It behaved similarily to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter where many strongly reverberated signals are classified as "good".
@@ -284,7 +283,7 @@ In similar fashion, the @MAE shows poor performance against the size parameter. 
 The correlation metric exhibits a similar problem where not only the size plot shows subpar performance but the values in the wetness plot range from 1 to 0.8 which signifies a "very strong association" across the entire wetness range (cf. @fun_corr) making interpretation of the correlation value with respect to reverberation challenging. Furthermore the density of the correlatin-wetness plot does not align with the uniform distribution.
 
 
-=== Perceptual Quality Network<percep_quality_net>
+== Perceptual Quality Network<meth_percep_quality_net>
 
 Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is near impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR like all metrics introduced in @fun_quality_metrics suffers from the need of a "golden" reference which as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings we introduce our own loss network initially coined "Perceptual Quality Network".
 
@@ -304,7 +303,7 @@ $ "quality" = "ODG"_"norm" dot (1 - "wetness"_"norm" dot 0.4) dot (1 - "size"_"n
 
 Implementation details regarding model architecture and loss functions used qualify @ODG, size, wetness and quality predictions are discussed in @impl_percep_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance of the perceptual quality net is found in @eval_percep_quality_net.
 
-=== Objective Quality Network<obj_quality_net>
+== Objective Quality Network<meth_obj_quality_net>
 
 - same structure net as above but quality is defined without peaq because further analysis has led us ASTRAY
 

@@ -21,13 +21,21 @@
 
 
 #include "/thesis/content/introduction.typ"
+#pagebreak()
 // #include "/thesis/content/background.typ"
+// #pagebreak()
 #include "/thesis/content/related_work.typ"
+#pagebreak()
 
 #include "/thesis/content/fundamentals.typ"
+#pagebreak()
 #include "/thesis/content/methodology.typ"
+#pagebreak()
 #include "/thesis/content/experiments.typ"
+#pagebreak()
 
 #include "/thesis/content/results.typ"
+#pagebreak()
 #include "/thesis/content/evaluation.typ"
+#pagebreak()
 #include "/thesis/content/conclusion.typ"

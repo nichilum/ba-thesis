@@ -220,7 +220,7 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
 )
 
-== Our implementation
+== Dereverberation Network
 
 #figure(
   caption: [],

@@ -53,7 +53,7 @@ The following section will present different quality metrics desgined for compar
 / $s$: is defined as the ground truth, also named reference or true, signal.
 / $hat(s)$: is defined as the predicted, also named test or processed, signal.
 
-All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @loss_network.
+All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @meth_percep_quality_net.
 
 === @MAE:short and @MSE:short<fun_mae_mse>
 
@@ -88,7 +88,7 @@ where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_h
 ))<p_coeff_interp>
 
 
-The problem is that both input signals are assumed to be two random variables which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019 using a statistical relationship to compare a reference to a test signal proved challenging (see @loss_network).
+The problem is that both input signals are assumed to be two random variables which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019 using a statistical relationship to compare a reference to a test signal proved challenging (see @analyze_loss_functions).
 
 === @SI-SNR:short<fun_si-snr>
 

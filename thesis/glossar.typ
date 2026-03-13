@@ -131,4 +131,9 @@
     long: "kernel density estimation",
     group: "Metrics",
   ),
+  MOS: (
+    short: "MOS",
+    long: "mean opinion score",
+    group: "Metrics",
+  ),
 )

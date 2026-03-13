@@ -42,7 +42,7 @@ For the first stage, we take advantage from the fact that noise as well as speec
 have a smooth spectral envelope
 => prob not entirely possible for music and diverse audio signals
 
-== Quality Net
+== Quality Net<related_quality_net>
 
 - similar approach to our loss network
   - but based and validated on pesq

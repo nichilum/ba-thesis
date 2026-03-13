@@ -93,7 +93,7 @@ def main():
             "net_quality": net_preds["quality"],
         }
 
-    results = list(map(mapper, tqdm(data.test_files)))
+    results = list(map(mapper, tqdm(data.test_files[:10])))
 
     metrics = [
         "net_quality",
@@ -118,12 +118,22 @@ def main():
         # "quality": "Quality",
     }
 
+    for r in results:
+        r["size_wetness"] = r["size"] * r["wetness"]
+
+    print(results)
+
     x_axes = [
-        ("size", "Size", lambda d: sorted(d, key=lambda r: r["size"])),
-        ("wetness", "Wetness", lambda d: sorted(d, key=lambda r: r["wetness"])),
+        ("size", "size", lambda d: sorted(d, key=lambda r: r["size"])),
+        ("wetness", "wetness", lambda d: sorted(d, key=lambda r: r["wetness"])),
+        (
+            "size_wetness",
+            "size · wetness",
+            lambda d: sorted(d, key=lambda r: r["size_wetness"]),
+        ),
     ]
 
-    fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(10, 18))
+    fig, axes = plt.subplots(nrows=len(metrics), ncols=len(x_axes), figsize=(15, 18))
     sns.set_theme(style="white")
     cmap = sns.cubehelix_palette(start=0, light=1, as_cmap=True)
 

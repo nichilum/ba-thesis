@@ -21,5 +21,6 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 - The model is not shown fully dereverberated sample pairs during training
 
 == SI-SNR Calculations
-- we did some fucky wucky here
+- @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
+- did we fuck up here?
 - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected

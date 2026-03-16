@@ -175,9 +175,15 @@ Weights of the shared encoder are initialized using the Xavier uniform distribut
 
 == Objective Quality Network<impl_objective_quality_network>
 
-- two stages
-  - only change quality score
-  - change quality score and loss
+@ODG was shown to worsen the performance of the perceptual quality network (see @eval_percep_qual_net_cnn14). Consequently the perceptual quality network as seen in @impl_percep_qual_net_cnn14 was adjusted to base the prediction only on the wetness and size parameters.
+
+This change was done in two stages. Firstly only the quality score was modified by removing the @ODG score (cf. @meth_obj_quality_net). Loss calculation was left unchanged.
+
+The second stage also changed the loss calculation from @percep_qual_loss_init to just
+
+$ "loss" = "loss"_"quality" $
+
+Both stages are evaluated in @eval_objective_quality_net.
 
 == Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)

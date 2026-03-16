@@ -13,7 +13,7 @@ from utils.seed import seed
 import matplotlib.pyplot as plt
 from pathlib import Path
 import csv
-
+import time
 import seaborn as sns
 
 
@@ -46,9 +46,15 @@ def test_perceptual_net():
     all_predictions = []
     all_targets = []
 
+    total_sample_length = 0
+    total_inference_time = 0
+
     with torch.no_grad():
         for batch in tqdm(test_loader):
-            reverb_audio = batch["reverb_audio"].to(config["device"])
+            reverb_audio = batch["reverb_audio"]
+            for audio in reverb_audio:
+                total_sample_length += len(audio)
+            reverb_audio.to(config["device"])
 
             all_targets.append(
                 {
@@ -59,8 +65,13 @@ def test_perceptual_net():
                 }
             )
 
+            starttime = time.perf_counter()
             preds = model(reverb_audio, return_all=True)
+            total_inference_time += time.perf_counter() - starttime
             all_predictions.append(preds)
+
+    print(f"TOTAL NUMBER OF SAMPLES: {total_sample_length}")
+    print(f"TOTAL LENGTH OF INFERENCE TIME: {total_inference_time}")
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
     sns.set_theme(style="white")

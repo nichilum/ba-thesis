@@ -66,6 +66,11 @@
     long: "scale-invariant signal-to-noise ratio",
     group: "Metrics",
   ),
+  SI-SDR: (
+    short: "SI-SDR",
+    long: "scale-invariant signal-to-distortion ratio",
+    group: "Metrics",
+  ),
   ODG: (
     short: "ODG",
     long: "objective difference grade",

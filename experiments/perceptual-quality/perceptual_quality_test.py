@@ -51,10 +51,9 @@ def test_perceptual_net():
 
     with torch.no_grad():
         for batch in tqdm(test_loader):
-            reverb_audio = batch["reverb_audio"]
+            reverb_audio = batch["reverb_audio"].to(config["device"])
             for audio in reverb_audio:
                 total_sample_length += len(audio)
-            reverb_audio.to(config["device"])
 
             all_targets.append(
                 {

@@ -228,6 +228,16 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
 
 == Objective Quality Network<results_objective_quality_net>
 
+update score:
+#figure(
+  caption: [],
+  image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
+)
+update score and update loss:
+#figure(
+  caption: [],
+  image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
+)
 
 == Dereverberation Network
 

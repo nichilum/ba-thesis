@@ -303,6 +303,10 @@ $ "quality" = "ODG"_"norm" dot (1 - "wetness"_"norm" dot 0.4) dot (1 - "size"_"n
 
 Implementation details regarding model architecture and loss functions used qualify @ODG, size, wetness and quality predictions are discussed in @impl_percep_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance of the perceptual quality net is found in @eval_percep_quality_net.
 
+#TODO[
+  why log mel spectogram was chosen and not bark scale or smth other
+]
+
 == Objective Quality Network<meth_obj_quality_net>
 
 @analyze_loss_functions shows @PEAQ as being a flawed metric to estimate dereverberation performance. This conclusion is supported by the findings in @eval_percep_quality_net.

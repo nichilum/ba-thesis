@@ -21,12 +21,12 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
 
 The perceptual quality network was implemented twice. @impl_percep_qual_net_init shows the initial implementation of the perceptual quality network. It features a simple encoder network and prediction heads for each scoring metric.
 
-A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date") was written to adress the shortcomings of the first implementation as mentioned in @eval_percep_quality_net.
+A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date") was written to adress the shortcomings of the first implementation as mentioned in @eval_percep_qual_net_init.
 
 === Initial Implementation<impl_percep_qual_net_init>
 
-The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. A @CNN was chosen because faster than real time performance for use as a loss function was not needed. It was therefore possible to introduce a spectogram conversion.
-Also @CNN:pl have been widely adopted in audio machine learning #TODO[cite].
+The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. A @CNN architecture was chosen because faster than real time performance for use as a loss function was not of importance. It was therefore possible to introduce a spectogram conversion.
+@CNN:pl have also been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025.
 
 
 #figure(caption: [Architecture of the initial implementation of the perceptual quality network], table(
@@ -34,16 +34,13 @@ Also @CNN:pl have been widely adopted in audio machine learning #TODO[cite].
   align: center,
   stroke: 0.5pt,
 
-  // Header
-  table.cell(colspan: 3)[*Perceptual Quality Network*],
+  table.cell(colspan: 3)[*Perceptual Quality Network (Initial)*],
 
-  // Input
   table.cell(colspan: 3)[
     Log-magnitude spectrogram \
     STFT: n\_fft=2048, hop\_length=512
   ],
 
-  // Encoder
   table.cell(colspan: 3)[
     #math.equation(block: true, numbering: none)[
       $mat(delim: "(", 7 times 7 @ 32; "BN, ReLU")$
@@ -65,17 +62,14 @@ Also @CNN:pl have been widely adopted in audio machine learning #TODO[cite].
   ],
   table.cell(colspan: 3)[AdaptiveAvgPool $(4 times 4)$],
 
-  // Shared FC
   table.cell(colspan: 3)[
     Flatten \ FC $2048 arrow.r 256$, ReLU, Dropout(0.3)
   ],
 
-  // Parallel heads
   [*ODG Head* \ FC 256 #sym.arrow 64 \ ReLU \ FC 64 #sym.arrow 1 \ Sigmoid],
   [*Size Head* \ FC 256 #sym.arrow 32 \ ReLU \ FC 32 #sym.arrow 1 \ Sigmoid],
   [*Wetness Head* \ FC 256 #sym.arrow 32 \ ReLU \ FC 32 #sym.arrow 1 \ Sigmoid],
 
-  // Combined quality head
   table.cell(colspan: 3)[
     Concat [features(256) ∥ odg(1) ∥ size(1) ∥ wetness(1)] → 259
   ],
@@ -85,10 +79,18 @@ Also @CNN:pl have been widely adopted in audio machine learning #TODO[cite].
 ))<arch_impl_qual_net_init>
 
 @arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. Separate prediction heads for each quality metric (size, wetness, @ODG and the quality score) are suggested.
+AdamW was used as an optimizer with a learning rate of $10^(-3)$.
 
+A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
 
-
+$
+  "loss" = 2 dot "loss"_"quality" + "loss"_"odg" + 0.75 dot "loss"_"size" + 0.75 dot "loss"_"wetness"
+$<percep_qual_loss_init>
+.
 === CNN14<impl_percep_qual_net_cnn14>
+
+A number of improvements have been made:
+-
 
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.
@@ -98,15 +100,88 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
   - why our loss model was based on CNN14
   - runtime (inference) evaluation
 
-- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
-
 
 LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
 
+- same total loss as @percep_qual_loss_init
+#figure(caption: [Architecture of the CNN14 based implementation of the perceptual quality network], table(
+  columns: (1fr, 1fr, 1fr),
+  align: center,
+  stroke: 0.5pt,
+
+  table.cell(colspan: 3)[*Perceptual Quality Network (CNN14)*],
+
+  table.cell(colspan: 3)[
+    Log-mel spectrogram \
+    sr=44100, n\_fft=2048, hop=512, n\_mels=128
+  ],
+
+  table.cell(colspan: 3)[BN (128 mel bins)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 64; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 128; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 256; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 512; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 1024; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    Global pooling (mean over freq.) \
+    Max + Mean pool over time #sym.arrow 1024-dim \
+    Dropout(0.5)
+  ],
+
+  table.cell(colspan: 3)[
+    FC $1024 #sym.arrow 512$, ReLU, Dropout(0.3)
+  ],
+
+  [*ODG Head* \ FC 512 #sym.arrow 128 \ ReLU, Dropout(0.3) \ FC 128 #sym.arrow 1 \ Sigmoid],
+  [*Size Head* \ FC 512 #sym.arrow 64 \ ReLU, Dropout(0.3) \ FC 64 #sym.arrow 1 \ Sigmoid],
+  [*Wetness Head* \ FC 512 #sym.arrow 64 \ ReLU, Dropout(0.3) \ FC 64 #sym.arrow 1 \ Sigmoid],
+
+  table.cell(colspan: 3)[
+    Concat [features(512) ∥ odg(1) ∥ size(1) ∥ wetness(1)] #sym.arrow 515
+  ],
+
+  table.cell(colspan: 3)[
+    *Quality Head* \ FC 515 #sym.arrow 128, ReLU, Dropout(0.3) \ FC 128 #sym.arrow 1, Sigmoid
+  ],
+))
 
 
 == Objective Quality Network<impl_objective_quality_network>
 
+- two stages
+  - only change quality score
+  - change quality score and loss
 
 == Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)

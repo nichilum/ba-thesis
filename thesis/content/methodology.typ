@@ -78,7 +78,7 @@ Another dataset of @RIR:pl was gathered, which was later in part used for reverb
 
 A supervised training approach (as explained in @supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
-#figure(caption: [Dereverberation Preprocessing Pipeline], raw-render(
+#figure(caption: [Dereverberation preprocessing pipeline], raw-render(
   ```dot
     digraph pipeline {
       rankdir=LR
@@ -109,7 +109,7 @@ A supervised training approach (as explained in @supervised_learning) was chosen
 
 Additional labels used for the perceptual loss model (see @meth_percep_quality_net) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
 
-#figure(caption: [Perceptual Loss Preprocessing Pipeline], raw-render(
+#figure(caption: [Perceptual loss preprocessing pipeline], raw-render(
   ```dot
     digraph pipeline {
       rankdir=LR
@@ -305,5 +305,14 @@ Implementation details regarding model architecture and loss functions used qual
 
 == Objective Quality Network<meth_obj_quality_net>
 
-- same structure net as above but quality is defined without peaq because further analysis has led us ASTRAY
+@analyze_loss_functions shows @PEAQ as being a flawed metric to estimate dereverberation performance. This conclusion is supported by the findings in @eval_percep_quality_net.
+Challenging the idea that a perceptual metric is best we decided to test a purley objective network as a loss function.
 
+Adopting the same structure as the perceptual quality network the objective quality network only estimates the size and wetness attributes by defining the quality score as:
+
+
+$ "quality" = 1- 0.6 dot "wetness" - 0.4 dot "size" $
+
+Wetness was given more importance because @results_percep_quality_net has shown the network as having better estimation performance for the wetness parameter.
+
+Implementation details regarding model architecture and loss functions are discussed in @impl_objective_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance is found in @eval_objective_quality_net.

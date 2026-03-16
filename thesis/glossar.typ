@@ -60,6 +60,16 @@
     long: "computer vision",
     group: "Neural Networks",
   ),
+  LSTM: (
+    short: "LSTM",
+    long: "long short-term memory",
+    group: "Neural Networks",
+  ),
+  GRU: (
+    short: "GRU",
+    long: "gated recurrent unit",
+    group: "Neural Networks",
+  ),
   // Metrics
   SI-SNR: (
     short: "SI-SNR",

@@ -246,6 +246,8 @@ update score and update loss:
 
 == Dereverberation Network
 
+#TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
+
 #figure(
   caption: [],
   image(

@@ -187,6 +187,11 @@ LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real tim
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
   - show plots
 
+#TODO[
+  - which versions do the want to show the implementation of? only the best one (then compare si-snr with perceptual?)
+  - architecture is mostly the same for all
+  - show table with all hyperparameters (learning rate, batch size, etc.) for all versions
+]
 
 *inverse estimation in encoder space*
 - frequency

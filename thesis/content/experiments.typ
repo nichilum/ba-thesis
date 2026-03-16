@@ -19,6 +19,78 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
 
 == Perceptual Quality Network<impl_percep_quality_network>
 
+The perceptual quality network was implemented twice. @impl_percep_qual_net_init shows the initial implementation of the perceptual quality network. It features a simple encoder network and prediction heads for each scoring metric.
+
+A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date") was written to adress the shortcomings of the first implementation as mentioned in @eval_percep_qual_net_init.
+
+=== Initial Implementation<impl_percep_qual_net_init>
+
+The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. A @CNN architecture was chosen because faster than real time performance for use as a loss function was not of importance. It was therefore possible to introduce a spectogram conversion.
+@CNN:pl have also been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025.
+
+
+#figure(caption: [Architecture of the initial implementation of the perceptual quality network], table(
+  columns: (1fr, 1fr, 1fr),
+  align: center,
+  stroke: 0.5pt,
+
+  table.cell(colspan: 3)[*Perceptual Quality Network (Initial)*],
+
+  table.cell(colspan: 3)[
+    Log-magnitude spectrogram \
+    STFT: n\_fft=2048, hop\_length=512
+  ],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 7 times 7 @ 32; "BN, ReLU")$
+    ]
+  ],
+  table.cell(colspan: 3)[MaxPool $2 times 2$],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 5 times 5 @ 64; "BN, ReLU")$
+    ]
+  ],
+  table.cell(colspan: 3)[MaxPool $2 times 2$],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 128; "BN, ReLU")$
+    ]
+  ],
+  table.cell(colspan: 3)[AdaptiveAvgPool $(4 times 4)$],
+
+  table.cell(colspan: 3)[
+    Flatten \ FC $2048 arrow.r 256$, ReLU, Dropout(0.3)
+  ],
+
+  [*ODG Head* \ FC 256 #sym.arrow 64 \ ReLU \ FC 64 #sym.arrow 1 \ Sigmoid],
+  [*Size Head* \ FC 256 #sym.arrow 32 \ ReLU \ FC 32 #sym.arrow 1 \ Sigmoid],
+  [*Wetness Head* \ FC 256 #sym.arrow 32 \ ReLU \ FC 32 #sym.arrow 1 \ Sigmoid],
+
+  table.cell(colspan: 3)[
+    Concat [features(256) ∥ odg(1) ∥ size(1) ∥ wetness(1)] → 259
+  ],
+  table.cell(colspan: 3)[
+    *Quality Head* \ FC 259 #sym.arrow 64, ReLU \ FC 64 #sym.arrow 1, Sigmoid
+  ],
+))<arch_impl_qual_net_init>
+
+@arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. Separate prediction heads for each quality metric (size, wetness, @ODG and the quality score) are suggested.
+AdamW was used as an optimizer with a learning rate of $10^(-3)$.
+
+A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
+
+$
+  "loss" = 2 dot "loss"_"quality" + "loss"_"odg" + 0.75 dot "loss"_"size" + 0.75 dot "loss"_"wetness"
+$<percep_qual_loss_init>
+.
+=== CNN14<impl_percep_qual_net_cnn14>
+
+A number of improvements have been made:
+-
 
 - why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
 - why mel scale not bark etc.
@@ -28,393 +100,88 @@ go through loss network and explain weights (quality, size, wetness, odg) etc. m
   - why our loss model was based on CNN14
   - runtime (inference) evaluation
 
-- general comparison of different loss functions in audio ML (sisnr, pesq, mse, l1, our own)
-
-
-- plot is little pointless here: akin to plotting wetness and size against theirselfs, BUT in the end this quality function will be estimated using Neural Network
-
 
 LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
 
+- same total loss as @percep_qual_loss_init
+#figure(caption: [Architecture of the CNN14 based implementation of the perceptual quality network], table(
+  columns: (1fr, 1fr, 1fr),
+  align: center,
+  stroke: 0.5pt,
 
-// ── Main backbone ──────────────────────────────────────────────────────────
-#draw-network(
-  (
-    // ── Input ──────────────────────────────────────────────────────────────
-    (
-      type: "input",
-      image: none,
-      height: 8,
-      depth: 1,
-      label: "Audio",
-      name: "audio",
-    ),
-    // ── MelSpectrogram ─────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.5,
-      height: 8,
-      depth: 2,
-      fill: rgb("#9B59B6"),
-      opacity: 0.85,
-      label: "MelSpec",
-      name: "mel",
-      offset: 1.5,
-      legend: "Feature Extractor (frozen)",
-    ),
-    // ── BN0 ────────────────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.3,
-      height: 8,
-      depth: 5,
-      fill: rgb("#F39C12"),
-      opacity: 0.85,
-      label: "BN0",
-      name: "bn0",
-      offset: 1.5,
-      legend: "Batch Normalization",
-    ),
-    // ── Conv Block 1 ───────────────────────────────────────────────────────
-    (
-      type: "conv",
-      widths: (0.4, 0.4),
-      height: 7,
-      depth: 7,
-      channels: (1, 64),
-      label: "CB1\n1→64",
-      name: "cb1",
-      offset: 1.8,
-      show-relu: true,
-    ),
-    (
-      type: "pool",
-      height: 3.5,
-      depth: 3.5,
-      label: "Avg\n2×2",
-      name: "pool1",
-    ),
-    // ── Conv Block 2 ───────────────────────────────────────────────────────
-    (
-      type: "conv",
-      widths: (0.4, 0.4),
-      height: 6,
-      depth: 6,
-      channels: (64, 128),
-      label: "CB2\n64→128",
-      name: "cb2",
-      offset: 1.5,
-      show-relu: true,
-    ),
-    (
-      type: "pool",
-      height: 3,
-      depth: 3,
-      label: "Avg\n2×2",
-      name: "pool2",
-    ),
-    // ── Conv Block 3 ───────────────────────────────────────────────────────
-    (
-      type: "conv",
-      widths: (0.4, 0.4),
-      height: 5,
-      depth: 5,
-      channels: (128, 256),
-      label: "CB3\n128→256",
-      name: "cb3",
-      offset: 1.5,
-      show-relu: true,
-    ),
-    (
-      type: "pool",
-      height: 2.5,
-      depth: 2.5,
-      label: "Avg\n2×2",
-      name: "pool3",
-    ),
-    // ── Conv Block 4 ───────────────────────────────────────────────────────
-    (
-      type: "conv",
-      widths: (0.4, 0.4),
-      height: 4,
-      depth: 4,
-      channels: (256, 512),
-      label: "CB4\n256→512",
-      name: "cb4",
-      offset: 1.5,
-      show-relu: true,
-    ),
-    (
-      type: "pool",
-      height: 2,
-      depth: 2,
-      label: "Avg\n2×2",
-      name: "pool4",
-    ),
-    // ── Conv Block 5 ───────────────────────────────────────────────────────
-    (
-      type: "conv",
-      widths: (0.4, 0.4),
-      height: 3,
-      depth: 3,
-      channels: (512, 1024),
-      label: "CB5\n512→1024",
-      name: "cb5",
-      offset: 1.5,
-      show-relu: true,
-    ),
-    (
-      type: "pool",
-      height: 1.5,
-      depth: 1.5,
-      label: "Avg\n2×2",
-      name: "pool5",
-    ),
-    // ── Global Pooling ─────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.25,
-      height: 5,
-      depth: 0,
-      fill: rgb("#1ABC9C"),
-      opacity: 0.85,
-      label: "GPool\n1024",
-      name: "gpool",
-      offset: 2,
-      legend: "Global Pooling",
-    ),
-    // ── FC Shared ──────────────────────────────────────────────────────────
-    (
-      type: "fc",
-      height: 4,
-      depth: 0,
-      channels: (512,),
-      label: "FC\n512",
-      name: "fc_shared",
-      offset: 2,
-    ),
-    // ── ODG Head ───────────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.25,
-      height: 3.5,
-      depth: 0,
-      fill: rgb("#E74C3C"),
-      opacity: 0.85,
-      label: "ODG\n128→1",
-      name: "odg",
-      offset: 3,
-      legend: "Task Head",
-    ),
-    // ── Size Head ──────────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.25,
-      height: 2.5,
-      depth: 0,
-      fill: rgb("#C0392B"),
-      opacity: 0.85,
-      label: "Size\n64→1",
-      name: "size",
-      offset: 1.5,
-      show-connection: false,
-      legend: "Task Head (size/wet)",
-    ),
-    // ── Wetness Head ───────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.25,
-      height: 2.5,
-      depth: 0,
-      fill: rgb("#C0392B"),
-      opacity: 0.85,
-      label: "Wet\n64→1",
-      name: "wetness",
-      offset: 1.5,
-      show-connection: false,
-    ),
-    // ── Quality Head ───────────────────────────────────────────────────────
-    (
-      type: "custom",
-      width: 0.35,
-      height: 4,
-      depth: 0,
-      fill: rgb("#27AE60"),
-      opacity: 0.9,
-      label: "Quality\n515→128→1",
-      name: "quality",
-      offset: 4,
-      legend: "Quality Output",
-    ),
-  ),
+  table.cell(colspan: 3)[*Perceptual Quality Network (CNN14)*],
 
-  connections: (
-    (from: "fc_shared", to: "size", type: "skip", mode: "air", label: "512", pos: 4),
-    (from: "fc_shared", to: "wetness", type: "skip", mode: "air", label: "512", pos: 5),
-    (from: "odg", to: "quality", type: "skip", mode: "air", label: "cat+3", pos: 5),
-    (from: "size", to: "quality", type: "skip", mode: "air", pos: 4),
-    (from: "wetness", to: "quality", type: "skip", mode: "air", pos: 3),
-    (from: "fc_shared", to: "quality", type: "skip", mode: "depth", label: "512", pos: 7),
-  ),
+  table.cell(colspan: 3)[
+    Log-mel spectrogram \
+    sr=44100, n\_fft=2048, hop=512, n\_mels=128
+  ],
 
-  palette: "warm",
-  show-legend: true,
-  legend-title: "Layer Types",
-  show-relu: true,
-  scale: 60%,
-  stroke-thickness: 1,
-  depth-multiplier: 0.22,
-)
+  table.cell(colspan: 3)[BN (128 mel bins)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 64; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 128; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 256; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 512; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    #math.equation(block: true, numbering: none)[
+      $mat(delim: "(", 3 times 3 @ 1024; "BN, ReLU") times 2$
+    ]
+  ],
+  table.cell(colspan: 3)[AvgPool $2 times 2$, Dropout(0.2)],
+
+  table.cell(colspan: 3)[
+    Global pooling (mean over freq.) \
+    Max + Mean pool over time #sym.arrow 1024-dim \
+    Dropout(0.5)
+  ],
+
+  table.cell(colspan: 3)[
+    FC $1024 #sym.arrow 512$, ReLU, Dropout(0.3)
+  ],
+
+  [*ODG Head* \ FC 512 #sym.arrow 128 \ ReLU, Dropout(0.3) \ FC 128 #sym.arrow 1 \ Sigmoid],
+  [*Size Head* \ FC 512 #sym.arrow 64 \ ReLU, Dropout(0.3) \ FC 64 #sym.arrow 1 \ Sigmoid],
+  [*Wetness Head* \ FC 512 #sym.arrow 64 \ ReLU, Dropout(0.3) \ FC 64 #sym.arrow 1 \ Sigmoid],
+
+  table.cell(colspan: 3)[
+    Concat [features(512) ∥ odg(1) ∥ size(1) ∥ wetness(1)] #sym.arrow 515
+  ],
+
+  table.cell(colspan: 3)[
+    *Quality Head* \ FC 515 #sym.arrow 128, ReLU, Dropout(0.3) \ FC 128 #sym.arrow 1, Sigmoid
+  ],
+))
 
 
-#draw-network(
-  (
-    (
-      type: "input",
-      image: none,
-      height: 5,
-      depth: 5,
-      label: "Input\n(B,C_in,H,W)",
-      name: "in",
-    ),
-    (
-      type: "conv",
-      widths: (0.5,),
-      height: 5,
-      depth: 5,
-      channels: (3, "C_out"),
-      label: "Conv2d 3×3\nstride=1 pad=1",
-      name: "c1",
-      offset: 2,
-      show-relu: true,
-    ),
-    (
-      type: "custom",
-      width: 0.3,
-      height: 5,
-      depth: 5,
-      fill: rgb("#F39C12"),
-      opacity: 0.85,
-      label: "BN + ReLU",
-      name: "bn1",
-      offset: 1,
-      legend: "BN + ReLU",
-    ),
-    (
-      type: "conv",
-      widths: (0.5,),
-      height: 5,
-      depth: 5,
-      channels: ("C_out", "C_out"),
-      label: "Conv2d 3×3\nstride=1 pad=1",
-      name: "c2",
-      offset: 2,
-      show-relu: true,
-    ),
-    (
-      type: "custom",
-      width: 0.3,
-      height: 5,
-      depth: 5,
-      fill: rgb("#F39C12"),
-      opacity: 0.85,
-      label: "BN + ReLU",
-      name: "bn2",
-      offset: 1,
-    ),
-    (
-      type: "pool",
-      height: 2.5,
-      depth: 2.5,
-      label: "AvgPool\n(pool_size)",
-      name: "pool",
-    ),
-    (
-      type: "input",
-      image: none,
-      height: 2.5,
-      depth: 2.5,
-      label: "Output\n(B,C_out,H/2,W/2)",
-      name: "out",
-      offset: 1,
-    ),
-  ),
-  connections: (),
-  palette: "warm",
-  show-legend: true,
-  legend-title: "Sub-layers",
-  show-relu: true,
-  scale: 90%,
-)
+== Objective Quality Network<impl_objective_quality_network>
 
-
-#figure(
-  caption: [],
-  draw-network(
-    (
-      (type: "input", height: 8, depth: 1, label: "Input", name: "img"),
-      (
-        type: "conv",
-        // width: 1,
-        height: 6,
-        depth: 1,
-        label: "Conv1",
-        name: "c1",
-      ),
-      (type: "conv", height: 6, depth: 1, label: "Dilated Causal Conv", name: "c1"),
-      (type: "conv", height: 6, depth: 1, label: "Weight Normalization", name: "c1"),
-      (type: "conv", height: 6, depth: 1, label: "Dropout", name: "c1"),
-      (type: "conv", height: 6, depth: 1, label: "Relu", name: "c1"),
-      // Upsampling path
-      (
-        type: "conv",
-        channels: ("K", "I/32"),
-        widths: (0.3,),
-        height: 2.5,
-        depth: 2.5,
-        label: "fc8 to conv",
-        name: "s32",
-        offset: 0.8,
-        show-relu: false,
-      ),
-      (type: "deconv", channels: ("K", "I/16"), height: 3.5, depth: 3.5, name: "up1", offset: 1),
-      (type: "sum", radius: 0.5, symbol: "+", name: "add1", offset: 1),
-      (type: "deconv", height: 5, depth: 5, channels: ("K", "I/8"), name: "up2", offset: 0.5),
-      (type: "sum", radius: 0.5, symbol: "+", name: "add2", offset: 1),
-      (type: "deconv", height: 8, depth: 8, channels: ("K",), label: "Deconv", name: "up3", offset: 0.5),
-      (type: "convsoftmax", height: 8, depth: 8, channels: ("K", "I"), label: "softmax", offset: 1),
-    ),
-    connections: (
-      (
-        from: "c1",
-        to: "add1",
-        type: "skip",
-        mode: "flat",
-        pos: 3,
-        // layers: (
-        //   (type: "conv", channels: ("K", "I/16"), widths: (0.3,), height: 2, depth: 3.5, name: "s16", show-relu: false),
-        // ),
-      ),
-      (
-        from: "p3",
-        to: "add2",
-        type: "skip",
-        mode: "flat",
-        pos: 6,
-        layers: (
-          (type: "conv", channels: ("K", "I/8"), widths: (0.3,), height: 2, depth: 3.5, name: "s16", show-relu: false),
-        ),
-      ),
-    ),
-    palette: "warm",
-    show-legend: true,
-    legend-title: "Layers",
-    scale: 50%,
-    stroke-thickness: 1,
-    depth-multiplier: 0.3,
-    show-relu: true,
-  ),
-)
+- two stages
+  - only change quality score
+  - change quality score and loss
 
 == Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)

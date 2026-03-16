@@ -51,14 +51,14 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
 
 #figure(
   caption: [
-    Training curves for Conv-TasNet with different loss functions. The @SI-SNR loss did not converge to a positive value, while the @MSE loss converged stably. Smoothed using an exponential moving average with $alpha=0.05$.
+    Training curves for Conv-TasNet with different loss functions. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
   image("../figures/conv_tasnet_loss_comparison.svg"),
 )<conv_tasnet_loss_comparison>
 
 #figure(
   caption: [
-    Training curve for Conv-TasNet with @MSS loss. The loss converged but to an unreasonably high value, which did not produce usable predictions. Smoothed using an exponential moving average with $alpha=0.05$.
+    Training curve for Conv-TasNet with @MSS loss. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
   image("../figures/conv_tasnet_mss_loss.svg"),
 )<conv_tasnet_mss_loss>
@@ -220,9 +220,28 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
 
 == Perceptual Quality Network<results_percep_quality_net>
 
+=== Initial Implementation<results_percep_qual_net_init>
+
+
+=== CNN14<results_percep_qual_net_cnn14>
+
+
 #figure(
   caption: [],
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
+)
+
+== Objective Quality Network<results_objective_quality_net>
+
+update score:
+#figure(
+  caption: [],
+  image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
+)
+update score and update loss:
+#figure(
+  caption: [],
+  image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
 )
 
 == Dereverberation Network

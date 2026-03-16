@@ -6,8 +6,8 @@
 #let titleGerman = "Echtzeit-Enthallung auf Basis von Deep-Learning-Verfahren"
 #let degree = "Bachelor"
 #let program = "Mediatechnology"
-#let examiner = "TODO"
-#let supervisors = ("TODO",)
+#let examiner = "Prof. Dr. Christoph Pörschmann"
+#let supervisors = ("Prof. Dr. Jan Salmen",)
 #let authors = ("Leo Kling", "Jonathan Kron")
 #let birthdate = datetime(day: 15, month: 05, year: 2004) // only necessary for registration certificate
 #let startDate = datetime(day: 12, month: 01, year: 2026)

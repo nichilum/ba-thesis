@@ -63,9 +63,21 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
   image("../figures/conv_tasnet_mss_loss.svg"),
 )<conv_tasnet_mss_loss>
 
-The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds. On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds. 
+
+On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+
+Detailed results of the evaluation done on the @MSE\-trained model can be seen in @conv_tasnet_metrics. A positive @SI-SNR and @SI-SDR indicate dereverberation, while the @PESQ score still indicates a _"poor"_ performance (cf. @fun_pesq)
 
 #TODO[write about @conv_tasnet_metrics, and how it may show signs of dereverberation (or it doesnt, but its purely audible)]
+
+#TODO[
+
+  explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+
+  15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+  
+]
 
 #figure(
   caption: [
@@ -90,13 +102,6 @@ On music and non-speech content, however, the model introduces noticeable timbra
 )<conv_tasnet_metrics>
 
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
-
-#TODO[
-
-  explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
-
-  15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
-]
 
 == StoRM
 

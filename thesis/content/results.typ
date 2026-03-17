@@ -1,6 +1,7 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "@preview/statastic:1.0.0": arrayAvg, arrayStd
 #import "@preview/lilaq:0.5.0" as lq
+#import "/thesis/utils/diagram.typ": diagram
 
 #let d(storm, tasnet, ylabel) = {
   lq.diagram(
@@ -49,14 +50,14 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
 
 #TODO[we do not know the reason for this, might be a user error]
 
-#figure(
+#diagram(
   caption: [
     Training curves for Conv-TasNet with different loss functions. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
   image("../figures/conv_tasnet_loss_comparison.svg"),
 )<conv_tasnet_loss_comparison>
 
-#figure(
+#diagram(
   caption: [
     Training curve for Conv-TasNet with @MSS loss. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
@@ -79,7 +80,7 @@ Detailed results of the evaluation done on the @MSE\-trained model can be seen i
 
 ]
 
-#figure(
+#diagram(
   caption: [
     Spectrogram comparison of input (left) and output (middle) of the @MSE\-trained Conv-TasNet on a speech (top) and music (bottom) sample.
   ],
@@ -88,7 +89,7 @@ Detailed results of the evaluation done on the @MSE\-trained model can be seen i
 
 On music and non-speech content, however, the model introduces noticeable timbral artifacts.
 
-#figure(
+#diagram(
   table(
     columns: (auto, auto, auto, auto, auto),
     align: (left, right, right, right, right),
@@ -109,7 +110,7 @@ Unlike Conv-TasNet, StoRM was not trained from scratch. We used the official pre
 
 On in-domain speech signals, StoRM achieves strong dereverberation quality. @storm_paper_metrics shows the evaluation from the original paper. These numbers serve as an upper bound for speech dereverberation quality achievable with this model.
 
-#figure(
+#diagram(
   caption: [StoRM dereverberation metrics on the WSJ0+REVERB test set, reproduced from @lemercierStoRMDiffusionbasedStochastic2023.],
   table(
     columns: 7,
@@ -157,7 +158,7 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
   ),
 )<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female " @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
 
-#figure(
+#diagram(
   caption: [
     Spectrogram comparison of input (left) and output (middle) of StoRM on a speech (top) and music (bottom) sample.
   ],
@@ -174,7 +175,7 @@ The iterative reverse diffusion inference requires many sequential neural networ
 - no results from initial perceptual quality network only cnn14 is discussed as
   - as @eval_percep_qual_net_init shows a direct improvement of cnn14 over initial implementation
 
-#figure(
+#diagram(
   caption: [],
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
 )
@@ -182,12 +183,12 @@ The iterative reverse diffusion inference requires many sequential neural networ
 == Objective Quality Network<results_objective_quality_net>
 
 update score:
-#figure(
+#diagram(
   caption: [],
   image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
 )
 update score and update loss:
-#figure(
+#diagram(
   caption: [],
   image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
 )
@@ -196,7 +197,7 @@ update score and update loss:
 
 #TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
 
-#figure(
+#diagram(
   caption: [],
   image(
     "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png",

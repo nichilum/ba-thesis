@@ -1,6 +1,7 @@
 #import "/thesis/utils/author.typ": *
 #import "/thesis/utils/todo.typ": TODO
 #import "@preview/diagraph:0.3.6": *
+#import "/thesis/utils/diagram.typ": diagram
 
 = Theoretical Background
 
@@ -30,7 +31,7 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
-#figure(
+#diagram(
   caption: [RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an RNN cell across three time steps. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
   grid(
     columns: (1fr, 3fr),
@@ -154,7 +155,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 #let green = rgb("8FBF8F")
 #let yellow = rgb("D8C27A")
 
-#figure(
+#diagram(
   caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
   scale(fletcher-diagram(
     spacing: 6pt,
@@ -211,7 +212,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure while remaining fully convolutional and therefore highly parallelizable. They also provide explicit control over receptive field size through kernel width, depth, and dilation schedule. This makes them attractive for audio tasks that require a compromise between temporal context and computational efficiency. In this thesis, @TCN:pl are particularly relevant because Conv-TasNet uses a temporal convolutional network to estimate masks over an encoded waveform representation @luoConvTasNetSurpassingIdeal2019. The basic principles of @TCN:pl therefore form part of the architectural foundation for the dereverberation models discussed later.
 
-#figure(
+#diagram(
   caption: [
     A dilated causal convolution with dilation factors $d=1,2,4$. Replicated from #cite(<leePredictiveSkillConvolutional2021>, form: "prose", style: "chicago-author-date").
   ],
@@ -375,7 +376,7 @@ $
 
 where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_hat(s)$ the expected values and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp, where negative values mean inverse association:
 
-#figure(caption: [Interpretation of the Pearson coefficient], table(
+#diagram(caption: [Interpretation of the Pearson coefficient], table(
   columns: 3,
   [*$rho_(s, hat(s))$*], [*$rho_(s, hat(s))$*], [*Association Between Variables*],
   [$+0.8 "to" +1.0$], [$-0.8 "to" -1.0$], [Very strong association],
@@ -402,7 +403,7 @@ It can also be mentioned that there are other variants, like Source-to-Artifact 
 
 Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp)
 
-#figure(
+#diagram(
   caption: [The Absolute Category Rating scale used by @MOS/@PESQ],
   table(
     columns: 2,
@@ -417,7 +418,7 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
 
 The scale shown in @pesq_score_interp corresponds to the @MOS scale. During analysis the signal is mapped into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
-#figure(caption: [Structure of @PESQ:both model taken from @rixPerceptualEvaluationSpeech2001], raw-render(
+#diagram(caption: [Structure of @PESQ:both model taken from @rixPerceptualEvaluationSpeech2001], raw-render(
   ```dot
       digraph pesq {
         rankdir=LR
@@ -485,7 +486,7 @@ The scale shown in @pesq_score_interp corresponds to the @MOS scale. During anal
 
 The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general it compares two time aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
 
-#figure(caption: [High-level representation of the @PEAQ:both model taken from @thiedePEAQITUStandard2000], raw-render(
+#diagram(caption: [High-level representation of the @PEAQ:both model taken from @thiedePEAQITUStandard2000], raw-render(
   ```dot
       digraph peaq {
         rankdir=TB

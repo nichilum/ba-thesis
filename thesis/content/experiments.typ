@@ -1,5 +1,6 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/open_questions.typ": OPENQ
+#import "/thesis/utils/diagram.typ": diagram
 
 = Implementation & Experimental Setup
 
@@ -34,7 +35,7 @@ The output of this shared encoder is then fed into three prediction heads each c
 
 This gives us a better chance at debugging (cf. @eval_percep_qual_net_cnn14) and the opportunity to use just one of the four predictions as a loss function. In the end only the quality prediction was utilized.
 
-#figure(caption: [Architecture of the initial implementation of the perceptual quality network], table(
+#diagram(caption: [Architecture of the initial implementation of the perceptual quality network], table(
   columns: (1fr, 1fr, 1fr),
   align: center,
   stroke: 0.5pt,
@@ -102,7 +103,7 @@ The logarithmic compression of the mel scale (similar to the compression in @imp
 
 Weights of the shared encoder are initialized using the Xavier uniform distribution as described in @glorotUnderstandingDifficultyTraining.
 
-#figure(caption: [Architecture of the CNN14 based implementation of the perceptual quality network], table(
+#diagram(caption: [Architecture of the CNN14 based implementation of the perceptual quality network], table(
   columns: (1fr, 1fr, 1fr),
   align: center,
   stroke: 0.5pt,

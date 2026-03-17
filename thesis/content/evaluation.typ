@@ -1,4 +1,5 @@
 #import "/thesis/utils/todo.typ": TODO
+#import "/thesis/utils/diagram.typ": diagram
 
 = Evaluation
 
@@ -47,7 +48,7 @@ The output of all prediction heads are compared to their ground truth counterpar
 #let w_mae_cnn14 = 0.08360379934310913
 #let w_corr_cnn14 = 0.9138118028640747
 
-#figure(
+#diagram(
   caption: [Metric comparison of the quality score, taken from the best epoch of the first 10, between the simple @CNN and CNN14 implementation],
 
   table(
@@ -73,7 +74,7 @@ The output of all prediction heads are compared to their ground truth counterpar
 
 @eval_init_vs_cnn14_compare shows improvements over all comparative metrics, Similar advancements have been made across all parameters (cf. @eval_init_vs_cnn14_compare_all).
 
-#figure(
+#diagram(
   caption: [Relative improvement from the CNN14 implementation as compared to the simple @CNN implementation over all metrics and parameters, taken from the best epoch of the first 10],
 
   table(
@@ -104,14 +105,14 @@ These findings motivated us to proceed with the CNN14 based implementation as de
 
 === CNN14<eval_percep_qual_net_cnn14>
 
-#figure(
+#diagram(
   caption: [Quality score prediction analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
 )<plot_nn_qual_against_size_and_wet>
 
 - @ReLU not entirely differentiable
 
-#figure(
+#diagram(
   caption: [Prediction quality of perceptual net from signal with increasing zero percentage],
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )
@@ -124,7 +125,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
 
 #import "/thesis/content/results.typ": stormCSV, convtasnetCSV, v, d
 
-#figure(
+#diagram(
   caption: [
     Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) @CLAIX2023RWTHHigh) with 2048 Random AudioSet Samples.
   ],
@@ -148,7 +149,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
 Across all metrics both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistens, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model.
 A recurring informal observation from listening tests and viewing spectograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison, @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
 
-#figure(
+#diagram(
   caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
   grid(
     columns: 2,

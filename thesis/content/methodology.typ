@@ -2,6 +2,7 @@
 #import "/thesis/utils/open_questions.typ": OPENQ
 #import "/thesis/utils/author.typ": *
 #import "@preview/diagraph:0.3.6": *
+#import "/thesis/utils/diagram.typ": diagram
 
 = Methodology
 
@@ -21,7 +22,7 @@ of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second
 
 Our proposed approach requires a diverse dataset of dry audio data. In total 108,775 indivdual audio samples were collected resulting in the following dataset:
 
-#figure(caption: [Dataset composition], table(
+#diagram(caption: [Dataset composition], table(
   columns: 3,
   align: (left, center, center),
   [*Dataset*], [*Number of Files*], [*Length of Files*],
@@ -56,7 +57,7 @@ $
 
 With $S_"train"=0.7 "and" S_"val"=0.15$. A final distribution as can be seen in @subset_comp was achieved.
 
-#figure(caption: [Subset composition], table(
+#diagram(caption: [Subset composition], table(
   columns: 3,
   align: (left, center, center),
   [*Subset*], [*Number of Files*], [*Length of Files*],
@@ -80,7 +81,7 @@ Another dataset of @RIR:pl was gathered, which was later in part used for reverb
 
 A supervised training approach (as explained in @supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
-#figure(caption: [Dereverberation preprocessing pipeline], raw-render(
+#diagram(caption: [Dereverberation preprocessing pipeline], raw-render(
   ```dot
     digraph pipeline {
       rankdir=LR
@@ -111,7 +112,7 @@ A supervised training approach (as explained in @supervised_learning) was chosen
 
 Additional labels used for the perceptual loss model (see @meth_percep_quality_net) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
 
-#figure(caption: [Perceptual loss preprocessing pipeline], raw-render(
+#diagram(caption: [Perceptual loss preprocessing pipeline], raw-render(
   ```dot
     digraph pipeline {
       rankdir=LR
@@ -227,7 +228,7 @@ $ d_"silent"/d_"full" approx #calc.round(100 * (d_full - d_non_silent) / d_full,
 
 As we don't want our model to focus on generating silence a mask is generated for each sample specifying its silent ranges (cf. @silent_mask_signal). This mask is then used in the loss function to ignore the silent range (see @loss_function_silent_mask).
 
-#figure(
+#diagram(
   caption: [Signal with non-silent mask],
   image("/experiments/perceptual-quality/plots/mask_plot.svg"),
 )<silent_mask_signal>
@@ -254,7 +255,7 @@ $ ("wetness" = 1) and ("size"= 1) $<size_and_wetness_eq>
 $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
 . This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or in other words how well each metric estimates reverberation (and in turn dereverberation) of a signal.
 
-#figure(
+#diagram(
   caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>

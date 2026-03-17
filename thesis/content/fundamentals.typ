@@ -32,6 +32,109 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
+#figure(
+  caption: [RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an RNN cell across three time steps. Taken from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
+  grid(
+    columns: (1fr, 3fr),
+    align: (left, right),
+    raw-render(
+      ```
+      digraph RNN_Cell {
+        rankdir=TB;
+        splines=true;
+        node[math=true];
+        nodesep=0.4;
+        ranksep=0.42;
+
+        // Hidden state (cell)
+        node [shape=rectangle, width=0.8, height=1.2];
+        h [label="h"];
+
+        // Input (red)
+        node [shape=circle, width=0.6, height=0.6];
+        x [label="x"];
+
+        // Output (blue)
+        node [shape=circle, width=0.6, height=0.6];
+        y [label="hat(y)"];
+
+
+        // Edges
+        x -> h [label="U"];
+        h -> y [label="V"];
+
+        // Recurrent self-loop
+        h -> h [label="W"];
+
+        // Layout alignment
+        { rank=same; x; }
+        { rank=same; h; }
+        { rank=same; y; }
+
+      }
+      ```,
+      // width: 4cm,
+      height: 10cm,
+    ),
+    raw-render(
+      ```
+      digraph RNN {
+        rankdir=LR;
+        splines=true;
+        nodesep=0.3;
+        ranksep=0.3;
+
+        node[math=true];
+
+        // Node styles
+        node [shape=rectangle, width=0.6, height=1.2];
+        edge [fontsize=10];
+
+        // Hidden states (green blocks)
+        h_prev [label="h^((t-1))"];
+        h_t    [label="h^((t))"];
+        h_next [label="h^((t+1))"];
+
+        // Inputs (red circles)
+        node [shape=circle, fillcolor="#F4A6A6", width=0.6, height=0.6];
+        x_prev [label="x^((t-1))"];
+        x_t    [label="x^((t))"];
+        x_next [label="x^((t+1))"];
+
+        // Outputs (blue circles)
+        node [shape=circle, fillcolor="#A6C8FF", width=0.6, height=0.6];
+        y_prev [label="hat(y)^((t-1))"];
+        y_t    [label="hat(y)^((t))"];
+        y_next [label="hat(y)^((t+1))"];
+
+        // Edges: input to hidden (U)
+        x_prev -> h_prev [label="U"];
+        x_t    -> h_t    [label="U"];
+        x_next -> h_next [label="U"];
+
+        // Edges: hidden to hidden (W)
+        h_prev -> h_t    [label="W"];
+        h_t    -> h_next [label="W"];
+
+        // Edges: hidden to output (V)
+        h_prev -> y_prev [label="V"];
+        h_t    -> y_t    [label="V"];
+        h_next -> y_next [label="V"];
+
+        // Rank alignment
+        { rank=same; x_prev; h_prev; y_prev; }
+        { rank=same; x_t;    h_t;    y_t; }
+        { rank=same; x_next; h_next; y_next; }
+      }
+      ```,
+      // width: 10cm,
+      height: 10cm,
+    ),
+  ),
+)
+
+
+
 Classical @RNN:pl suffer from vanishing and exploding gradients when the dependency horizon becomes long. For this reason, gated variants such as @LSTM @hochreiterLongShortTermMemory1997 and @GRU networks @choPropertiesNeuralMachine2014 are commonly used in practice. These architectures regulate which information is stored, updated, or forgotten, improving training stability and long-term memory. Their main drawback is that recurrent processing is inherently sequential, which limits parallelization during training and inference compared to purely convolutional models @fuQualityNetEndtoEndNonintrusive2018 @defossezMusicSourceSeparation2019.
 
 === @TCN:short<fun_tcn>

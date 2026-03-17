@@ -349,8 +349,8 @@ class PerceptualLoss(nn.Module):
 
         perceptual_loss = 1.0 - quality.mean()
 
-        if target_audio is not None:
-            mse_loss = F.mse_loss(output_audio, target_audio)
-            return perceptual_loss + alpha * mse_loss
+        # if target_audio is not None:
+        #     mse_loss = F.mse_loss(output_audio, target_audio)
+        #     return perceptual_loss + alpha * mse_loss
 
         return perceptual_loss

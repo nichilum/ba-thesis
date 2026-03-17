@@ -63,7 +63,7 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
   image("../figures/conv_tasnet_mss_loss.svg"),
 )<conv_tasnet_mss_loss>
 
-The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds. 
+The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds.
 
 On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
 
@@ -76,7 +76,7 @@ Detailed results of the evaluation done on the @MSE\-trained model can be seen i
   explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
 
   15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
-  
+
 ]
 
 #figure(
@@ -222,11 +222,9 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
 
 == Perceptual Quality Network<results_percep_quality_net>
 
-=== Initial Implementation<results_percep_qual_net_init>
-
-
-=== CNN14<results_percep_qual_net_cnn14>
-
+- all results based on the dataset in @data_collection
+- no results from initial perceptual quality network only cnn14 is discussed as
+  - as @eval_percep_qual_net_init shows a direct improvement of cnn14 over initial implementation
 
 #figure(
   caption: [],

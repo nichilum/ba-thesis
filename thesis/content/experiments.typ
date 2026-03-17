@@ -23,7 +23,7 @@ The perceptual quality network was implemented twice. @impl_percep_qual_net_init
 
 A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date") was written to adress the shortcomings of the first implementation as mentioned in @eval_percep_qual_net_init.
 
-=== Initial Implementation<impl_percep_qual_net_init>
+=== Simple @CNN:short<impl_percep_qual_net_init>
 
 The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. This architecture was chosen because
 @CNN:pl have been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025 and have shown great performance. The small computational cost increase as compared to a waveform-domain approach was a nonissue as this network was not to be used during inference but only during training of the dereverberation model (see @impl_derev_net).
@@ -204,10 +204,7 @@ Both stages are evaluated in @eval_objective_quality_net.
   - compare mse to perceptual loss
 
 
-#figure(
-  caption: [Prediction quality of perceptual net from signal with increasing zero percentage],
-  image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
-)
+
 
 #TODO[https://typst.app/universe/package/neural-netz]
 

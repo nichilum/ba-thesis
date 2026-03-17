@@ -28,6 +28,8 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 === @RNN:short
 
+#TODO[add some visualizations?]
+
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
 Classical @RNN:pl suffer from vanishing and exploding gradients when the dependency horizon becomes long. For this reason, gated variants such as @LSTM @hochreiterLongShortTermMemory1997 and @GRU networks @choPropertiesNeuralMachine2014 are commonly used in practice. These architectures regulate which information is stored, updated, or forgotten, improving training stability and long-term memory. Their main drawback is that recurrent processing is inherently sequential, which limits parallelization during training and inference compared to purely convolutional models @fuQualityNetEndtoEndNonintrusive2018 @defossezMusicSourceSeparation2019.
@@ -113,7 +115,22 @@ It can also be mentioned that there are other variants, like Source-to-Artifact 
 
 === @PESQ:short<fun_pesq>
 
-Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. It also maps the signal into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
+Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp)
+
+#figure(
+  caption: [The Absolute Category Rating scale used by @MOS/@PESQ],
+  table(
+    columns: 2,
+    table.header([*Rating*], [*Label*]),
+    [5], [Excellent],
+    [4], [Good],
+    [3], [Fair],
+    [2], [Poor],
+    [1], [Bad],
+  ),
+)<pesq_score_interp>
+
+The scale shown in @pesq_score_interp corresponds to the @MOS scale. During analysis the signal is mapped into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
 #figure(caption: [Structure of @PESQ:both model taken from @rixPerceptualEvaluationSpeech2001], raw-render(
   ```dot
@@ -178,19 +195,6 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
   width: 15cm,
 ))<speech_quality_pipeline>
 
-#TODO[integrate table into text @itu-tMeanOpinionScore2016]
-#figure(
-  caption: [The Absolute Category Rating scale used by @MOS/@PESQ],
-  table(
-    columns: 2,
-    table.header([*Rating*], [*Label*]),
-    [5], [Excellent],
-    [4], [Good],
-    [3], [Fair],
-    [2], [Poor],
-    [1], [Bad],
-  ),
-)
 
 === @PEAQ:short<fun_peaq>
 

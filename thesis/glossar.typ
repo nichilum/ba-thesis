@@ -19,6 +19,13 @@
   //   plural: "TPSes",
   //   longplural: "test procedure specifications",
   // ),
+  //
+  STFT: (
+    short: "STFT",
+    long: "short-time Fourier transform",
+    group: "Signal Processing",
+  ),
+  // Acoustics
   RIR: (
     short: "RIR",
     long: "room impulse response",
@@ -32,6 +39,11 @@
   AIR: (
     short: "AIR",
     long: "Aachen Impulse Response",
+    group: "Acoustics",
+  ),
+  ASR: (
+    short: "ASR",
+    long: "automatic speech recognition",
     group: "Acoustics",
   ),
   // Neural Networks

@@ -25,9 +25,13 @@ A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeSca
 
 === Initial Implementation<impl_percep_qual_net_init>
 
-The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. A @CNN architecture was chosen because faster than real time performance for use as a loss function was not of importance. It was therefore possible to introduce a spectogram conversion.
-@CNN:pl have also been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025.
+The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. This architecture was chosen because
+@CNN:pl have been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025 and have shown great performance. The small computational cost increase as compared to a waveform-domain approach was a nonissue as this network was not to be used during inference but only during training of the dereverberation model (see @impl_derev_net).
+The forward pass includes conversion into a log-magnitude spectrogram using the @STFT, a shared encoder counting three two-dimensional convolutional layers all featuring batch normalization, ReLU as the activation function and Max Pooling.
 
+The output of this shared encoder is then fed into three prediction heads each corresponding to one of the three initial labels (wetness, size, @ODG). The output of each prediction head is concatinated with the shared encoder output and fed into the quality prediction head giving this model the ability to predict all parameters at once.
+
+This gives us a better chance at debugging (cf. @eval_percep_qual_net_cnn14) and the opportunity to use just one of the four predictions as a loss function. In the end only the quality prediction was utilized.
 
 #figure(caption: [Architecture of the initial implementation of the perceptual quality network], table(
   columns: (1fr, 1fr, 1fr),
@@ -78,10 +82,7 @@ The initial implementation of the perceptual quality network is based on a simpl
   ],
 ))<arch_impl_qual_net_init>
 
-@arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. Separate prediction heads for each quality metric (size, wetness, @ODG and the quality score) are suggested.
-AdamW was used as an optimizer with a learning rate of $10^(-3)$.
-
-A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
+@arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. AdamW was used as an optimizer with a learning rate of $10^(-3)$. A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
 
 $
   "loss" = 2 dot "loss"_"quality" + "loss"_"odg" + 0.75 dot "loss"_"size" + 0.75 dot "loss"_"wetness"
@@ -89,21 +90,16 @@ $<percep_qual_loss_init>
 .
 === CNN14<impl_percep_qual_net_cnn14>
 
-A number of improvements have been made:
--
+Compared to the inital implementation this version offers a number of improvements. Mainly a new shared encoder architecture based on the CNN14 network (cf. @arch_impl_qual_net_cnn14) which was introduced as a real-time audio pattern recognition model by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date"). We thought it fitting as we were trying to solve an adjecent problem (audio characteristic recognition) with good performance as we did not want to needlessly slow down the training process of the dereverberation network.
 
-- why nn as loss (better score for perceptual, combines perceptual and "real world" attribs)
-- why mel scale not bark etc.
-go through loss network and explain weights (quality, size, wetness, odg) etc. make links to how data was processed for this task
+A second improvement has been made in the spectogram conversion. The log-magnitude spectogram was replaced with a log-mel spectogram offering a perceptually oriented base for the encoder. The mel scale, as all perceptual scales do, compresses higher frequencies more than lower ones. Therefore mimicing human perception of audio.
+The conversion from hertz into mels is defined as @oshaughnessySpeechCommunicationHuman1987
+$ m=2595 dot log_10 (1+f/700) $
+. The mel scale was chosen in favor of the bark scale as it is the most used and best-performing scale in computational acoustics (e.g. in @ASR @simonkingBarkScaleVd @dhondePerformanceEvaluationMel2019).
+Prediction heads as well as loss calculations were not subject to change.
 
-- cite similar papers in zotero loss subcollection (like LEAN, etc.) for fast audio classification
-  - why our loss model was based on CNN14
-  - runtime (inference) evaluation
+Weights of the shared encoder are initialized using the Xavier uniform distribution as described in @glorotUnderstandingDifficultyTraining.
 
-
-LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real time audio tagging => made sense to use here.
-
-- same total loss as @percep_qual_loss_init
 #figure(caption: [Architecture of the CNN14 based implementation of the perceptual quality network], table(
   columns: (1fr, 1fr, 1fr),
   align: center,
@@ -174,14 +170,20 @@ LOSS Net is based on CNN14 as shown in PANNs paper. Originally for near real tim
   table.cell(colspan: 3)[
     *Quality Head* \ FC 515 #sym.arrow 128, ReLU, Dropout(0.3) \ FC 128 #sym.arrow 1, Sigmoid
   ],
-))
+))<arch_impl_qual_net_cnn14>
 
 
 == Objective Quality Network<impl_objective_quality_network>
 
-- two stages
-  - only change quality score
-  - change quality score and loss
+@ODG was shown to worsen the performance of the perceptual quality network (see @eval_percep_qual_net_cnn14). Consequently the perceptual quality network as seen in @impl_percep_qual_net_cnn14 was adjusted to base the prediction only on the wetness and size parameters.
+
+This change was done in two stages. Firstly only the quality score was modified by removing the @ODG score (cf. @meth_obj_quality_net). Loss calculation was left unchanged.
+
+The second stage also changed the loss calculation from @percep_qual_loss_init to just
+
+$ "loss" = "loss"_"quality" $
+
+Both stages are evaluated in @eval_objective_quality_net.
 
 == Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)

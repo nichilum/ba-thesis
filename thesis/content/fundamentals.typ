@@ -139,7 +139,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 @TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally, where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
 
-#import "@preview/fletcher:0.5.8": *
+#import "@preview/fletcher:0.5.8": diagram as fletcher-diagram, edge, node
 
 #let block(pos, label, tint) = node(
   pos,
@@ -156,7 +156,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 #figure(
   caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
-  scale(diagram(
+  scale(fletcher-diagram(
     spacing: 6pt,
     cell-size: (10mm, 10mm),
     edge-stroke: 1pt,
@@ -218,7 +218,7 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
   scale(
     x: 80%,
     y: 80%,
-    diagram(
+    fletcher-diagram(
       spacing: 1cm,
       cell-size: (10mm, 10mm),
       edge-stroke: 1pt,

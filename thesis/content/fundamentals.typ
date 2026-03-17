@@ -155,7 +155,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 #let yellow = rgb("D8C27A")
 
 #figure(
-  caption: [TCN residual block, where the 1$times$1 Convolution is only added wehn input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
+  caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
   scale(diagram(
     spacing: 6pt,
     cell-size: (10mm, 10mm),

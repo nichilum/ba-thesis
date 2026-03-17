@@ -113,7 +113,7 @@
   // --- Figures ---
   show figure: set text(size: 0.85em)
 
-  show heading.where(level:1): it => {
+  show heading.where(level: 1): it => {
     counter(math.equation).update(0)
     it
   }
@@ -131,17 +131,19 @@
   })
 
   // --- Table of Contents ---
-  show outline.entry.where(level: 1): it => {
-    v(15pt, weak: true)
-    strong(it)
+  {
+    show outline.entry.where(level: 1): it => {
+      v(15pt, weak: true)
+      strong(it)
+    }
+    outline(
+      title: {
+        text(font: fonts.body, 1.5em, weight: 700, "Contents")
+        v(15mm)
+      },
+      indent: 2em,
+    )
   }
-  outline(
-    title: {
-      text(font: fonts.body, 1.5em, weight: 700, "Contents")
-      v(15mm)
-    },
-    indent: 2em,
-  )
 
 
   v(2.4fr)

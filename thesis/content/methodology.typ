@@ -257,6 +257,7 @@ $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
 
 #diagram(
   caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
+  short-caption: [Metrics usable as loss functions],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>
 

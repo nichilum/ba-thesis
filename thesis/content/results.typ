@@ -54,6 +54,7 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
   caption: [
     Training curves for Conv-TasNet with different loss functions. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
+  short-caption: [Training curves for Conv-TasNet with different loss functions],
   image("../figures/conv_tasnet_loss_comparison.svg"),
 )<conv_tasnet_loss_comparison>
 
@@ -61,6 +62,7 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
   caption: [
     Training curve for Conv-TasNet with @MSS loss. Smoothed using an exponential moving average with $alpha=0.05$.
   ],
+  short-caption: [Training curve for Conv-TasNet with @MSS:short loss],
   image("../figures/conv_tasnet_mss_loss.svg"),
 )<conv_tasnet_mss_loss>
 
@@ -84,6 +86,7 @@ Detailed results of the evaluation done on the @MSE\-trained model can be seen i
   caption: [
     Spectrogram comparison of input (left) and output (middle) of the @MSE\-trained Conv-TasNet on a speech (top) and music (bottom) sample.
   ],
+  short-caption: [Spectrogram comparison of input and output of the @MSE\-trained Conv-TasNet],
   image("../figures/spectrogram_comparison.png"),
 )<spectrogram_comparison>
 
@@ -162,6 +165,7 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
   caption: [
     Spectrogram comparison of input (left) and output (middle) of StoRM on a speech (top) and music (bottom) sample.
   ],
+  short-caption: [Spectrogram comparison of input and output of StoRM],
   image("../figures/spectrogram_comparison_storm.png"),
 )<spectrogram_comparison_storm>
 

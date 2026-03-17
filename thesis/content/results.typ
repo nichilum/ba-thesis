@@ -171,6 +171,8 @@ The iterative reverse diffusion inference requires many sequential neural networ
 
 == Comparison of Conv-TasNet and StoRM for diverse signals
 
+#TODO[move to evaluation]
+
 Both Conv-TasNet and StoRM were trained exclusively on speech recordings and have no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
 
 #figure(

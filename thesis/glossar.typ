@@ -82,6 +82,11 @@
     long: "gated recurrent unit",
     group: "Neural Networks",
   ),
+  ReLU: (
+    short: "ReLU",
+    long: "rectified linear unit",
+    group: "Neural Networks",
+  ),
   // Metrics
   SI-SNR: (
     short: "SI-SNR",

@@ -27,7 +27,7 @@ A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeSca
 
 The initial implementation of the perceptual quality network is based on a simple two dimensional @CNN. This architecture was chosen because
 @CNN:pl have been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025 and have shown great performance. The small computational cost increase as compared to a waveform-domain approach was a nonissue as this network was not to be used during inference but only during training of the dereverberation model (see @impl_derev_net).
-The forward pass includes conversion into a log-magnitude spectrogram using the @STFT, a shared encoder counting three two-dimensional convolutional layers all featuring batch normalization, ReLU as the activation function and Max Pooling.
+The forward pass includes conversion into a log-magnitude spectrogram using the @STFT, a shared encoder counting three two-dimensional convolutional layers all featuring batch normalization, @ReLU as the activation function and Max Pooling.
 
 The output of this shared encoder is then fed into three prediction heads each corresponding to one of the three initial labels (wetness, size, @ODG). The output of each prediction head is concatinated with the shared encoder output and fed into the quality prediction head giving this model the ability to predict all parameters at once.
 

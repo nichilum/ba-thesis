@@ -28,12 +28,10 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 === @RNN:short
 
-#TODO[add some visualizations?]
-
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
 #figure(
-  caption: [RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an RNN cell across three time steps. Taken from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
+  caption: [RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an RNN cell across three time steps. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
   grid(
     columns: (1fr, 3fr),
     align: (left, right),
@@ -141,9 +139,193 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 @TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally, where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
 
-#TODO[figure 1 from @baiEmpiricalEvaluationGeneric2018 for tcn architecture]
+#import "@preview/fletcher:0.5.8": *
+
+#let block(pos, label, tint) = node(
+  pos,
+  align(center, label),
+  width: 50mm,
+  height: 8mm,
+  fill: tint.lighten(60%),
+  stroke: 1pt + tint.darken(20%),
+  corner-radius: 4pt,
+)
+
+#let green = rgb("8FBF8F")
+#let yellow = rgb("D8C27A")
+
+#figure(
+  caption: [TCN residual block, where the 1$times$1 Convolution is only added wehn input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
+  scale(diagram(
+    spacing: 6pt,
+    cell-size: (10mm, 10mm),
+    edge-stroke: 1pt,
+    edge-corner-radius: 6pt,
+
+    // Main vertical stack
+    edge((2, -1), "d", "-|>"),
+    node((2, 0), circle(radius: 3pt, fill: black)),
+
+    edge("ll,d", "-|>"),
+    block((0, 1), [Dilated Causal Conv], green),
+    edge(),
+    block((0, 2), [WeightNorm], yellow),
+    edge(),
+    block((0, 3), [ReLU], green),
+    edge(),
+    block((0, 4), [Dropout], yellow),
+
+    edge(),
+    block((0, 5), [Dilated Causal Conv], green),
+    edge(),
+    block((0, 6), [WeightNorm], yellow),
+    edge(),
+    block((0, 7), [ReLU], green),
+    edge(),
+    block((0, 8), [Dropout], yellow),
+
+    // Sum node
+    edge("d,rr", "-|>"),
+    node((2, 9), circle(radius: 5pt, fill: rgb("E07A6F"))[+]),
+
+    // Residual branch (right side)
+    block((2, 6), [1$times$1 Conv (optional)], green),
+
+    // Connections
+    edge((2, 0), (2, 3), "ddd", "-|>"),
+    edge((2, 3), (2, 6), "ddd", "-|>"),
+    edge((2, 9), "d", "-|>"),
+    // edge((2,6), (0,8), "drr,u", "-|>"),
+  )),
+)
+
+
+#let circ(pos, fill) = node(
+  outset: 0pt,
+  inset: 0pt,
+  pos,
+  circle(radius: 10pt, fill: fill, stroke: 1pt + black),
+)
+
+
 
 Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure while remaining fully convolutional and therefore highly parallelizable. They also provide explicit control over receptive field size through kernel width, depth, and dilation schedule. This makes them attractive for audio tasks that require a compromise between temporal context and computational efficiency. In this thesis, @TCN:pl are particularly relevant because Conv-TasNet uses a temporal convolutional network to estimate masks over an encoded waveform representation @luoConvTasNetSurpassingIdeal2019. The basic principles of @TCN:pl therefore form part of the architectural foundation for the dereverberation models discussed later.
+
+#figure(
+  caption: [
+    A dilated causal convolution with dilation factors $d=1,2,4$. Replicated from #cite(<leePredictiveSkillConvolutional2021>, form: "prose", style: "chicago-author-date").
+  ],
+  scale(
+    x: 80%,
+    y: 80%,
+    diagram(
+      spacing: 1cm,
+      cell-size: (10mm, 10mm),
+      edge-stroke: 1pt,
+
+      // --- INPUT (blue) ---
+      circ((0, 0), rgb("#4A90E2")),
+      circ((1, 0), rgb("#4A90E2")),
+      circ((2, 0), rgb("#4A90E2")),
+      circ((3, 0), rgb("#4A90E2")),
+      circ((4, 0), rgb("#4A90E2")),
+      circ((5, 0), rgb("#4A90E2")),
+      circ((6, 0), rgb("#4A90E2")),
+      circ((7, 0), rgb("#4A90E2")),
+
+      // --- HIDDEN d=1 ---
+      circ((0, 1), white),
+      circ((1, 1), rgb("#FF3B30")),
+      circ((2, 1), white),
+      circ((3, 1), rgb("#FF3B30")),
+      circ((4, 1), white),
+      circ((5, 1), rgb("#FF3B30")),
+      circ((6, 1), white),
+      circ((7, 1), rgb("#FF3B30")),
+
+      // --- HIDDEN d=2 ---
+      circ((0, 2), white),
+      circ((1, 2), white),
+      circ((2, 2), white),
+      circ((3, 2), rgb("#FF3B30")),
+      circ((4, 2), white),
+      circ((5, 2), white),
+      circ((6, 2), white),
+      circ((7, 2), rgb("#FF3B30")),
+
+      // --- OUTPUT ---
+      circ((0, 3), white),
+      circ((1, 3), white),
+      circ((2, 3), white),
+      circ((3, 3), white),
+      circ((4, 3), white),
+      circ((5, 3), white),
+      circ((6, 3), white),
+      circ((7, 3), rgb("#F8E71C")),
+
+      // --- VERTICAL EDGES ---
+      edge((0, 0), (0, 1), "--|>", stroke: gray),
+      edge((1, 0), (1, 1), "-|>"),
+      edge((2, 0), (2, 1), "--|>", stroke: gray),
+      edge((3, 0), (3, 1), "-|>"),
+      edge((4, 0), (4, 1), "--|>", stroke: gray),
+      edge((5, 0), (5, 1), "-|>"),
+      edge((6, 0), (6, 1), "--|>", stroke: gray),
+      edge((7, 0), (7, 1), "-|>"),
+
+      edge((0, 1), (0, 2), "--|>", stroke: gray),
+      edge((1, 1), (1, 2), "--|>", stroke: gray),
+      edge((2, 1), (2, 2), "--|>", stroke: gray),
+      edge((3, 1), (3, 2), "-|>"),
+      edge((4, 1), (4, 2), "--|>", stroke: gray),
+      edge((5, 1), (5, 2), "--|>", stroke: gray),
+      edge((6, 1), (6, 2), "--|>", stroke: gray),
+      edge((7, 1), (7, 2), "-|>"),
+
+      edge((0, 2), (0, 3), "--|>", stroke: gray),
+      edge((1, 2), (1, 3), "--|>", stroke: gray),
+      edge((2, 2), (2, 3), "--|>", stroke: gray),
+      edge((3, 2), (3, 3), "--|>", stroke: gray),
+      edge((4, 2), (4, 3), "--|>", stroke: gray),
+      edge((5, 2), (5, 3), "--|>", stroke: gray),
+      edge((6, 2), (6, 3), "--|>", stroke: gray),
+      edge((7, 2), (7, 3), "-|>"),
+
+      // --- DILATION = 1 ---
+      edge((0, 0), (1, 1), "-|>"),
+      edge((1, 0), (2, 1), "--|>", stroke: gray),
+      edge((2, 0), (3, 1), "-|>"),
+      edge((3, 0), (4, 1), "--|>", stroke: gray),
+      edge((4, 0), (5, 1), "-|>"),
+      edge((5, 0), (6, 1), "--|>", stroke: gray),
+      edge((6, 0), (7, 1), "-|>"),
+
+      // --- DILATION = 2 ---
+      edge((0, 1), (2, 2), "--|>", stroke: gray),
+      edge((1, 1), (3, 2), "-|>"),
+      edge((2, 1), (4, 2), "--|>", stroke: gray),
+      edge((3, 1), (5, 2), "--|>", stroke: gray),
+      edge((4, 1), (6, 2), "--|>", stroke: gray),
+      edge((5, 1), (7, 2), "-|>"),
+
+      // --- DILATION = 4 ---
+      edge((0, 2), (4, 3), "--|>", stroke: gray),
+      edge((1, 2), (5, 3), "--|>", stroke: gray),
+      edge((2, 2), (6, 3), "--|>", stroke: gray),
+      edge((3, 2), (7, 3), "-|>"),
+
+      node((8, 0), "Input"),
+      node((8, 1), "Hidden"),
+      node((8, 2), "Hidden"),
+      node((8, 3), "Output"),
+
+      node((7.5, 0.5), [$d=1$]),
+      node((7.5, 1.5), [$d=2$]),
+      node((7.5, 2.5), [$d=4$]),
+    ),
+  ),
+)
+
 
 === Encoders and Decoders
 

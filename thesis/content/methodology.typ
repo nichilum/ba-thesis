@@ -291,7 +291,7 @@ Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities
 
 We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection) it must support wideband analysis up to 44.1 kHz.
 
-Differentiability is given by the fact that the computations of a nerual network are differentiable. The only exception being the activation function `ReLU` which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero so this was ignored.
+Differentiability is given by the fact that the computations of a nerual network are differentiable. The only exception being the activation function @ReLU which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero so this was ignored.
 
 Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018 which estimates a @PESQ score for a given signal (see @related_quality_net) our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore our model combines a perceptual and an objective approach.
 

@@ -30,7 +30,7 @@ wetness,0.02280745655298233,0.11195141077041626,0.8552049398422241
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
 )<plot_nn_qual_against_size_and_wet>
 
-- ReLU: not entirely differentiable
+- @ReLU not entirely differentiable
 
 == Objective Quality Net<eval_objective_quality_net>
 

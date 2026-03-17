@@ -83,7 +83,7 @@ This gives us a better chance at debugging (cf. @eval_percep_qual_net_cnn14) and
   ],
 ))<arch_impl_qual_net_init>
 
-@arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. AdamW was used as an optimizer with a learning rate of $10^(-3)$. A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
+@arch_impl_qual_net_init shows the architecture of the inital implementation. The number after the “@” symbol indicates the number of feature maps. AdamW was used as an optimizer @loshchilovDecoupledWeightDecay2019 with a learning rate of $10^(-3)$. A per-prediction-head loss was calculated head using @MSE. The total loss was defined as:
 
 $
   "loss" = 2 dot "loss"_"quality" + "loss"_"odg" + 0.75 dot "loss"_"size" + 0.75 dot "loss"_"wetness"

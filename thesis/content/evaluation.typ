@@ -107,6 +107,7 @@ These findings motivated us to proceed with the CNN14 based implementation as de
 
 #diagram(
   caption: [Quality score prediction analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
+  short-caption: [Quality score prediction analyzed over test dataset],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
 )<plot_nn_qual_against_size_and_wet>
 
@@ -151,6 +152,7 @@ A recurring informal observation from listening tests and viewing spectograms is
 
 #diagram(
   caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
+  short-caption: [Boxplot comparison for dereverberation performance of diverse audio samples],
   grid(
     columns: 2,
     column-gutter: 1cm,

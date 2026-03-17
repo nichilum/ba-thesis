@@ -32,7 +32,8 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
 #diagram(
-  caption: [RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an RNN cell across three time steps. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
+  caption: [@RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an @RNN cell across three time steps. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
+  short-caption: [@RNN:short architecture and unfolded version],
   grid(
     columns: (1fr, 3fr),
     align: (left, right),
@@ -157,6 +158,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 #diagram(
   caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
+  short-caption: [TCN residual block],
   scale(fletcher-diagram(
     spacing: 6pt,
     cell-size: (10mm, 10mm),
@@ -216,6 +218,7 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
   caption: [
     A dilated causal convolution with dilation factors $d=1,2,4$. Replicated from #cite(<leePredictiveSkillConvolutional2021>, form: "prose", style: "chicago-author-date").
   ],
+  short-caption: [Dilated causal convolution],
   scale(
     x: 80%,
     y: 80%,
@@ -418,109 +421,117 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
 
 The scale shown in @pesq_score_interp corresponds to the @MOS scale. During analysis the signal is mapped into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
-#diagram(caption: [Structure of @PESQ:both model taken from @rixPerceptualEvaluationSpeech2001], raw-render(
-  ```dot
-      digraph pesq {
-        rankdir=LR
-        splines=ortho
-        node [fontsize=10, style=filled, shape=box, fillcolor="white"]
-        edge [fontsize=8]
-        ref_sig      [shape=plain, fillcolor=none]
-        deg_sig      [shape=plain, fillcolor=none]
-        level_align1
-        level_align2
-        input_filt1
-        input_filt2
-        time_align   [height=3]
-        aud_trans1
-        aud_trans2
-        dist_proc
-        cog_model
-        bad_int
-        output       [shape=plain, fillcolor=none]
-        {rank=same; ref_sig; deg_sig}
-        {rank=same; level_align1; level_align2}
-        {rank=same; input_filt1; input_filt2}
-        {rank=same; aud_trans1; dist_proc; aud_trans2}
-        {rank=same; cog_model; bad_int}
+#diagram(
+  caption: [Structure of @PESQ:both model taken from #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date").],
+  short-caption: [Structure of @PESQ:short model],
+  raw-render(
+    ```dot
+        digraph pesq {
+          rankdir=LR
+          splines=ortho
+          node [fontsize=10, style=filled, shape=box, fillcolor="white"]
+          edge [fontsize=8]
+          ref_sig      [shape=plain, fillcolor=none]
+          deg_sig      [shape=plain, fillcolor=none]
+          level_align1
+          level_align2
+          input_filt1
+          input_filt2
+          time_align   [height=3]
+          aud_trans1
+          aud_trans2
+          dist_proc
+          cog_model
+          bad_int
+          output       [shape=plain, fillcolor=none]
+          {rank=same; ref_sig; deg_sig}
+          {rank=same; level_align1; level_align2}
+          {rank=same; input_filt1; input_filt2}
+          {rank=same; aud_trans1; dist_proc; aud_trans2}
+          {rank=same; cog_model; bad_int}
 
-        aud_trans1 -> dist_proc -> aud_trans2 [style=invis, weight=100]
-        ref_sig   -> level_align1
-        deg_sig   -> level_align2
-        level_align1 -> input_filt1
-        level_align2 -> input_filt2
-        input_filt1  -> time_align
-        input_filt2  -> time_align
-        time_align   -> aud_trans1
-        time_align   -> aud_trans2
-        aud_trans1   -> dist_proc
-        aud_trans2   -> dist_proc
-        aud_trans1   -> time_align [constraint=true]
-        aud_trans2   -> time_align [constraint=false]
-        dist_proc    -> cog_model
-        dist_proc    -> bad_int
-        bad_int      -> time_align [label="Re-align bad intervals", constraint=true]
-        cog_model    -> output
-      }
-  ```,
-  labels: (
-    ref_sig: [Reference signal],
-    deg_sig: [Degraded signal],
-    level_align1: [*Level\ align*],
-    level_align2: [*Level\ align*],
-    input_filt1: [*Input\ filter*],
-    input_filt2: [*Input\ filter*],
-    time_align: [*Time align\ and equalise*],
-    aud_trans1: [*Auditory\ transform*],
-    aud_trans2: [*Auditory\ transform*],
-    dist_proc: [*Disturbance\ processing*],
-    cog_model: [*Cognitive\ modelling*],
-    bad_int: [*Identify bad\ intervals*],
-    output: [*Prediction of\ perceived\ speech\ quality*],
+          aud_trans1 -> dist_proc -> aud_trans2 [style=invis, weight=100]
+          ref_sig   -> level_align1
+          deg_sig   -> level_align2
+          level_align1 -> input_filt1
+          level_align2 -> input_filt2
+          input_filt1  -> time_align
+          input_filt2  -> time_align
+          time_align   -> aud_trans1
+          time_align   -> aud_trans2
+          aud_trans1   -> dist_proc
+          aud_trans2   -> dist_proc
+          aud_trans1   -> time_align [constraint=true]
+          aud_trans2   -> time_align [constraint=false]
+          dist_proc    -> cog_model
+          dist_proc    -> bad_int
+          bad_int      -> time_align [label="Re-align bad intervals", constraint=true]
+          cog_model    -> output
+        }
+    ```,
+    labels: (
+      ref_sig: [Reference signal],
+      deg_sig: [Degraded signal],
+      level_align1: [*Level\ align*],
+      level_align2: [*Level\ align*],
+      input_filt1: [*Input\ filter*],
+      input_filt2: [*Input\ filter*],
+      time_align: [*Time align\ and equalise*],
+      aud_trans1: [*Auditory\ transform*],
+      aud_trans2: [*Auditory\ transform*],
+      dist_proc: [*Disturbance\ processing*],
+      cog_model: [*Cognitive\ modelling*],
+      bad_int: [*Identify bad\ intervals*],
+      output: [*Prediction of\ perceived\ speech\ quality*],
+    ),
+    width: 15cm,
   ),
-  width: 15cm,
-))<speech_quality_pipeline>
+)<speech_quality_pipeline>
 
 
 === @PEAQ:short<fun_peaq>
 
 The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general it compares two time aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
 
-#diagram(caption: [High-level representation of the @PEAQ:both model taken from @thiedePEAQITUStandard2000], raw-render(
-  ```dot
-      digraph peaq {
-        rankdir=TB
-        splines=ortho
-        node [fontsize=10, style=filled, shape=box, fillcolor="white"]
-        edge [fontsize=8]
-        proc_sig      [fillcolor=none]
-        org_sig       [fillcolor=none]
-        ear_model     [fillcolor=lightgray]
-        feat_extraction [fillcolor=lightgray]
-        movs
-        quality
+#diagram(
+  caption: [High-level representation of the @PEAQ:both model taken from #cite(<thiedePEAQITUStandard2000>, form: "prose", style: "chicago-author-date").],
+  short-caption: [High-level representation of the @PEAQ:short model],
+  raw-render(
+    ```dot
+        digraph peaq {
+          rankdir=TB
+          splines=ortho
+          node [fontsize=10, style=filled, shape=box, fillcolor="white"]
+          edge [fontsize=8]
+          proc_sig      [fillcolor=none]
+          org_sig       [fillcolor=none]
+          ear_model     [fillcolor=lightgray]
+          feat_extraction [fillcolor=lightgray]
+          movs
+          quality
 
-        {rank=same; movs; quality}
+          {rank=same; movs; quality}
 
-        proc_sig -> ear_model
-        org_sig -> ear_model
-        ear_model -> feat_extraction
-        ear_model -> movs [constraint=false]
-        feat_extraction -> movs
-        feat_extraction -> movs
-        feat_extraction -> movs
-        feat_extraction -> movs
-        feat_extraction -> quality
-        movs -> quality
-      }
-  ```,
-  labels: (
-    proc_sig: [*Processed Signal*],
-    org_sig: [*Original Signal*],
-    ear_model: [*Peripheral Ear Model*],
-    feat_extraction: [*Feature extraction and Combination*],
-    movs: [*MOVs*],
-    quality: [*Quality grade*],
+          proc_sig -> ear_model
+          org_sig -> ear_model
+          ear_model -> feat_extraction
+          ear_model -> movs [constraint=false]
+          feat_extraction -> movs
+          feat_extraction -> movs
+          feat_extraction -> movs
+          feat_extraction -> movs
+          feat_extraction -> quality
+          movs -> quality
+        }
+    ```,
+    labels: (
+      proc_sig: [*Processed Signal*],
+      org_sig: [*Original Signal*],
+      ear_model: [*Peripheral Ear Model*],
+      feat_extraction: [*Feature extraction and Combination*],
+      movs: [*MOVs*],
+      quality: [*Quality grade*],
+    ),
+    height: 5cm,
   ),
-  height: 5cm,
-))<audio_quality_pipeline>
+)<audio_quality_pipeline>

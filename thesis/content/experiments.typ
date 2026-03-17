@@ -92,8 +92,7 @@ $<percep_qual_loss_init>
 
 Compared to the inital implementation this version offers a number of improvements. Mainly a new shared encoder architecture based on the CNN14 network (cf. @arch_impl_qual_net_cnn14) which was introduced as a real-time audio pattern recognition model by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date"). We thought it fitting as we were trying to solve an adjecent problem (audio characteristic recognition) with good performance as we did not want to needlessly slow down the training process of the dereverberation network.
 
-A second improvement has been made in the spectogram conversion. The log-magnitude spectogram was replaced with a log-mel spectogram offering a perceptually oriented base for the encoder. The mel scale, as all perceptual scales do, compresses higher frequencies more than lower ones. Therefore mimicing human perception of audio.
-The conversion from hertz into mels is defined as @oshaughnessySpeechCommunicationHuman1987
+A second improvement has been made in the spectogram conversion. The log-magnitude spectogram was replaced with a log-mel spectogram offering a perceptually oriented base for the encoder. The mel scale compresses higher frequencies more than lower ones. Therefore mimicing human perception of audio. The conversion from hertz into mels is defined as @oshaughnessySpeechCommunicationHuman1987
 $ m=2595 dot log_10 (1+f/700) $
 . The mel scale was chosen in favor of the bark scale as it is the most used and best-performing scale in computational acoustics (e.g. in @ASR @simonkingBarkScaleVd @dhondePerformanceEvaluationMel2019).
 Prediction heads as well as loss calculations were not subject to change.

@@ -239,7 +239,7 @@ As we don't want our model to focus on generating silence a mask is generated fo
 
 As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
 
-As shown in @fun_loss_function different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
+As shown in @fun_taxonomy_loss different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
 
 In the time or waveform domain error-based regressive loss functions (e.g. @MSE, @SI-SNR and @PESQ) have identfied themselfs as well performing in the field of dereverberation (see @related_work and @fun_quality_metrics).
 

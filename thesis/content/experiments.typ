@@ -175,6 +175,10 @@ Weights of the shared encoder are initialized using the Xavier uniform distribut
   ],
 ))<arch_impl_qual_net_cnn14>
 
+#TODO[Use as loss function
+  $ "loss" = 1.0 - "quality" $
+]
+
 
 == Objective Quality Network<impl_objective_quality_network>
 

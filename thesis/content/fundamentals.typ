@@ -18,8 +18,8 @@ convolutions are a fast operation in the frequency domain and on GPU devices @si
 
 In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
 
-== Neural Networks
-Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output while minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
+== Neural Networks<fun_neural_networks>
+Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
 
 === @CNN:short
 
@@ -338,6 +338,24 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 
 === Loss Function<fun_loss_function>
 
+@fun_neural_networks states neural networks are iteratively trained through minimizing a loss function.
+
+- loss functions objectively define how erroneous the prediction of a neural network is
+
+
+- give example (basically salmen vorlesung/buch)
+@amariBackpropagationStochasticGradient1993 #sym.arrow.l hier example stehlen
+
+=== Gradient Descent
+
+- loss function over all weights creates a landscape called gradient
+- we traverse this gradient through process called (stochastic) gradient descent, a minimum in gradient means loss function is minimized
+
+=== Backpropagation
+
+
+As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
+
 - Gradient Descent
 - Backwardpropagation
 - Autograd
@@ -348,6 +366,14 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
   - how to use this with nn as loss
 - what does loss even do
 -
+
+=== Taxonomy of Loss Functions<fun_taxonomy_loss>
+
+- with respect to audio ml
+
+As shown in @fun_loss_function different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
+
+
 == Quality Metrics<fun_quality_metrics>
 
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.

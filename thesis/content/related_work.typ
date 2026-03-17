@@ -15,16 +15,13 @@ Architecturally, Conv-TasNet consists of a learned linear encoder, a masking net
 
 For this thesis, Conv-TasNet is relevant because it combines strong reported speech-domain performance with low model complexity and a comparatively small minimum latency, making it a plausible candidate for real-time capable dereverberation systems. At the same time, the scope of the original work remains limited to speech separation. The paper does not investigate dereverberation on diverse broadband material such as music, environmental sounds, or mixed acoustic scenes. Therefore Conv-TasNet here serves  not as a solved answer to the research problem, but as a strong real-time speech-domain baseline whose transferability to diverse-signal dereverberation must be evaluated separately.
 
-== StoRM
+== StoRM  
 
-- diffusion architecture (fully generative)
-- score function estimator (similar to our loss network)
-- high computation requirements
-- not realtime capable
-- clean seperation results
-- speech only
-- 16 kHz
-- @lemercierStoRMDiffusionbasedStochastic2023
+StoRM is a diffusion-based stochastic regeneration model for speech enhancement and dereverberation @lemercierStoRMDiffusionbasedStochastic2023. In contrast to purely predictive enhancement systems, it follows a fully generative formulation in which the target signal is refined through a reverse diffusion process. The model combines a predictive estimate with stochastic generative refinement, aiming to retain the robustness of predictive methods while benefiting from the higher sample quality often associated with diffusion-based generation.
+
+Architecturally, StoRM relies on score-based estimation during the reverse diffusion process and uses a predictive model as a guide for the generative reconstruction. In this sense, the score estimation component is conceptually related to the scoriing used in this thesis, although it serves a different role than the perceptual loss network introduced later. The main motivation of the original paper is to reduce artifacts that may arise in purely generative diffusion systems while still producing very clean speech restoration results. At the same time, the paper explicitly notes the high computational burden of diffusion-based inference, since multiple reverse steps are required instead of a single forward pass.
+
+For this thesis, StoRM is relevant because it demonstrates that a generative speech-domain approach can achieve strong dereverberation quality under its intended conditions. However, the scope of the original work remains limited to speech signals and a 16 kHz setting, which limits the representable spectrum to 8 kHz by the Nyquist theorem, which is substantially below the upper range of human hearing and therefore does not preserve the full audible bandwidth of music and other broadband audio material @shannonCommunicationPresenceNoise1949 @AcousticsNormalEqualloudnesslevel2023 @zwickerSubdivisionAudibleFrequency1961. In addition, the model is not designed around strict real-time constraints, making it less suitable as a direct answer to the low-latency objective of this thesis. StoRM therefore serves here not as a solved solution to real-time dereverberation of diverse audio, but as a high-quality speech-domain reference whose transferability to broader signals and latency-constrained applications must be evaluated separately.
 
 == DeepFilterNet
 

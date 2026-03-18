@@ -461,7 +461,7 @@ Once $gradient E$ is calculated each weight can be adjusted so that the loss is 
 
 @fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years many different loss functions for different problem sets have been envisioned each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
 
-
+#TODO[FINISH]
 
 == Quality Metrics<fun_quality_metrics>
 #jojo

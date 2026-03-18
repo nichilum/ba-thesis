@@ -46,6 +46,11 @@
     long: "automatic speech recognition",
     group: "Acoustics",
   ),
+  STT: (
+    short: "STT",
+    long: "speech-to-text",
+    group: "Acoustics",
+  ),
   // Neural Networks
   TCN: (
     short: "TCN",

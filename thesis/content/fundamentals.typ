@@ -21,13 +21,22 @@ In these cases, reverberation can significantly degrade speech intelligibility, 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
 
-=== @CNN:short
+
+
+
+- different architectures
+- different ways to organize the datapoints
+- different approaches to training of neural network
+
+=== Architectures
+
+==== @CNN:short
 
 @CNN:pl are feed-forward neural networks that process structured inputs by applying learned convolution kernels over local neighborhoods. Instead of connecting every input element to every neuron, a convolutional layer reuses the same filter weights across the full input. This weight sharing reduces the number of parameters and makes the network particularly effective at detecting local patterns such as edges in images, harmonics in spectrograms, or short waveform structures @goodfellowDeepLearning2016. Stacking multiple convolution layers increases the receptive field, so deeper layers can combine simple local features into more abstract representations.
 
 In audio machine learning, @CNN:pl are widely used on time-frequency representations because spectrograms preserve local correlations in time and frequency that can be captured efficiently by two-dimensional filters. One-dimensional variants are also common when operating directly on waveforms or learned feature sequences. Their main advantages are computational efficiency, parameter sharing, and good parallelizability on modern hardware. A limitation is that long-range temporal dependencies are not represented explicitly and must instead be captured through depth, pooling, or large receptive fields @grau-haroComprehensiveEvaluationCNNBased2025 @kongPANNsLargeScalePretrained2020.
 
-=== @RNN:short
+==== @RNN:short
 
 @RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
 
@@ -137,7 +146,7 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 Classical @RNN:pl suffer from vanishing and exploding gradients when the dependency horizon becomes long. For this reason, gated variants such as @LSTM @hochreiterLongShortTermMemory1997 and @GRU networks @choPropertiesNeuralMachine2014 are commonly used in practice. These architectures regulate which information is stored, updated, or forgotten, improving training stability and long-term memory. Their main drawback is that recurrent processing is inherently sequential, which limits parallelization during training and inference compared to purely convolutional models @fuQualityNetEndtoEndNonintrusive2018 @defossezMusicSourceSeparation2019.
 
-=== @TCN:short<fun_tcn>
+==== @TCN:short<fun_tcn>
 
 @TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally, where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
 
@@ -331,27 +340,33 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 )
 
 
-=== Encoders and Decoders
+==== Encoders and Decoders
 
-=== Supervised Learning<supervised_learning>
-=== Self-Supervised Learning<self_supervised>
+=== Organization of Data Points
 
-=== Loss Function<fun_loss_function>
+==== Supervised Learning<supervised_learning>
+==== Self-Supervised Learning<self_supervised>
+
+=== Training of a Neural Network
+
+==== Loss Function<fun_loss_function>
 
 @fun_neural_networks states neural networks are iteratively trained through minimizing a loss function.
 
 - loss functions objectively define how erroneous the prediction of a neural network is
-
+- loss functions depends on weights -> error landscape
 
 - give example (basically salmen vorlesung/buch)
 @amariBackpropagationStochasticGradient1993 #sym.arrow.l hier example stehlen
 
-=== Gradient Descent
+==== Gradient Descent
 
 - loss function over all weights creates a landscape called gradient
 - we traverse this gradient through process called (stochastic) gradient descent, a minimum in gradient means loss function is minimized
 
-=== Backpropagation
+- local minima vs global minimum -> paper local minimum is good enough (which is weird but has been shown to be true)
+
+==== Backpropagation
 
 
 As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
@@ -367,7 +382,7 @@ As described in @fun_loss_function a loss function is a qualitative function tha
 - what does loss even do
 -
 
-=== Taxonomy of Loss Functions<fun_taxonomy_loss>
+==== Taxonomy of Loss Functions<fun_taxonomy_loss>
 
 - with respect to audio ml
 

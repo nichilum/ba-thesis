@@ -87,6 +87,11 @@
     long: "rectified linear unit",
     group: "Neural Networks",
   ),
+  SGD: (
+    short: "SGD",
+    long: "stochastic gradient descent",
+    group: "Neural Networks",
+  ),
   // Metrics
   SI-SNR: (
     short: "SI-SNR",

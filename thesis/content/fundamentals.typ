@@ -356,7 +356,7 @@ Optimizing the loss function means optimizing the weights.
 
 We can image a multidimensional error landscape formed by the weights. To traverse this error landscape into a local minimum we use the partial derivative of the loss function, also called gradient. This process coined gradient descent is discussed in @fun_gradient_descent.
 
-This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid backpropagation was introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") (cf. @fun_backpropagation).
+This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid automatic differentiation using backpropagation was introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") (cf. @fun_backpropagation).
 
 ==== Loss Function<fun_loss_function>
 
@@ -364,67 +364,103 @@ A loss function is a qualitative function that is used to objectively measure mo
 
 To introduce the application of loss functions we want to discuss one of the eariest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
 
-$ o(bold(x),bold(w)) = sum_(n=1)^N x_n w_n + b $
+$ y(bold(x),bold(w)) = sum_(n=1)^N x_n w_n + b $
 
-where $bold(x)$ is the input vector, $bold(w)$ the weight vector, $N$ the number of inputs, $b$ some bias and $o$ the model ouput. Assuming that $x_0 = 1$ and $w_0 = b$ the output is simplified to:
+where $bold(x)$ is the input vector, $bold(w)$ the weight vector, $N$ the number of inputs, $b$ some bias and $y$ the model ouput. Assuming that $x_0 = 1$ and $w_0 = b$ the output is simplified to:
 
-$ o(bold(x),bold(w)) = sum_(n=1)^N x_n w_n $
+$ y(bold(x),bold(w)) = sum_(n=1)^N x_n w_n $
 
-. Adaline uses the @LMS algorithm to define its loss:
+. Adaline uses the @LMS algorithm to define its loss, also called cost function:
 
-$ L(y, o) = (y - o(bold(x),bold(w)))^2 $
+$ C(d, y) = (d - y(bold(x),bold(w)))^2 $
 
-where $y$ is the desired target. For analytical simplicity the loss function is often denoted as:
+where $d$ is the desired target. For analytical simplicity the loss function is often denoted as:
 
 $
-  L(y, o) & = 1/2 (o(bold(x),bold(w)) - y)^2 \
-          & = 1/2 (x_1 w_1 + x_2 w_2 + ... + x_n w_n - y)^2
-$
+  C(d, y) & = 1/2 (y(bold(x),bold(w)) - d)^2 \
+          & = 1/2 (x_1 w_1 + x_2 w_2 + ... + x_n w_n - d)^2
+$<fun_loss_func_equ>
 
 . The partial derivative, also called gradient, can be calculated analytically (here for the first weight) by deriving the input-output function:
 
 $
-  (partial L)/(partial w_1) & = 1/2 dot 2 dot (o(bold(x),bold(w)) - y) dot o(bold(x),bold(w))'_w_1 \
-                            & =(o(bold(x),bold(w)) - y) dot x_1
+  (partial C)/(partial w_1) & = 1/2 dot 2 dot (y(bold(x),bold(w)) - d) dot y(bold(x),bold(w))'_w_1 \
+                            & =(y(bold(x),bold(w)) - d) dot x_1
 $
 
 . The learning rule implementing this partial derivative is denoted as:
 
-$ bold(w) arrow.l bold(w) + eta (y - o(bold(x),bold(w))) bold(x) $
+$ bold(w) arrow.l bold(w) + eta (d - y(bold(x),bold(w))) bold(x) $<fun_apply_gradient_to_loss_eq>
 
 where $eta$ is some factor called the learning rate. This update rule implements gradient descent for linear regression.
-It should be noted that $o$ is quadratic in the above loss function. Therefore no local minima are offered and only a global minium is approached @amariBackpropagationStochasticGradient1993.
+It should be noted that $y$ is quadratic in the above loss function. Therefore no local minima are offered and only a global minium is approached @amariBackpropagationStochasticGradient1993.
 
-It can be concluded from the example above that analytical derivation of such loss functions becomes near impossible for complex input-ouput functions featuring non-linearities (activation functions) and millions of parameters. To solve this issue the backpropagation algorithm is used.
+It can be concluded from the example above that analytical derivation of such loss functions becomes near impossible for complex input-output functions featuring non-linearities (activation functions) and millions of parameters. To solve this issue the backpropagation algorithm is used.
 
-==== Backpropagation<fun_backpropagation>
+==== Backpropagation and Autograd<fun_backpropagation>
+
+Training a neural network happens in two steps. Initially the input is run through each of the networks functions. Through this process, called forward propagation, the neural network makes its best guess about the correct output.
+
+Once an input-output pair is computed the neural network calculates the gradient of the error function in regards to its guess by traversing backwards through its layers, collecting the derivatives of the error with respect to the parameters of the functions which are later used to change each weight. This operation is also known as gradient descent (see @fun_gradient_descent).
+
+The following section will discuss backpropagation as introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date").
+
+Expanding on the network example of @fun_loss_function we define our multi-layer network as having a leftmost layer of input units, any number of intermediate layers and a rightmost layer of output units. Connections within a layer or from right to left are forbidden, but connections can skip intermediate layers.
+The states of the units in each layer are determined by applying equations @fun_b_s_e_1 and @fun_b_s_e_2
+
+$ x_j = sum_i y_i w_(j i) $<fun_b_s_e_1>
+$ y_j = 1/(1+e^(-x_j)) $<fun_b_s_e_2>
+
+, also called the forward pass, where @fun_b_s_e_2 is the sigmoid function which today is often replace by the @ReLU activation function.
+
+The total error $E$ is defined as (cf. @fun_loss_func_equ)
+
+$ E = 1/2 sum_c sum_j (y_(j,c) - d_(j,c))^2 $<fun_b_total_loss>
+where $c$ is an index over all input-output paris, $j$ is an index over output units, $y$ is the actual state of an output unit and $d$ is the desired state.
+The backward pass starts by computing the parital derivative of $E$ in respect to $x_j$ for each output unit. Differentiating @fun_b_total_loss for a single input-output pair
+
+$
+  E & =1/2(y_j -d_j)^2 \
+    & = 1/2 ((1/(1+e^(-x_j))) - d_j)^2
+$
+
+by applying the chain rule gives:
+
+$
+  (partial E)/(partial x_j) & =(partial E)/(partial y_j) dot (dif y_j)/(dif x_j) \
+                            & = (partial E)/(partial y_j) dot y_j (1-y_j)
+$
+
+. This shows the affecting change is just a linear function of the states of the layer before making it "easy" @rumelhartLearningRepresentationsBackpropagating1986 to compute how the error will be affected by changing states in the intermediate layers. For a weight $w_(j i)$ the derivative is
+
+$
+  (partial E)/(partial w_(j i)) & = (partial E)/(partial x_(j)) dot y_i
+$
+
+The output of the $i$#super("th") unit taking into account all emerging connections results in
+
+$ (partial E)/(partial y_i) = sum_j (partial E)/(partial x_j) dot w_(j i) $
+
+. This shows how $(partial E)/(partial y)$ of the output layer can be computed when $(partial E)/(partial y_i)$ of the layer before is given. This procedure can therefore be repeated for each layer going backwards.
+
+Historically these computations have been done manually by the researchers @baydinAutomaticDifferentiationMachine2015. This task is tedious and error prone. Here automatic differentiation algorithms are of assistance. Pytorch's autograd system stores all functional computations that create the neural network's guess in a directed acyclic graph "whose leaves are the input tensors and roots are the output tensors. By tracing this graph from roots to leaves, you can automatically compute the gradients using the chain rule"
+@AutogradMechanicsPyTorch. It is important to note that this automatic process requires every function to respect the input data's need for a gradient. During computation gradient calculation can be accidentally disabled. This problem can occur when using another neural network as the loss function. This is further discussed in @impl_derev_net.
 
 
-- Gradient Descent
-- Backwardpropagation
-- Autograd
-- in general training of neural net with loss function:
-  - partial derivatives, gradient, jacobi matrix (analytical)
-  - gradient descent explaination
-- how does autograd (backward propagation work)
-  - how to use this with nn as loss
-- what does loss even do
--
+
 
 ==== Gradient Descent<fun_gradient_descent>
 
-- loss function over all weights creates a landscape called gradient
-- we traverse this gradient through process called (stochastic) gradient descent, a minimum in gradient means loss function is minimized
+In @fun_backpropagation is is discussed how partial derivatives of the error function $E$ can be calculated either manually or through the use of an automatic differentiation system.
 
-- local minima vs global minimum -> paper local minimum is good enough (which is weird but has been shown to be true)
+Once $gradient E$ is calculated each weight can be adjusted so that the loss is further minimized (cf. @fun_apply_gradient_to_loss_eq). Through this process is called gradient descent a local minium is searched. Finding a global minimum is not necessary, as experts "suspect that, for sufficiently large neural networks, most local minima have a low cost function value, and that it is not important to find a true global minimum" @goodfellowDeepLearning2016.
 
-
+#cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") introduce the simplest version of gradient descent as the accumulation of all gradients over all training examples and changing each weight by an amount proportional to the accumulated $(partial E)/(partial w)$. There are in fact improvements to this approach in the @SGD method which approximates the gradient of the entire dataset over a small subset of training examples also called minibatches. This lowers the computational cost of calculating a gradient over the entire dataset which is especially useful when dealing with large amounts of data. It is not guaranteed that the @SGD method arrives at a local minimum in a reasonable amount of time, but often a useful "low enough" loss is found @goodfellowDeepLearning2016.
 
 ==== Taxonomy of Loss Functions<fun_taxonomy_loss>
 
-- with respect to audio ml
+@fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years many different loss functions for different problem sets have been envisioned each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
 
-As shown in @fun_loss_function different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
 
 
 == Quality Metrics<fun_quality_metrics>

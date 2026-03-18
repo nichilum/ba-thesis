@@ -32,7 +32,7 @@ Studies have shown that the adverse effects of reverberation mainly the temporal
 These effects also negatively affect the overall quality of diverse audio signals such as in music remixes and film post-production, where excessive room reverberation can reduce audio clarity and limit creative flexibility.
 While the above named offline applications are not in need of real-time processing, live applications, as they are used in interactive scenarios such as video conferencing, speech recognition systems, and live music performance impose strict constraints on processing latency and computational efficiency.
 
-== Problem
+== Problem<intro_problem>
 
 Artificial reverberation can be added to audio signals with comparatively simple signal processing techniques, the inverse task of removing or reducing existing reverberation is significantly more complex @attiasSpeechDenoisingDereverberation2000. Reverberation is a time-dispersive and highly non-linear process, where direct sound and multiple delayed reflections overlap in both time and frequency @dattorroEffectDesignPart1997. This overlap makes a clear separation between the original (dry) signal and the reverberant components (wet) difficult and, for a long time, was considered practically unsolvable using classical digital signal processing methods @brandsteinUseExplicitSpeech1998.
 
@@ -73,7 +73,23 @@ The performance of different quality metrics is assessed and their qualitative p
 //   Describe the outline of your thesis
 
 == Background
+//   Describe each proven technology / concept shortly that is important to understand your thesis. Point out why it is interesting for your thesis. Make sure to incorporate references to important literature here.
 
-- Filter Approaches
-- Frequency-Domain Approaches
-- Time-Domain Approaches
+// - as shown in @intro_problem, dereverberation is a problem that has long been tackled using machine learning
+// - three main approaches have emerged, each with their own strenghts and shortcomings
+//   - Filter Approaches
+//   - Frequency-Domain Approaches
+//   - Time-Domain Approaches
+
+
+As mentioned in @intro_problem, dereverberation is a problem that has recently been addressed using machine learning methods. Three main approaches have emerged, each with their own strenghts and shortcomings.
+
+Filtering approches are closest to classic signal processing implementations. They use machine learning to "learn" the parameters of a deep-filter...
+
+Other literature can be devided into time-domain or frequency-domain approaches, based on the representation of audio used. Time-domain methods operate directly on the audio waveform and use individual samples as input into the network. Frequency-domain approaches on the other hand transform the input waveform into a frequency-domain representation first, commonly using the @STFT. 
+
+This has the advantage of being able to rely on @CNN architectures, which allow for faster processing and lower parameter counts and preservation of local correlations in time and frequency that can be captured efficiently by two-dimensional filters (see @fun_cnn). Time-domain approaches allow for longer temporal contexts, allowing the model to better understand temporal dependencies (see @fun_rnn and @fun_tcn).
+
+The two models compared, as well as the one presented in this thesis, can be classified in the latter two categories. StoRM @lemercierStoRMDiffusionbasedStochastic2023 is a frequency-domain model, making use of the @STFT, while Conv-TasNet @luoConvTasNetSurpassingIdeal2019 and the novel implementation both operate in the time-domain.
+
+

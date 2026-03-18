@@ -84,12 +84,14 @@ The performance of different quality metrics is assessed and their qualitative p
 
 As mentioned in @intro_problem, dereverberation is a problem that has recently been addressed using machine learning methods. Three main approaches have emerged, each with their own strenghts and shortcomings.
 
-Filtering approches are closest to classic signal processing implementations. They use machine learning to "learn" the parameters of a deep-filter...
+Classic signal processing implementations aim to enhance audio through subtraction of a predicted noisy signal @bollSuppressionAcousticNoise1979 or Wiener filtering @madhuPotentialSpeechIntelligibility2013. Further developing these methods has introduced deep filtering approaches, utilizing machine learning to optimize frequency filter paramters @zhangLowDelaySpeechEnhancement2021. @related_deep_filter examines the "DeepFilterNet" model.
 
-Other literature can be devided into time-domain or frequency-domain approaches, based on the representation of audio used. Time-domain methods operate directly on the audio waveform and use individual samples as input into the network. Frequency-domain approaches on the other hand transform the input waveform into a frequency-domain representation first, commonly using the @STFT. 
+Other literature can be devided into time-domain or frequency-domain approaches, based on the representation of audio used. Time-domain methods operate directly on the audio waveform and use individual samples as input into the network. Frequency-domain approaches on the other hand transform the input waveform into a frequency-domain representation first, commonly using the @STFT.
 
 This has the advantage of being able to rely on @CNN architectures, which allow for faster processing and lower parameter counts and preservation of local correlations in time and frequency that can be captured efficiently by two-dimensional filters (see @fun_cnn). Time-domain approaches allow for longer temporal contexts, allowing the model to better understand temporal dependencies (see @fun_rnn and @fun_tcn).
 
-The two models compared, as well as the one presented in this thesis, can be classified in the latter two categories. StoRM @lemercierStoRMDiffusionbasedStochastic2023 is a frequency-domain model, making use of the @STFT, while Conv-TasNet @luoConvTasNetSurpassingIdeal2019 and the novel implementation both operate in the time-domain.
+The two models compared, as well as the one presented in this thesis, can be classified in the latter two categories. StoRM @lemercierStoRMDiffusionbasedStochastic2023 is a frequency-domain model, making use of the @STFT, while Conv-TasNet @luoConvTasNetSurpassingIdeal2019 and our novel implementation both operate in the time-domain.
+
+Recent literature regarding dereverberation and adjecent problems (e.g. speaker--source separation and denoising) has focused on improving model architectures and loss functions for better performance. Notably #cite(<fuMetricGANImprovedVersion2021>, form: "prose", style: "chicago-author-date") utilize a novel neural network based loss for qualifying source separation performance introduced by #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date"). This approach is further discussed in @related_quality_net and has motivated our own implementation of a perceptual quality loss network (see @meth_percep_quality_net).
 
 

@@ -24,7 +24,7 @@ Architecturally, StoRM relies on score-based estimation during the reverse diffu
 
 For this thesis, StoRM is relevant because it demonstrates that a generative speech-domain approach can achieve strong dereverberation quality under its intended conditions. However, the scope of the original work remains limited to speech signals and a 16 kHz setting, which limits the representable spectrum to 8 kHz by the Nyquist theorem, which is substantially below the upper range of human hearing and therefore does not preserve the full audible bandwidth of music and other broadband audio material @shannonCommunicationPresenceNoise1949 @AcousticsNormalEqualloudnesslevel2023 @zwickerSubdivisionAudibleFrequency1961. In addition, the model is not designed around strict real-time constraints, making it less suitable as a direct answer to the low-latency objective of this thesis. StoRM therefore serves here not as a solved solution to real-time dereverberation of diverse audio, but as a high-quality speech-domain reference whose transferability to broader signals and latency-constrained applications must be evaluated separately.
 
-== DeepFilterNet
+== DeepFilterNet<related_deep_filter>
 #jojo
 - seeks to have better performance than real-values or complex-masks (need high freq resolution)
 - uses Deep Filters, that are filters applied to multiple time/freq bins

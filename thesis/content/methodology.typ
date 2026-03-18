@@ -288,7 +288,7 @@ The correlation metric exhibits a similar problem where not only the size plot s
 
 
 == Perceptual Quality Network<meth_percep_quality_net>
-
+#jojo
 Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is near impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR like all metrics introduced in @fun_quality_metrics suffers from the need of a "golden" reference which as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings we introduce our own loss network initially coined "Perceptual Quality Network".
 
 We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection) it must support wideband analysis up to 44.1 kHz.

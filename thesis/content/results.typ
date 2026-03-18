@@ -232,3 +232,4 @@ TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
 - if the input signal is not so reverberant, the output only gets dereverberated very little
 - quality of dereverberation is highly dependent on the quality of the input signal
 
+#TODO[measure inference time]

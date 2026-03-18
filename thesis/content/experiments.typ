@@ -195,9 +195,11 @@ Both stages are evaluated in @eval_objective_quality_net.
 == Dereverberation Network<impl_derev_net>
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
   - show plots
+- instead use masking appproach
 
 #TODO[
   - which versions do the want to show the implementation of? only the best one (then compare si-snr with perceptual?)
+    - show the architecture of the best version (v4)
   - architecture is mostly the same for all
   - show table with all hyperparameters (learning rate, batch size, etc.) for all versions
 ]

@@ -360,6 +360,8 @@ This gradient was historically computed analytically (see @fun_loss_function). M
 
 ==== Loss Function<fun_loss_function>
 
+A loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
+
 To introduce the application of loss functions we want to discuss one of the eariest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
 
 $ o(bold(x),bold(w)) = sum_(n=1)^N x_n w_n + b $
@@ -397,8 +399,6 @@ It can be concluded from the example above that analytical derivation of such lo
 
 ==== Backpropagation<fun_backpropagation>
 
-
-As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
 
 - Gradient Descent
 - Backwardpropagation

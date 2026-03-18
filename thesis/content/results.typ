@@ -200,6 +200,11 @@ update score and update loss:
   image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
 )
 
+// this needs more thoughts
+TOTAL NUMBER OF SAMPLES: 2896664400
+Total length of audio coded in 44.1 kHz is 18.2455555556 hours
+TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
+
 == Dereverberation Network
 #leo
 #TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
@@ -227,8 +232,3 @@ update score and update loss:
 - if the input signal is not so reverberant, the output only gets dereverberated very little
 - quality of dereverberation is highly dependent on the quality of the input signal
 
-
-// this needs more thoughts
-TOTAL NUMBER OF SAMPLES: 2896664400
-Total length of audio coded in 44.1 kHz is 18.2455555556 hours
-TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683

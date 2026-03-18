@@ -177,11 +177,6 @@ Weights of the shared encoder are initialized using the Xavier uniform distribut
   ],
 ))<arch_impl_qual_net_cnn14>
 
-#TODO[Use as loss function
-  $ "loss" = 1.0 - "quality" $
-]
-
-
 == Objective Quality Network<impl_objective_quality_network>
 
 @ODG was shown to worsen the performance of the perceptual quality network (see @eval_percep_qual_net_cnn14). Consequently the perceptual quality network as seen in @impl_percep_qual_net_cnn14 was adjusted to base the prediction only on the wetness and size parameters.
@@ -206,6 +201,16 @@ Both stages are evaluated in @eval_objective_quality_net.
   - architecture is mostly the same for all
   - show table with all hyperparameters (learning rate, batch size, etc.) for all versions
 ]
+
+#TODO[Use as loss function
+
+  eval() mode -> backpropagatio not stopped through network computations
+  -> what is frozen and what not
+
+  $ "loss" = 1.0 - "quality" $
+  $ "loss" = 1.0 - "quality" + alpha dot "MSE"_"loss" $
+]
+
 
 *inverse estimation in encoder space*
 - frequency

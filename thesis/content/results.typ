@@ -2,6 +2,7 @@
 #import "@preview/statastic:1.0.0": arrayAvg, arrayStd
 #import "@preview/lilaq:0.5.0" as lq
 #import "/thesis/utils/diagram.typ": diagram
+#import "/thesis/utils/author.typ": *
 
 #let d(storm, tasnet, ylabel) = {
   lq.diagram(
@@ -41,7 +42,7 @@
 = Results<results>
 
 == Conv-TasNet
-
+#leo
 As explained in @impl_conv_tasnet, we trained a Conv-TasNet model from scratch on the LibriSpeech `train-clean-100` split, using the original Conv-TasNet architecture @luoConvTasNetSurpassingIdeal2019 and training procedure, but with @MSE instead of @SI-SNR as the loss function.
 
 Three loss functions were evaluated in total. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at an unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). This could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
@@ -108,7 +109,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
 
 == StoRM
-
+#leo
 Unlike Conv-TasNet, StoRM was not trained from scratch. We used the official pretrained dereverberation checkpoint provided by the authors, trained on the WSJ0 corpus reverberated with the REVERB challenge dataset @lemercierStoRMDiffusionbasedStochastic2023 @kinoshitaReverbChallengeCommon2013 @garofolojohns.CSRIWSJ0Complete2007. The training data consists of speech recordings sampled at 16 kHz, establishing an 8 kHz frequency ceiling. Architecturally, StoRM follows a generative stochastic regeneration approach: a discriminative denoiser first produces an initial estimate of the clean signal, which a score-based diffusion model then refines through a learned reverse process @lemercierStoRMDiffusionbasedStochastic2023. This contrasts with Conv-TasNet's discriminative masking, and the iterative inference required by the diffusion component has direct implications for computational cost.
 
 On in-domain speech signals, StoRM achieves strong dereverberation quality. @storm_paper_metrics shows the evaluation from the original paper. These numbers serve as an upper bound for speech dereverberation quality achievable with this model.
@@ -174,7 +175,7 @@ On music and other non-speech content, the model's behaviour is less predictable
 The iterative reverse diffusion inference requires many sequential neural network evaluations per sample, making StoRM substantially more expensive than Conv-TasNet. On a single H100 GPU (CLAIX-2023-ML), processing 2048 AudioSet samples took 6 h 14 m 51 s, compared to 4 m 15 s for Conv-TasNet --- approximately $88times$ slower (cf. @conv_tasnet_storm_comparison). Real-time application of this pretrained model is therefore not feasible without architectural modifications such as reducing the number of reverse diffusion steps or distillation.
 
 == Perceptual Quality Network<results_percep_quality_net>
-
+#jojo
 - all results based on the dataset in @data_collection
 - no results from initial perceptual quality network only cnn14 is discussed as
   - as @eval_percep_qual_net_init shows a direct improvement of cnn14 over initial implementation
@@ -185,7 +186,7 @@ The iterative reverse diffusion inference requires many sequential neural networ
 )
 
 == Objective Quality Network<results_objective_quality_net>
-
+#jojo
 update score:
 #diagram(
   caption: [],
@@ -198,7 +199,7 @@ update score and update loss:
 )
 
 == Dereverberation Network
-
+#leo
 #TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
 
 #diagram(
@@ -217,4 +218,7 @@ update score and update loss:
 - quality of dereverberation is highly dependent on the quality of the input signal
 
 
-
+// this needs more thoughts
+TOTAL NUMBER OF SAMPLES: 2896664400
+Total length of audio coded in 44.1 kHz is 18.2455555556 hours
+TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683

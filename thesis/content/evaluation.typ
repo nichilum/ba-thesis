@@ -1,10 +1,10 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/diagram.typ": diagram
-
+#import "/thesis/utils/author.typ": *
 = Evaluation
 
 == Perceptual Quality Net<eval_percep_quality_net>
-
+#jojo
 Evaluation of the perceptual quality network is done both for the initial simple implementation as well as the CNN14 based one. The evaluation of the simple @CNN (see @eval_percep_qual_net_init) focuses on the comparison of the two approaches, examining the improvement the CNN14 based implementation made. @eval_percep_qual_net_cnn14 discusses general applicability of the perceptual quality network as loss function and its predictive performance compared to other metrics like the @SI-SNR.
 
 === Simple @CNN:short<eval_percep_qual_net_init>
@@ -121,10 +121,10 @@ These findings motivated us to proceed with the CNN14 based implementation as de
 == Objective Quality Net<eval_objective_quality_net>
 
 == Comparison of Conv-TasNet and StoRM for diverse signals
-
+#leo
 Both Conv-TasNet and StoRM were trained exclusively on speech recordings and have no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
 
-#import "/thesis/content/results.typ": stormCSV, convtasnetCSV, v, d
+#import "/thesis/content/results.typ": convtasnetCSV, d, stormCSV, v
 
 #diagram(
   caption: [

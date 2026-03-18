@@ -1,11 +1,12 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/open_questions.typ": OPENQ
 #import "/thesis/utils/diagram.typ": diagram
+#import "/thesis/utils/author.typ": *
 
 = Implementation & Experimental Setup
 
 == Conv-TasNet for diverse audio dereverberation<impl_conv_tasnet>
-
+#leo
 Conv-TasNet @luoConvTasNetSurpassingIdeal2019 operates in the time domain using a learned encoder--TCN--decoder architecture, where a temporal convolutional network estimates a multiplicative mask over the encoded signal to isolate a target source (cf. @related_work_conv_tasnet). Although originally designed for speech source separation, the masking paradigm is conceptually compatible with dereverberation. Late reflections overlap with the direct sound in the encoder representation, and a mask can in principle suppress this reverberant energy while retaining the direct component.
 
 No pre-trained dereverberation weights were publicly available. Weights linked from the original repository were trained for speaker separation only and are thus not applicable to this task. Attempts to obtain suitable weights from the original authors received no reply. We therefore trained the model from scratch using the implementation linked in the paper #footnote[https://github.com/naplab/Conv-TasNet].
@@ -19,6 +20,7 @@ Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning
 #import "@preview/neural-netz:0.3.0": draw-network
 
 == Perceptual Quality Network<impl_percep_quality_network>
+#jojo
 
 The perceptual quality network was implemented twice. @impl_percep_qual_net_init shows the initial implementation of the perceptual quality network. It features a simple encoder network and prediction heads for each scoring metric.
 
@@ -193,6 +195,7 @@ $ "loss" = "loss"_"quality" $
 Both stages are evaluated in @eval_objective_quality_net.
 
 == Dereverberation Network<impl_derev_net>
+#leo
 - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
   - show plots
 

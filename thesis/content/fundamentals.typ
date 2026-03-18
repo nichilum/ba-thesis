@@ -2,6 +2,7 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "@preview/diagraph:0.3.6": *
 #import "/thesis/utils/diagram.typ": diagram
+#import "/thesis/utils/author.typ": *
 
 = Theoretical Background
 
@@ -29,7 +30,7 @@ Neural networks are parameterized function approximators composed of interconnec
 - different approaches to training of neural network
 
 === Architectures
-
+#leo
 ==== @CNN:short
 
 @CNN:pl are feed-forward neural networks that process structured inputs by applying learned convolution kernels over local neighborhoods. Instead of connecting every input element to every neuron, a convolutional layer reuses the same filter weights across the full input. This weight sharing reduces the number of parameters and makes the network particularly effective at detecting local patterns such as edges in images, harmonics in spectrograms, or short waveform structures @goodfellowDeepLearning2016. Stacking multiple convolution layers increases the receptive field, so deeper layers can combine simple local features into more abstract representations.
@@ -343,11 +344,12 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 ==== Encoders and Decoders
 
 === Organization of Data Points
-
+#leo
 ==== Supervised Learning<supervised_learning>
 ==== Self-Supervised Learning<self_supervised>
 
 === Training of a Neural Network
+#jojo
 @fun_neural_networks states neural networks are iteratively trained through minimizing a loss function.
 The loss function is parameterized through an input-output function as well as the weights of the model.
 Optimizing the loss function means optimizing the weights.
@@ -426,7 +428,7 @@ As shown in @fun_loss_function different loss functions exist for different prob
 
 
 == Quality Metrics<fun_quality_metrics>
-
+#jojo
 The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
 / $s$: is defined as the ground truth, also named reference or true, signal.

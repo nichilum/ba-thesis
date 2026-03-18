@@ -162,7 +162,7 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
     [$bold(22.9 plus.minus 8.2)$],
     [$bold(6.5 plus.minus 3.9)$],
   ),
-)<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female " @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
+)<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female" @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
 
 #diagram(
   caption: [

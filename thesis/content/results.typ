@@ -12,6 +12,8 @@
     ),
     ylabel: ylabel,
 
+    // lq.boxplot(storm, outliers: ".", median: rgb(171, 105, 144)),
+    // lq.boxplot(tasnet, outliers: ".", x: 2, median: rgb(171, 105, 144)),
     lq.boxplot(storm, outliers: none, median: rgb(171, 105, 144)),
     lq.boxplot(tasnet, outliers: none, x: 2, median: rgb(171, 105, 144)),
   )
@@ -207,7 +209,15 @@ update score and update loss:
   image(
     "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png",
   ),
-)
+)<derev_tcn_v4_sisnr>
+#diagram(
+  caption: [],
+  image(
+    "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=55-val_loss=-16.6097/spectrograms/353-128309-0032.png",
+  ),
+)<derev_tcn_v4_sisnr_updated>
+
+- one can see the effect of the additional #{55-16} epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
 
 - gating effect
 - adds highs in some examples

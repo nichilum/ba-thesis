@@ -168,4 +168,9 @@
     long: "mean opinion score",
     group: "Metrics",
   ),
+  LMS: (
+    short: "LMS",
+    long: "least mean squares",
+    group: "Metrics",
+  ),
 )

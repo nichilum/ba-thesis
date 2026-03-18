@@ -348,25 +348,52 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 ==== Self-Supervised Learning<self_supervised>
 
 === Training of a Neural Network
+@fun_neural_networks states neural networks are iteratively trained through minimizing a loss function.
+The loss function is parameterized through an input-output function as well as the weights of the model.
+Optimizing the loss function means optimizing the weights.
+
+We can image a multidimensional error landscape formed by the weights. To traverse this error landscape into a local minimum we use the partial derivative of the loss function, also called gradient. This process coined gradient descent is discussed in @fun_gradient_descent.
+
+This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid backpropagation was introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") (cf. @fun_backpropagation).
 
 ==== Loss Function<fun_loss_function>
 
-@fun_neural_networks states neural networks are iteratively trained through minimizing a loss function.
+To introduce the application of loss functions we want to discuss one of the eariest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
 
-- loss functions objectively define how erroneous the prediction of a neural network is
-- loss functions depends on weights -> error landscape
+$ o(bold(x),bold(w)) = sum_(n=1)^N x_n w_n + b $
 
-- give example (basically salmen vorlesung/buch)
-@amariBackpropagationStochasticGradient1993 #sym.arrow.l hier example stehlen
+where $bold(x)$ is the input vector, $bold(w)$ the weight vector, $N$ the number of inputs, $b$ some bias and $o$ the model ouput. Assuming that $x_0 = 1$ and $w_0 = b$ the output is simplified to:
 
-==== Gradient Descent
+$ o(bold(x),bold(w)) = sum_(n=1)^N x_n w_n $
 
-- loss function over all weights creates a landscape called gradient
-- we traverse this gradient through process called (stochastic) gradient descent, a minimum in gradient means loss function is minimized
+. Adaline uses the @LMS algorithm to define its loss:
 
-- local minima vs global minimum -> paper local minimum is good enough (which is weird but has been shown to be true)
+$ L(y, o) = (y - o(bold(x),bold(w)))^2 $
 
-==== Backpropagation
+where $y$ is the desired target. For analytical simplicity the loss function is often denoted as:
+
+$
+  L(y, o) & = 1/2 (o(bold(x),bold(w)) - y)^2 \
+          & = 1/2 (x_1 w_1 + x_2 w_2 + ... + x_n w_n - y)^2
+$
+
+. The partial derivative, also called gradient, can be calculated analytically (here for the first weight) by deriving the input-output function:
+
+$
+  (partial L)/(partial w_1) & = 1/2 dot 2 dot (o(bold(x),bold(w)) - y) dot o(bold(x),bold(w))'_w_1 \
+                            & =(o(bold(x),bold(w)) - y) dot x_1
+$
+
+. The learning rule implementing this partial derivative is denoted as:
+
+$ bold(w) arrow.l bold(w) + eta (y - o(bold(x),bold(w))) bold(x) $
+
+where $eta$ is some factor called the learning rate. This update rule implements gradient descent for linear regression.
+It should be noted that $o$ is quadratic in the above loss function. Therefore no local minima are offered and only a global minium is approached @amariBackpropagationStochasticGradient1993.
+
+It can be concluded from the example above that analytical derivation of such loss functions becomes near impossible for complex input-ouput functions featuring non-linearities (activation functions) and millions of parameters. To solve this issue the backpropagation algorithm is used.
+
+==== Backpropagation<fun_backpropagation>
 
 
 As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
@@ -381,6 +408,15 @@ As described in @fun_loss_function a loss function is a qualitative function tha
   - how to use this with nn as loss
 - what does loss even do
 -
+
+==== Gradient Descent<fun_gradient_descent>
+
+- loss function over all weights creates a landscape called gradient
+- we traverse this gradient through process called (stochastic) gradient descent, a minimum in gradient means loss function is minimized
+
+- local minima vs global minimum -> paper local minimum is good enough (which is weird but has been shown to be true)
+
+
 
 ==== Taxonomy of Loss Functions<fun_taxonomy_loss>
 

@@ -87,6 +87,11 @@
     long: "long short-term memory",
     group: "Neural Networks",
   ),
+  BLSTM: (
+    short: "BLSTM",
+    long: "bidirectional long short-term memory",
+    group: "Neural Networks",
+  ),
   GRU: (
     short: "GRU",
     long: "gated recurrent unit",

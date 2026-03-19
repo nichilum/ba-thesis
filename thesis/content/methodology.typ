@@ -32,8 +32,6 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
   [_Total_], [108775], [324h 44m 49s],
 ))<dataset_comp>
 
-#TODO[maybe bar graph for @dataset_comp and @subset_comp?]
-
 Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
 
 A final dataset split of $70%$ training, $15%$ validation and $15%$ testing data was decided. Each sample was randomly assigned to one subset allowing for equal distribution of the entire dataset (cf. @dataset_comp) in each subset.

@@ -191,9 +191,103 @@ Both stages are evaluated in @eval_objective_quality_net.
 
 == Dereverberation Network<impl_derev_net>
 #leo
-- it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
-  - show plots
-- instead use masking appproach
+// - it was shown that modifying the Conv TasNet TCN based architecture for a fully generative approach (no mask, but generate the final audio from the TCN representation) is not feasable with low computational cost (overfittable but doesn't generalize well)
+//   - show plots
+// - instead use masking appproach
+
+The model operates directly on waveforms. A reverberant input signal $bold(x) in RR^L$ is first projected into a learned latent space by a strided 1-D convolution $bold(W)_"enc"$, processed by a @TCN:short that predicts a real-valued mask, and finally reconstructed by a transposed convolution $bold(W)_"dec"$:
+
+$
+tilde(bold(x)) = bold(W)_"dec"^top * (sigma("TCN"(bold(W)_"enc" * bold(x))) dot.o (bold(W)_"enc" * bold(x)))
+$
+
+The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberation in the encoder feature space before the decoder maps the filtered representation back to a waveform estimate $tilde(bold(x))$.
+
+#import "@preview/fletcher:0.5.7" as fletcher: diagram as fletcher-diagram, node, edge,
+
+#let block(pos, label, color) = node(
+  pos,
+  align(center, text(size: 7pt, label)),
+  width: 28mm,
+  height: 7mm,
+  fill: color.lighten(60%),
+  stroke: color.darken(10%) + 0.5pt,
+  corner-radius: 3pt,
+)
+
+#let circ(pos, text) = node(
+  outset: 0pt,
+  inset: 0pt,
+  pos,
+  circle(text, radius: 10pt , stroke: 1pt + black),
+)
+
+#diagram(
+  fletcher-diagram(
+    spacing: (8pt, 6pt),
+    cell-size: (32mm, 7mm),
+    edge-stroke: 0.7pt,
+    edge-corner-radius: 4pt,
+
+    circ((0, 0), [$bold(x)$]),
+    edge("-|>"),
+    block((1, 0), [Encoder $bold(W)_"enc" * x$], rgb("#7B61FF")),
+    edge("-|>"),
+    // node((2, 0), circle(radius: 5pt, fill: rgb("#FEF3C7"), stroke: rgb("#D97706") + 0.7pt)[+]),
+    node((2, 0), circle(radius: 2pt, fill: rgb("#D97706"), stroke: rgb("#D97706") + 0.7pt)),
+    edge("-|>"),
+    edge((2, 0), (3, 0), "-|>"),
+    block((2, -2), [TCN], rgb("#0D9488")),
+    edge("-|>"),
+    block((3, -2), [$M = sigma(dot)$], rgb("#0D9488")),
+    edge("-|>"),
+    block((3, 0), [$E dot.o M$], rgb("#D97706")),
+    edge("-|>"),
+    block((4, 0), [Decoder $bold(W)_"dec"^top * dot$], rgb("#7B61FF")),
+    edge("-|>"),
+    circ((5, 0), [$tilde(bold(x))$]),
+    
+
+
+
+    // Input
+    // edge((1, -1), "d", "-|>", label: $bold(x)$, label-side: right),
+
+    // // Encoder
+    // block((1, 0), [Encoder $bold(W)_"enc"$], rgb("#7B61FF")),
+
+    // // Split node
+    // edge("d", "-|>"),
+    // node((1, 1), circle(radius: 3pt, fill: black)),
+
+    // // Left (mask) branch: up and over
+    // edge((1, 1), (0, 1), "l", "-"),
+    // edge((0, 1), "d", "-|>"),
+    // block((0, 2), [TCN], rgb("#0D9488")),
+    // edge("-|>"),
+    // block((0, 3), [$sigma(dot)$ — mask $bold(M)$], rgb("#0D9488")),
+
+    // // Mask branch joins multiply node
+    // edge((0, 3), (1, 3), "r", "-|>"),
+
+    // // Encoder features pass straight down to multiply
+    // edge((1, 1), (1, 3), "dd", "-|>", label: $bold(E)$, label-side: right),
+
+    // // Multiply node
+    // node((1, 3),
+    //   circle(radius: 5pt, fill: rgb("#FEF3C7"), stroke: rgb("#D97706") + 0.7pt),
+    //   label: text(size: 9pt, weight: "bold", $times$),
+    // ),
+
+    // // Decoder
+    // edge("d", "-|>"),
+    // block((1, 4), [Decoder $bold(W)_"dec"^top$], rgb("#7B61FF")),
+
+    // // Output
+    // edge("d", "-|>", label: $hat(bold(s))$, label-side: right),
+  ),
+  caption: [Forward pass of the dereverberation model.],
+)<fig_forward_pass>
 
 #TODO[
   - which versions do the want to show the implementation of? only the best one (then compare si-snr with perceptual?)
@@ -218,7 +312,6 @@ Both stages are evaluated in @eval_objective_quality_net.
   - use conv tasnet mask
   - test for diverse audio signals
   - compare mse to perceptual loss
-
 
 
 

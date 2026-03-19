@@ -356,11 +356,11 @@ Optimizing the loss function means optimizing the weights.
 
 We can image a multidimensional error landscape formed by the weights. To traverse this error landscape into a local minimum we use the partial derivative of the loss function, also called gradient. This process coined gradient descent is discussed in @fun_gradient_descent.
 
-This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid automatic differentiation using backpropagation was introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") (cf. @fun_backpropagation).
+This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid the process modern networks use automatic differentiation based on the backpropagation method as introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date").
 
 ==== Loss Function<fun_loss_function>
 
-A loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
+A loss function, also called cost function, is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
 
 To introduce the application of loss functions we want to discuss one of the eariest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
 
@@ -457,11 +457,20 @@ Once $gradient E$ is calculated each weight can be adjusted so that the loss is 
 
 #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") introduce the simplest version of gradient descent as the accumulation of all gradients over all training examples and changing each weight by an amount proportional to the accumulated $(partial E)/(partial w)$. There are in fact improvements to this approach in the @SGD method which approximates the gradient of the entire dataset over a small subset of training examples also called minibatches. This lowers the computational cost of calculating a gradient over the entire dataset which is especially useful when dealing with large amounts of data. It is not guaranteed that the @SGD method arrives at a local minimum in a reasonable amount of time, but often a useful "low enough" loss is found @goodfellowDeepLearning2016.
 
+@SGD is used during training of our perceptual quality network as well as the dereverberation network.
+
 ==== Taxonomy of Loss Functions<fun_taxonomy_loss>
 
 @fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years many different loss functions for different problem sets have been envisioned each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
 
-#TODO[FINISH]
+#figure(
+  caption: [A taxonomy of loss functions taken from #cite(<ciampiconiSurveyTaxonomyLoss2024>, form: "prose", style: "chicago-author-date").],
+  image("/thesis/figures/taxonomy.svg"),
+)<taxonomy_fig>
+
+@taxonomy_fig shows a map that identifies five major tasks for which loss functions can be designed, namely regression, classification, ranking as well as generative and energy based models. Optimization strategies for each task category are proposed including error-based, probabilistic and margin based loss functions.
+
+The problem of dereverberation can be attributed to a regressive task. It is shown that for the problem of regression, error-based loss functions are applicable. The following section will discuss error-based metrics which can be utilized as loss functions. An analysis of their performance as such is discussed in @analyze_loss_functions.
 
 == Quality Metrics<fun_quality_metrics>
 #jojo

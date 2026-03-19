@@ -106,6 +106,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
     [WV-MOS], [1.695], [0.441], [1.229], [3.350],
   ),
   caption: [Conv-TasNet dereverberation metrics on LibriSpeech `test-clean` (N = 2620)],
+  short-caption: [Conv-TasNet dereverberation metrics on LibriSpeech],
 )<conv_tasnet_metrics>
 
 These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and the uncertainty of @SI-SNR as a training objective for diverse audio -- motivate the development of a dedicated dereverberation model trained on broadband diverse content and supported by a perceptual loss network.
@@ -117,7 +118,8 @@ Unlike Conv-TasNet, StoRM was not trained from scratch. We used the official pre
 On in-domain speech signals, StoRM achieves strong dereverberation quality. @storm_paper_metrics shows the evaluation from the original paper. These numbers serve as an upper bound for speech dereverberation quality achievable with this model.
 
 #diagram(
-  caption: [StoRM dereverberation metrics on the WSJ0+REVERB test set, reproduced from @lemercierStoRMDiffusionbasedStochastic2023.],
+  caption: [StoRM dereverberation metrics on the WSJ0+REVERB test set, reproduced from #cite(<lemercierStoRMDiffusionbasedStochastic2023>, form: "prose", style: "chicago-author-date").],
+  short-caption: [StoRM dereverberation metrics on the WSJ0+REVERB test set],
   table(
     columns: 7,
     align: (left, center, center, center, center, center, center),
@@ -222,7 +224,7 @@ TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
   ),
 )<derev_tcn_v4_sisnr_updated>
 
-- one can see the effect of the additional #{55-16} epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
+- one can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
 
 - gating effect
 - adds highs in some examples

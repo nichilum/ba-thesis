@@ -1,5 +1,6 @@
 #import "/thesis/utils/todo.typ": TODO
 #import "/thesis/utils/author.typ": *
+#import "/thesis/utils/diagram.typ": diagram
 
 = Related Work<related_work>
 // #TODO[
@@ -40,9 +41,11 @@ Most speech or audio assessment tools need a reference signal. This requirement 
 
 Architecturally Quality-Net is based on @BLSTM, which is an improvement to standard @RNN:pl (cf. @fun_rnn), where sequential data is processed in both forward and backward directions using two separate hidden layers (cf. @quality-net-arch).
 
-#figure(
+#diagram(
   caption: [Proposed Quality-Net for end-to-end, non-intrusive
-    speech quality assessment, taken from #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date")],
+    speech quality assessment, taken from #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date").],
+  short-caption: [Proposed Quality-Net for end-to-end, non-intrusive
+    speech quality assessment],
   image("/thesis/figures/fu18c_interspeech.svg"),
 )<quality-net-arch>
 
@@ -50,8 +53,9 @@ Quality-Net was trained using 4620 utterances from the TIMIT @garofolojohns.TIMI
 
 Quality-Net's performance was evaluated over 100 utterances using the @MSE, @LCC and @SRCC @fuQualityNetEndtoEndNonintrusive2018.
 
-#figure(
+#diagram(
   caption: [Results of Quality-Net and the two-stage model replicated from #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date").],
+  short-caption: [Results of Quality-Net and the two-stage model],
   table(
     columns: 5,
     [],

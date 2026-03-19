@@ -141,7 +141,7 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 
 
-Classical @RNN:pl suffer from vanishing and exploding gradients when the dependency horizon becomes long. For this reason, gated variants such as @LSTM @hochreiterLongShortTermMemory1997 and @GRU networks @choPropertiesNeuralMachine2014 are commonly used in practice. These architectures regulate which information is stored, updated, or forgotten, improving training stability and long-term memory. Their main drawback is that recurrent processing is inherently sequential, which limits parallelization during training and inference compared to purely convolutional models @fuQualityNetEndtoEndNonintrusive2018 @defossezMusicSourceSeparation2019.
+Classical @RNN:pl suffer from vanishing and exploding gradients when the dependency horizon becomes long. For this reason, gated variants such as @LSTM @hochreiterLongShortTermMemory1997, @BLSTM and @GRU networks @choPropertiesNeuralMachine2014 are commonly used in practice. These architectures regulate which information is stored, updated, or forgotten, improving training stability and long-term memory. Their main drawback is that recurrent processing is inherently sequential, which limits parallelization during training and inference compared to purely convolutional models @fuQualityNetEndtoEndNonintrusive2018 @defossezMusicSourceSeparation2019.
 
 ==== @TCN:short<fun_tcn>
 
@@ -337,14 +337,57 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 )
 
 
-==== Encoders and Decoders
+==== Autoencoders
 
-=== Organization of Data Points
+Autoencoders try to convert an input vector into a code vector of lower dimensionality and then reconstruct an approximation of the original input from this code vector @hintonAutoencodersMinimumDescription1993. This network can be split into two parts, an encoder function $ bold(h) = f(bold(x)) $ and a decoder $ bold(r) = g(bold(h)) $ generating a reconstruction $bold(r)$ of the original input $bold(x)$ through a hidden layer $bold(h)$ @goodfellowDeepLearning2016 @lecunModelesConnexionnistesLapprentissage1987.
+
+Of particular interest for this thesis are @DAE:pl which are a type of regularized autoencoder. Instead of minimizing some loss function
+$ L(bold(x), g(f(bold(x)))) $
+, where $L$ is some loss function penalizing the difference between the input and the reconstruction, the denoising autoencoder minimizes
+$ L(bold(x), g(f(tilde(bold(x))))) $
+, where $tilde(bold(x))$ is a stochastically corrupted version of the input. This forces the network to learn a more robust representation of the data, as it must be able to undo the corruption from a noisy version @goodfellowDeepLearning2016. In the context of dereverberation, @DAE:pl can be used to learn a mapping from reverberant to clean speech by treating the reverberant signal as a corrupted version of the clean signal. The encoder learns to extract relevant features that are invariant to reverberation, while the decoder reconstructs the clean signal from these features.
+
+#let circ(pos, text) = node(
+  outset: 0pt,
+  inset: 0pt,
+  pos,
+  circle(text, radius: 15pt, stroke: 1pt + black),
+)
+
+#diagram(
+  caption: [
+    @DAE training procedure. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").
+  ],
+  short-caption: [@DAE training procedure],
+  scale(
+    x: 80%,
+    y: 80%,
+    fletcher-diagram(
+      spacing: 1cm,
+      cell-size: (15mm, 15mm),
+      edge-stroke: 1pt,
+
+      circ((0.5, 0), [$bold(h)$]),
+      edge("<|-", [$f$]),
+      circ((0, 1), [$tilde(bold(x))$]),
+      circ((1, 1), [$L$]),
+      edge("<|-"),
+      circ((0, 2), [$bold(x)$]),
+      edge((0, 2), (0, 1), "-|>", [$C(tilde(bold(x))|bold(x))$], left),
+      edge((0.5, 0), (1, 1), "-|>", [$g$]),
+    ),
+  ),
+)<dae_training_fig>
+
+@dae_training_fig shows the training procedure of a @DAE. $C(tilde(bold(x))|bold(x))$ is the corruption process which gives a distribution over corrupted versions $tilde(bold(x))$, given an original input $bold(x)$. The loss function $L$ is then minimized with respect to the parameters of the encoder $f$ and decoder $g$ from training pairs $(bold(x), tilde(bold(x)))$ @goodfellowDeepLearning2016.
+
+
+=== Supervised and Self-Supervised Learning<self_supervised_and_supervised_learning>
 #leo
-==== Supervised Learning<supervised_learning>
-#TODO[]
-==== Self-Supervised Learning<self_supervised>
-#TODO[]
+
+Training data can be given to a network in different ways. The most common way is to use supervised learning where each input data point is paired with a target output. The network learns to map inputs to their corresponding targets by minimizing a loss function that quantifies the error between the predicted output and the true target. We call this process *supervied learning*, because one can imagine a supervisor who shows the network the correct answer for each input and the network learns to mimic this behavior @goodfellowDeepLearning2016.
+
+*Self-supervised* learning is a form of unsupervised learning where, instead of relying on external labels, the data itself is used to generate supervisory signals. This is often done by augmentation of the input data to formulate this signal. Self-supervised learning has been successfull in recent years, especially in labeled data scarce domains such aus audio processing, as shown by #cite(<baevskiWav2vec20Framework2020>, form: "prose", style: "chicago-author-date"). However, as our task is a supervised regression from reverberant to dry audio, we cannot classify our approach as self-supervised.
 
 === Training of a Neural Network
 #jojo
@@ -461,8 +504,9 @@ Once $gradient E$ is calculated each weight can be adjusted so that the loss is 
 
 @fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years many different loss functions for different problem sets have been envisioned each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
 
-#figure(
+#diagram(
   caption: [A taxonomy of loss functions taken from #cite(<ciampiconiSurveyTaxonomyLoss2024>, form: "prose", style: "chicago-author-date").],
+  short-caption: [A taxonomy of loss functions],
   image("/thesis/figures/taxonomy.svg"),
 )<taxonomy_fig>
 

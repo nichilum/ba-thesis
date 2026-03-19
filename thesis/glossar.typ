@@ -87,6 +87,11 @@
     long: "long short-term memory",
     group: "Neural Networks",
   ),
+  BLSTM: (
+    short: "BLSTM",
+    long: "bidirectional long short-term memory",
+    group: "Neural Networks",
+  ),
   GRU: (
     short: "GRU",
     long: "gated recurrent unit",
@@ -100,6 +105,11 @@
   SGD: (
     short: "SGD",
     long: "stochastic gradient descent",
+    group: "Neural Networks",
+  ),
+  DAE: (
+    short: "DAE",
+    long: "denoising autoencoder",
     group: "Neural Networks",
   ),
   // Metrics

@@ -79,7 +79,7 @@ Another dataset of @RIR:pl was gathered, which was later in part used for reverb
 
 === Dataset Creation
 
-A supervised training approach (as explained in @supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
+A supervised training approach (as explained in @self_supervised_and_supervised_learning) was chosen to train both our dereverberation (cf. @derev_process_pipeline) and perceptual loss model (cf. @percep_process_pipeline). Labeling was done automatically through synthetic reverberation of the dry audio samples included in the dataset described in @data_collection.
 
 #diagram(caption: [Dereverberation preprocessing pipeline], raw-render(
   ```dot
@@ -143,7 +143,7 @@ Additional labels used for the perceptual loss model (see @meth_percep_quality_n
   ),
 ))<percep_process_pipeline>
 
-This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in @CV:long tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised).
+This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in @CV:long tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised_and_supervised_learning).
 
 ==== Reverberation<preprocessing_reverberation>
 

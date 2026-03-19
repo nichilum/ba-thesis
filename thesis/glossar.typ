@@ -97,6 +97,11 @@
     long: "stochastic gradient descent",
     group: "Neural Networks",
   ),
+  DAE: (
+    short: "DAE",
+    long: "denoising autoencoder",
+    group: "Neural Networks",
+  ),
   // Metrics
   SI-SNR: (
     short: "SI-SNR",

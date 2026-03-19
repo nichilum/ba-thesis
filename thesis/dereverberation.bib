@@ -532,6 +532,16 @@
   abstract = {{$<$}h3{$>$}Introduction{$<$}/h3{$><$}br{$>$}  {$<$}p{$>$}LDC93S6A - Complete CSR-I corpus {$<$}a href="http://catalog.ldc.upenn.edu/LDC93S6B" rel="nofollow"{$>$}LDC93S6B{$<$}/a{$>$} - CSR-I Sennheiser speech {$<$}a href="http://catalog.ldc.upenn.edu/LDC93S6C" rel="nofollow"{$>$}LDC93S6C{$<$}/a{$>$} - CSR-I other speech{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}During 1991, the DARPA Spoken Language Program initiated efforts to build a new corpus to support research on large-vocabulary Continuous Speech Recognition (CSR) systems.{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}The first two CSR Corpora consist primarily of read speech with texts drawn from a machine-readable corpus of Wall Street Journal news text and are thus often known as WSJ0 and WSJ1. (Later sections of the CSR set of corpora, however, will consist of read texts from other sources of North American business news and eventually from other news domains).{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}The texts to be read were selected to fall within either a 5,000-word or a 20,000-word subset of the WSJ text corpus. (See the documentation for details). Some spontaneous dictation is included in addition to the read speech. The dictation portion was collected using journalists who dictated hypothetical news articles.{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}Two microphones are used throughout: a close-talking Sennheiser HMD414 and a secondary microphone, which may vary. The corpora are thus offered in three configurations: the speech from the Sennheiser, the speech from the other microphone and the speech from both; all three sets include all transcriptions, tests, documentation, etc.{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}In general, transcriptions of the speech, test data from ARPA evaluations, scores achieved by various speech recognition systems and software used in scoring are included on separate discs from the waveform data.{$<$}/p{$><$}br{$>$}  {$<$}h3{$>$}Samples{$<$}/h3{$><$}br{$>$}  {$<$}p{$>$}Please listen to this {$<$}a href="desc/addenda/LDC93S6A.wav"{$>$}audio sample{$<$}/a{$>$}.{$<$}/p{$><$}/br{$>$}  Portions © 1987-1989 Dow Jones \& Company, Inc., © 1992, 1993 Trustees of the University of Pennsylvania}
 }
 
+@dataset{garofolojohns.TIMITAcousticPhoneticContinuous1993,
+  title = {{{TIMIT Acoustic-Phonetic Continuous Speech Corpus}}},
+  author = {{Garofolo, John S.} and {Lamel, Lori F.} and {Fisher, William M.} and {Pallett, David S.} and {Dahlgren, Nancy L.} and {Zue, Victor} and {Fiscus, Jonathan G.}},
+  date = {1993},
+  pages = {715776 KB},
+  publisher = {Linguistic Data Consortium},
+  doi = {10.35111/17GK-BN40},
+  abstract = {{$<$}h3{$>$}Introduction{$<$}/h3{$><$}br{$>$}  {$<$}p{$>$}The TIMIT corpus of read speech is designed to provide speech data for acoustic-phonetic studies and for the development and evaluation of automatic speech recognition systems. TIMIT contains broadband recordings of 630 speakers of eight major dialects of American English, each reading ten phonetically rich sentences. The TIMIT corpus includes time-aligned orthographic, phonetic and word transcriptions as well as a 16-bit, 16kHz speech waveform file for each utterance. Corpus design was a joint effort among the Massachusetts Institute of Technology (MIT), SRI International (SRI) and Texas Instruments, Inc. (TI). The speech was recorded at TI, transcribed at MIT and verified and prepared for CD-ROM production by the National Institute of Standards and Technology (NIST).{$<$}/p{$><$}br{$>$}  {$<$}p{$>$}The TIMIT corpus transcriptions have been hand verified. Test and training subsets, balanced for phonetic and dialectal coverage, are specified. Tabular computer-searchable information is included as well as written documentation.{$<$}/p{$><$}br{$>$}  {$<$}h3{$>$}Samples{$<$}/h3{$><$}br{$>$}  {$<$}ul{$><$}br{$>$}  {$<$}li{$><$}a href="desc/addenda/LDC93S1.phn" rel="nofollow"{$>$}phonemes{$<$}/a{$><$}/li{$><$}br{$>$}  {$<$}li{$><$}a href="desc/addenda/LDC93S1.txt" rel="nofollow"{$>$}transcripts{$<$}/a{$><$}/li{$><$}br{$>$}  {$<$}li{$><$}a href="desc/addenda/LDC93S1.wav" rel="nofollow"{$>$}audio{$<$}/a{$><$}/li{$><$}br{$>$}  {$<$}li{$><$}a href="desc/addenda/LDC93S1.wrd" rel="nofollow"{$>$}word list{$<$}/a{$><$}/li{$><$}br{$>$}  {$<$}/ul{$><$}/br{$>$}  Portions © 1993 Trustees of the University of Pennsylvania}
+}
+
 @inproceedings{gemmekeAudioSetOntology2017,
   title = {Audio {{Set}}: {{An}} Ontology and Human-Labeled Dataset for Audio Events},
   shorttitle = {Audio {{Set}}},
@@ -609,6 +619,18 @@
   urldate = {2026-03-06},
   abstract = {GStreamer Python binding overrides (complementing the bindings provided by python-gi). This module has been merged into the main GStreamer repo for further development.},
   organization = {GStreamer GitHub mirrors}
+}
+
+@inproceedings{hintonAutoencodersMinimumDescription1993,
+  title = {Autoencoders, Minimum Description Length and {{Helmholtz}} Free Energy},
+  booktitle = {Proceedings of the 7th {{International Conference}} on {{Neural Information Processing Systems}}},
+  author = {Hinton, Geoffrey E. and Zemel, Richard S.},
+  date = {1993-11-29},
+  series = {{{NIPS}}'93},
+  pages = {3--10},
+  publisher = {Morgan Kaufmann Publishers Inc.},
+  location = {San Francisco, CA, USA},
+  abstract = {An autoencoder network uses a set of recognition weights to convert an input vector into a code vector. It then uses a set of generative weights to convert the code vector into an approximate reconstruction of the input vector. We derive an objective function for training autoencoders based on the Minimum Description Length (MDL) principle. The aim is to minimize the information required to describe both the code vector and the reconstruction error. We show that this information is minimized by choosing code vectors stochastically according to a Boltzmann distribution, where the generative weights define the energy of each possible code vector given the input vector. Unfortunately, if the code vectors use distributed representations, it is exponentially expensive to compute this Boltzmann distribution because it involves all possible code vectors. We show that the recognition weights of an autoencoder can be used to compute an approximation to the Boltzmann distribution and that this approximation gives an upper bound on the description length. Even when this bound is poor, it can be used as a Lyapunov function for learning both the generative and the recognition weights. We demonstrate that this approach can be used to learn factorial codes.}
 }
 
 @article{hochreiterLongShortTermMemory1997,
@@ -775,6 +797,19 @@
   isbn = {978-3-658-46279-6 978-3-658-46280-2},
   langid = {ngerman},
   keywords = {Akustik,Akustische Planung,Hörphysiologie,Lautheitswahrnehmung,Psychoakustik,Raumakustik,räumliches Hören,Schall,Schallabsorber,Schallabsorption,Schallabstrahlung,Schallausbreitung,Schallausbreitung in Räumen,Schallwellen}
+}
+
+@article{lecunModelesConnexionnistesLapprentissage1987,
+  title = {Modèles connexionnistes de l'apprentissage},
+  author = {Le Cun, Y. and Fogelman-Soulié, Françoise},
+  date = {1987},
+  journaltitle = {Intellectica},
+  volume = {2},
+  number = {1},
+  pages = {114--143},
+  publisher = {Persée - Portail des revues scientifiques en SHS},
+  doi = {10.3406/intel.1987.1804},
+  langid = {fre}
 }
 
 @article{leePredictiveSkillConvolutional2021,

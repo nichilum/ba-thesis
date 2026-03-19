@@ -188,4 +188,14 @@
     long: "least mean squares",
     group: "Metrics",
   ),
+  LCC: (
+    short: "LCC",
+    long: "linear correlation coefficient",
+    group: "Metrics",
+  ),
+  SRCC: (
+    short: "SRCC",
+    long: "Spearman's rank correlation coefficient",
+    group: "Metrics",
+  ),
 )

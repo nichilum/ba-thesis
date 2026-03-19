@@ -26,17 +26,13 @@ For this thesis, StoRM is relevant because it demonstrates that a generative spe
 
 == DeepFilterNet<related_deep_filter>
 #jojo
-- seeks to have better performance than real-values or complex-masks (need high freq resolution)
-- uses Deep Filters, that are filters applied to multiple time/freq bins
-- based on CLC (complex linear coding)
-- compared using sisnr to CRM (complex ratio mask): it's better
-- viable for real-time usage
-- 48kHz
-- @schroterDeepFilterNetLowComplexity2022
 
-For the first stage, we take advantage from the fact that noise as well as speech usually
-have a smooth spectral envelope
-=> prob not entirely possible for music and diverse audio signals
+DeepFilterNet is a two stage speech enhancement framework utilizing deep filtering @schroterDeepFilterNetLowComplexity2022. Deep filtering is based on the idea that a neural network estimates a complex mask which is applied to the @STFT representation of a signal. With an appropriate loss function this mask can be learned to perform source extractions or other tasks like dereverberation @mackDeepFilteringSignal2020.
+
+DeepFilterNet expands on that idea: "Instead of using a complex mask that is applied per TF-bin, [...] a combination of real-valued gains and a deep filter enhancement component [is used]." @schroterDeepFilterNetLowComplexity2022. Given a noisy signal DeepFilterNet first transforms it into the frequency-domain using the @STFT. Sampling rates up to 48 kHz and window sizes between 5 ms and 30 ms are supported. Using the frequency-domain representation @ERB features mimicing human perception are computed. Both the complex features of the @STFT and the @ERB features are used as inputs for the model. A mask is trained on the complex @STFT values and an encoder--decoder network is trained on the @ERB featues which is later used to weigh the complex mask. DeepFilterNet takes advantage from the fact that noise as well as speech usually have a smooth spectral envelope. This allows for a computationally cheap encoder--decoder network.
+
+For this thesis, DeepFilterNet is relevant because is shows how low complexity speech enhancement can be implemented in the frequency-domain. Regarding audio sample rate the scope of this project even superceeds ours but latency is still an issue as window sizes smaller than 5 ms are not supported. As the architecture of DeepFilterNet exploits the spectral properites of speech, adaptation for use with diverse audio is difficult.
+
 
 == Quality Net<related_quality_net>
 #jojo

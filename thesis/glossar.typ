@@ -25,6 +25,11 @@
     long: "short-time Fourier transform",
     group: "Signal Processing",
   ),
+  ERB: (
+    short: "ERB",
+    long: "equivalent rectangular bandwidth",
+    group: "Signal Processing",
+  ),
   // Acoustics
   RIR: (
     short: "RIR",

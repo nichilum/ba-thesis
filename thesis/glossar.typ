@@ -25,6 +25,11 @@
     long: "short-time Fourier transform",
     group: "Signal Processing",
   ),
+  ERB: (
+    short: "ERB",
+    long: "equivalent rectangular bandwidth",
+    group: "Signal Processing",
+  ),
   // Acoustics
   RIR: (
     short: "RIR",
@@ -186,6 +191,16 @@
   LMS: (
     short: "LMS",
     long: "least mean squares",
+    group: "Metrics",
+  ),
+  LCC: (
+    short: "LCC",
+    long: "linear correlation coefficient",
+    group: "Metrics",
+  ),
+  SRCC: (
+    short: "SRCC",
+    long: "Spearman's rank correlation coefficient",
     group: "Metrics",
   ),
 )

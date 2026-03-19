@@ -12149,15 +12149,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="4.0245179"
-     inkscape:cx="146.10445"
-     inkscape:cy="190.45759"
+     inkscape:zoom="22.627417"
+     inkscape:cx="148.97856"
+     inkscape:cy="31.620931"
      inkscape:window-width="2560"
      inkscape:window-height="1417"
      inkscape:window-x="2552"
      inkscape:window-y="468"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1">
+     inkscape:current-layer="g2353">
     <inkscape:page
        x="0"
        y="0"
@@ -13164,37 +13164,37 @@
     <path
        d="m 195.63,519.97 v 20.18"
        style="fill:none;stroke:#404040;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,432.31415,400.48859)"
        clip-path="url(#clipPath891)"
        id="path2344" />
     <path
        d="m 195.63,545.48 3.52,-7.04 c -2.22,1.11 -4.83,1.11 -7.04,0 v 0 z"
        style="fill:#404040;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,432.31415,400.48859)"
        clip-path="url(#clipPath892)"
        id="path2345" />
     <path
        d="m 312.91,519.97 v 20.18"
        style="fill:none;stroke:#404040;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,433.23049,400.49192)"
        clip-path="url(#clipPath893)"
        id="path2346" />
     <path
        d="m 312.91,545.48 3.52,-7.04 c -2.22,1.11 -4.82,1.11 -7.04,0 v 0 z"
        style="fill:#404040;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,433.23049,400.49192)"
        clip-path="url(#clipPath894)"
        id="path2347" />
     <path
        d="m 422.4,518.55 v 20.18"
        style="fill:none;stroke:#404040;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,433.77965,399.79054)"
        clip-path="url(#clipPath895)"
        id="path2348" />
     <path
        d="m 422.4,544.06 3.52,-7.04 c -2.22,1.11 -4.83,1.11 -7.04,0 z"
        style="fill:#404040;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       transform="matrix(0.51511091,0,0,-0.48611753,431.58825,400.43456)"
+       transform="matrix(0.51511091,0,0,-0.48611753,433.77965,399.79054)"
        clip-path="url(#clipPath896)"
        id="path2349" />
     <path
@@ -13286,148 +13286,184 @@
      height="12.023038"
      x="201.66493"
      y="100.63338" />
-  <text
-     xml:space="preserve"
-     id="text2928"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928);fill:#000000"
-     transform="translate(-19.729126,-7.2891635)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan4">q</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4);fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,28.024549,19.359594)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan5">1</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-2"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-8);fill:#000000"
-     transform="translate(39.879906,-7.2316115)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan6">q</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-4"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-4);fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,87.633581,19.417146)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan7">t</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7);display:inline;fill:#000000"
-     transform="translate(95.503494,-7.4922727)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan8">q</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,143.25717,19.156485)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan9">T(u)</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1);display:inline;fill:#000000"
-     transform="translate(42.13203,45.355022)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan10">h</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,89.88571,72.00378)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan11">t</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8-9"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9);display:inline;fill:#000000"
-     transform="translate(-19.097101,45.525621)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan12">h</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7-3"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,28.656579,72.174379)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan13">1</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8-9-8"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-5);display:inline;fill:#000000"
-     transform="translate(-18.586266,232.45461)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan14">x</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7-3-0"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-0);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,29.167414,259.10336)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan15">1</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8-9-9"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-6);display:inline;fill:#000000"
-     transform="translate(42.984833,232.19539)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan16">x</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7-3-06"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-5);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,90.738513,258.84415)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan17">t</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8-9-6"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-3);display:inline;fill:#000000"
-     transform="translate(100.96013,231.79477)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan18">x</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7-3-6"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-4);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,148.71381,258.44353)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan19">T(u)</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-1-8-1"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-3);display:inline;fill:#000000"
-     transform="translate(96.534769,44.3886)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan20">h</tspan></text>
-  <text
-     xml:space="preserve"
-     id="text2928-8-2-7-8"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-4);display:inline;fill:#000000"
-     transform="matrix(0.62352184,0,0,0.62352184,144.28845,71.037358)"><tspan
-       x="109.42578"
-       y="64.57825"
-       id="tspan21">T(u)</tspan></text>
+  <g
+     id="g1"
+     transform="matrix(0.64,0,0,0.64,34.551615,20.788756)">
+    <text
+       xml:space="preserve"
+       id="text2928"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928);display:inline;fill:#000000"
+       transform="translate(-19.729126,-7.2891635)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan1">q</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,30.484344,19.359594)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan2">1</tspan></text>
+  </g>
+  <g
+     id="g2"
+     transform="matrix(0.64,0,0,0.64,55.893695,20.824288)">
+    <text
+       xml:space="preserve"
+       id="text2928-2"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-8);display:inline;fill:#000000"
+       transform="translate(39.879906,-7.2316115)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan3">q</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-4"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-4);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,90.093376,19.417146)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan4">t</tspan></text>
+  </g>
+  <g
+     id="g3"
+     transform="matrix(0.64,0,0,0.64,78.104056,21.049643)">
+    <text
+       xml:space="preserve"
+       id="text2928-1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7);display:inline;fill:#000000"
+       transform="translate(95.503494,-7.4922727)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan5">q</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,145.71698,19.156485)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan6">T(u)</tspan></text>
+  </g>
+  <g
+     id="g4"
+     transform="matrix(0.64,0,0,0.64,56.700142,39.024802)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1);display:inline;fill:#000000"
+       transform="translate(42.13203,45.355022)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan7">h</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,92.345505,72.00378)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan8">t</tspan></text>
+  </g>
+  <g
+     id="g5"
+     transform="matrix(0.64,0,0,0.64,34.774828,39.071404)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8-9"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9);display:inline;fill:#000000"
+       transform="translate(-19.097101,45.525621)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan9">h</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7-3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,31.116374,72.174379)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan10">1</tspan></text>
+  </g>
+  <g
+     id="g6"
+     transform="matrix(0.64,0,0,0.64,34.915527,106.42143)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8-9-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-5);display:inline;fill:#000000"
+       transform="translate(-18.586266,232.45461)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan11">x</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7-3-0"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-0);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,31.627209,259.10336)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan12">1</tspan></text>
+  </g>
+  <g
+     id="g7"
+     transform="matrix(0.64,0,0,0.64,56.96395,106.34293)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8-9-9"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-6);display:inline;fill:#000000"
+       transform="translate(42.984833,232.19539)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan13">x</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7-3-06"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-5);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,93.198308,258.84415)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan14">t</tspan></text>
+  </g>
+  <g
+     id="g8"
+     transform="matrix(0.64,0,0,0.64,80.020928,106.5179)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8-9-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-9-3);display:inline;fill:#000000"
+       transform="translate(100.96013,231.79477)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan15">x</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7-3-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-2-4);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,151.17362,258.44353)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan16">T(u)</tspan></text>
+  </g>
+  <g
+     id="g9"
+     transform="matrix(0.64,0,0,0.64,76.318677,39.479257)">
+    <text
+       xml:space="preserve"
+       id="text2928-1-8-1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-7-1-3);display:inline;fill:#000000"
+       transform="translate(96.534769,44.3886)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan17">h</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text2928-8-2-7-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'NewComputerModern Math';-inkscape-font-specification:'NewComputerModern Math';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2928-4-1-2-4);display:inline;fill:#000000"
+       transform="matrix(0.62352184,0,0,0.62352184,146.74826,71.037358)"><tspan
+         x="109.42578"
+         y="64.57825"
+         id="tspan18">T(u)</tspan></text>
+  </g>
 </svg>

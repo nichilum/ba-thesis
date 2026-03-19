@@ -11,6 +11,8 @@
 
 === Reverberation
 
+#TODO[]
+
 convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
 
 
@@ -18,16 +20,10 @@ convolutions are a fast operation in the frequency domain and on GPU devices @si
 - explain the theoretical background of coloration artifacts in live systems utilizing active acoustics when reverberation is present in a feedback loop
 
 In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
+#TODO[]
 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
-
-
-
-
-- different architectures
-- different ways to organize the datapoints
-- different approaches to training of neural network
 
 === Architectures
 #leo
@@ -346,7 +342,9 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
 === Organization of Data Points
 #leo
 ==== Supervised Learning<supervised_learning>
+#TODO[]
 ==== Self-Supervised Learning<self_supervised>
+#TODO[]
 
 === Training of a Neural Network
 #jojo

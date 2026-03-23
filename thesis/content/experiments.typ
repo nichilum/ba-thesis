@@ -285,5 +285,3 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 == Placeholders
 === SOMETHING WITH SEGMENT LENGTH<segment_length>
 === LOSS FUNCTION SILENT MASK<loss_function_silent_mask>
-
-#TODO[https://typst.app/universe/package/neural-netz]

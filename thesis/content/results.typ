@@ -98,7 +98,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
 #diagram(
   table(
     columns: (auto, auto, auto, auto, auto),
-    align: (left, right, right, right, right),
+    align: (left, center, center, center, center),
     table.header([*Metric*], [*Mean*], [*Std*], [*Min*], [*Max*]),
     [SI-SNR], [10.036], [3.856], [-6.669], [19.226],
     [SI-SDR], [10.003], [3.872], [-10.015], [19.220],
@@ -180,12 +180,38 @@ The iterative reverse diffusion inference requires many sequential neural networ
 
 == Perceptual Quality Network<results_percep_quality_net>
 #jojo
-- all results based on the dataset in @data_collection
-- no results from initial perceptual quality network only cnn14 is discussed as
-  - as @eval_percep_qual_net_init shows a direct improvement of cnn14 over initial implementation
+
+All results presented in the following section are based on the dataset as described in @data_collection.
+Only results regarding prediction performance of the perceptual quality network are discussed. Results regarding use as a loss function are demonstrated in @results_derev_net.
+Prediction performance was analyzed using the @MAE, @MSE and correlation (cf. @fun_quality_metrics) average over the entire testing subset (cf. @subset_comp).
+As discussed in @eval_percep_qual_net_init all perceptual quality network experiments were conducted using the CNN14 based implementation. Therefore no results of the simple @CNN, as detailed in @impl_percep_qual_net_init, are shown going forward.
+
+
+
+#let percep_data_195 = csv("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.csv")
 
 #diagram(
-  caption: [],
+  table(
+    columns: 4,
+    align: (left, center, center, center),
+
+    table.header([*Type*], [*MSE*], [*MAE*], [*Correlation*]),
+
+    ..percep_data_195
+      .slice(1)
+      .map(row => (
+        row.at(0),
+        [#calc.round(float(row.at(1)), digits: 6)],
+        [#calc.round(float(row.at(2)), digits: 6)],
+        [#calc.round(float(row.at(3)), digits: 6)],
+      ))
+      .flatten(),
+  ),
+  caption: [@MAE, @MSE and correlation of all perceptual quality metrics at epoch 195],
+)<results_percep_table>
+
+#diagram(
+  caption: [@KDE plots of predicted versus ground truth values of all perceptual quality metrics at epoch 195, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
 )
 
@@ -193,12 +219,12 @@ The iterative reverse diffusion inference requires many sequential neural networ
 #jojo
 update score:
 #diagram(
-  caption: [],
+  caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score at epoch 61, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
 )
 update score and update loss:
 #diagram(
-  caption: [],
+  caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score and loss at epoch 166, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
 )
 
@@ -207,7 +233,7 @@ TOTAL NUMBER OF SAMPLES: 2896664400
 Total length of audio coded in 44.1 kHz is 18.2455555556 hours
 TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
 
-== Dereverberation Network
+== Dereverberation Network<results_derev_net>
 #leo
 #TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
 

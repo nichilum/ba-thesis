@@ -76,7 +76,7 @@ The output of all prediction heads are compared to their ground truth counterpar
   ),
 )<eval_init_vs_cnn14_compare>
 
-@eval_init_vs_cnn14_compare shows improvements over all comparative metrics, Similar advancements have been made across all parameters (cf. @eval_init_vs_cnn14_compare_all).
+@eval_init_vs_cnn14_compare shows improvements over all comparative metrics. Similar advancements have been made across all parameters (cf. @eval_init_vs_cnn14_compare_all).
 
 #diagram(
   caption: [Relative improvement from the CNN14 implementation as compared to the simple @CNN implementation over all metrics and parameters, taken from the best epoch of the first 10],

@@ -139,7 +139,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
 
 #diagram(
   caption: [
-    Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) @CLAIX2023RWTHHigh) with 2048 Random AudioSet Samples.
+    Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) @CLAIX2023RWTHHigh with 2048 Random AudioSet Samples.
   ],
   {
     // set text(size: 7pt)
@@ -153,7 +153,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
       [*PESQ-NB*], v(stormCSV.pesq_nb), v(convtasnetCSV.pesq_nb),
       [*ODG*], v(stormCSV.odg), v(convtasnetCSV.odg),
       [*DI*], v(stormCSV.di), v(convtasnetCSV.di),
-      [*Runtime*], [6:14:51], [0:04:15],
+      [*Runtime (hh:mm:ss)*], [06:14:51], [00:04:15],
     )
   },
 )<conv_tasnet_storm_comparison>

@@ -195,7 +195,11 @@ Both stages are evaluated in @eval_objective_quality_net.
 //   - show plots
 // - instead use masking appproach
 
-The model operates directly on waveforms. A reverberant input signal $bold(x) in RR^L$ is first projected into a learned latent space by a strided 1-D convolution $bold(W)_"enc"$, processed by a @TCN:short that predicts a real-valued mask, and finally reconstructed by a transposed convolution $bold(W)_"dec"$:
+A first implementation of the dereverberation network was based on a fully generative approach, consisting of an encoder, a TCN and a decoder as in Conv-TasNet but without the masking operation. The decoder was expected to generate the dereverberated signal directly from the TCN representation. However this approach proved to be unfeasable with low computational cost. The model was able to overfit on the training data but did not generalize well to the validation set. We therefore switched to a masking approach, more in line with the original Conv-TasNet architecture.
+
+#TODO[show overfitting plots here or in eval/results?]
+
+This model operates directly on waveforms. A reverberant input signal $bold(x) in RR^L$ is first projected into a learned latent space by a strided 1-D convolution $bold(W)_"enc"$, processed by a @TCN:short that predicts a real-valued mask, and finally reconstructed by a transposed convolution $bold(W)_"dec"$:
 
 $
 tilde(bold(x)) = bold(W)_"dec"^top * (sigma("TCN"(bold(W)_"enc" * bold(x))) dot.o (bold(W)_"enc" * bold(x)))
@@ -208,7 +212,7 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
 #let block(pos, label, color) = node(
   pos,
   align(center, text(size: 7pt, label)),
-  width: 28mm,
+  width: 25mm,
   height: 7mm,
   fill: color.lighten(60%),
   stroke: color.darken(10%) + 0.5pt,
@@ -224,8 +228,8 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
 
 #diagram(
   fletcher-diagram(
-    spacing: (8pt, 6pt),
-    cell-size: (32mm, 7mm),
+    spacing: (15pt, 6pt),
+    cell-size: (10mm, 6mm),
     edge-stroke: 0.7pt,
     edge-corner-radius: 4pt,
 
@@ -246,45 +250,6 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
     block((4, 0), [Decoder $bold(W)_"dec"^top * dot$], rgb("#7B61FF")),
     edge("-|>"),
     circ((5, 0), [$tilde(bold(x))$]),
-    
-
-
-
-    // Input
-    // edge((1, -1), "d", "-|>", label: $bold(x)$, label-side: right),
-
-    // // Encoder
-    // block((1, 0), [Encoder $bold(W)_"enc"$], rgb("#7B61FF")),
-
-    // // Split node
-    // edge("d", "-|>"),
-    // node((1, 1), circle(radius: 3pt, fill: black)),
-
-    // // Left (mask) branch: up and over
-    // edge((1, 1), (0, 1), "l", "-"),
-    // edge((0, 1), "d", "-|>"),
-    // block((0, 2), [TCN], rgb("#0D9488")),
-    // edge("-|>"),
-    // block((0, 3), [$sigma(dot)$ — mask $bold(M)$], rgb("#0D9488")),
-
-    // // Mask branch joins multiply node
-    // edge((0, 3), (1, 3), "r", "-|>"),
-
-    // // Encoder features pass straight down to multiply
-    // edge((1, 1), (1, 3), "dd", "-|>", label: $bold(E)$, label-side: right),
-
-    // // Multiply node
-    // node((1, 3),
-    //   circle(radius: 5pt, fill: rgb("#FEF3C7"), stroke: rgb("#D97706") + 0.7pt),
-    //   label: text(size: 9pt, weight: "bold", $times$),
-    // ),
-
-    // // Decoder
-    // edge("d", "-|>"),
-    // block((1, 4), [Decoder $bold(W)_"dec"^top$], rgb("#7B61FF")),
-
-    // // Output
-    // edge("d", "-|>", label: $hat(bold(s))$, label-side: right),
   ),
   caption: [Forward pass of the dereverberation model.],
 )<fig_forward_pass>
@@ -312,11 +277,6 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
   - use conv tasnet mask
   - test for diverse audio signals
   - compare mse to perceptual loss
-
-
-
-#TODO[https://typst.app/universe/package/neural-netz]
-
 
 == Placeholders
 === SOMETHING WITH SEGMENT LENGTH<segment_length>

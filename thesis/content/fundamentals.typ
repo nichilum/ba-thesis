@@ -8,21 +8,35 @@
 
 == Acoustics
 
-
 === Reverberation
 
 #TODO[]
 
+Reverberation is a natural process bla bla, "can be recreated" approximated using computational approaches, bla bla
+
+==== Natural Reverberation
+
+==== Convolutional Reverberation
 convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
+$
+  (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau
+$
 
+==== Delay Networks
 
-=== Reverberation in Active Acoustics Systems
-- explain the theoretical background of coloration artifacts in live systems utilizing active acoustics when reverberation is present in a feedback loop
+@smithPhysicalAudioSignal2010
 
-In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
-#TODO[]
+==== Room Simulations
+
+@mannallRoomAcoustiCOpensourceRoom2025
+@scheiblerPyroomacousticsPythonPackage2018
+@allenImageMethodEfficiently1979
+@vorlanderAuralizationFundamentalsAcoustics2008
 
 === Sound Quality
+
+- for speech
+- diverse audio
 
 https://en.wikipedia.org/wiki/Sound_quality
 

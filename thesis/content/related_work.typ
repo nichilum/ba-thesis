@@ -59,9 +59,9 @@ Quality-Net's performance was evaluated over 100 utterances using the @MSE, @LCC
   table(
     columns: 5,
     [],
-    [@MSE],
-    [@LCC],
-    [@SRCC],
+    [\ \ @MSE],
+    [\ \ @LCC],
+    [\ \ @SRCC],
     [Variance of \
       frame quality\ in
       clean speech],

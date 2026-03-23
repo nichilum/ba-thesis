@@ -154,6 +154,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
       [*ODG*], v(stormCSV.odg), v(convtasnetCSV.odg),
       [*DI*], v(stormCSV.di), v(convtasnetCSV.di),
       [*Runtime (hh:mm:ss)*], [06:14:51], [00:04:15],
+      [*Runtime per sample (s)*], [10.98], [0.12],
     )
   },
 )<conv_tasnet_storm_comparison>
@@ -182,6 +183,7 @@ When comparing the two models against each other, the differences across most me
 #TODO[talk about SI-SNR, only metric left undiscussed]
 
 The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s, while StoRM requires $6$ h $14$ m $51$ s --- approximately $88 times$ the inference time.
+#TODO[time per sample from @conv_tasnet_storm_comparison, say how long each sample is]
 
 == DISCUSS UPSAMPLING FOR TRAINING AND REVERBERATING AT LOWER (USING PLOTS)<disc_upsampling>
 

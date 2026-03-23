@@ -154,6 +154,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
       [*ODG*], v(stormCSV.odg), v(convtasnetCSV.odg),
       [*DI*], v(stormCSV.di), v(convtasnetCSV.di),
       [*Runtime (hh:mm:ss)*], [06:14:51], [00:04:15],
+      [*Runtime per sample (s)*], [10.98], [0.12],
     )
   },
 )<conv_tasnet_storm_comparison>

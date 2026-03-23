@@ -198,12 +198,12 @@ Both stages are evaluated in @eval_objective_quality_net.
 The model operates directly on waveforms. A reverberant input signal $bold(x) in RR^L$ is first projected into a learned latent space by a strided 1-D convolution $bold(W)_"enc"$, processed by a @TCN:short that predicts a real-valued mask, and finally reconstructed by a transposed convolution $bold(W)_"dec"$:
 
 $
-tilde(bold(x)) = bold(W)_"dec"^top * (sigma("TCN"(bold(W)_"enc" * bold(x))) dot.o (bold(W)_"enc" * bold(x)))
+  tilde(bold(x)) = bold(W)_"dec"^top * (sigma("TCN"(bold(W)_"enc" * bold(x))) dot.o (bold(W)_"enc" * bold(x)))
 $
 
 The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberation in the encoder feature space before the decoder maps the filtered representation back to a waveform estimate $tilde(bold(x))$.
 
-#import "@preview/fletcher:0.5.7" as fletcher: diagram as fletcher-diagram, node, edge,
+#import "@preview/fletcher:0.5.7" as fletcher: diagram as fletcher-diagram, edge, node
 
 #let block(pos, label, color) = node(
   pos,
@@ -219,7 +219,7 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
   outset: 0pt,
   inset: 0pt,
   pos,
-  circle(text, radius: 10pt , stroke: 1pt + black),
+  circle(text, radius: 10pt, stroke: 1pt + black),
 )
 
 #diagram(
@@ -246,8 +246,6 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
     block((4, 0), [Decoder $bold(W)_"dec"^top * dot$], rgb("#7B61FF")),
     edge("-|>"),
     circ((5, 0), [$tilde(bold(x))$]),
-    
-
 
 
     // Input
@@ -296,14 +294,6 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
   - show table with all hyperparameters (learning rate, batch size, etc.) for all versions
 ]
 
-#TODO[Use as loss function
-
-  eval() mode -> backpropagatio not stopped through network computations
-  -> what is frozen and what not
-
-  $ "loss" = 1.0 - "quality" $
-  $ "loss" = 1.0 - "quality" + alpha dot "MSE"_"loss" $
-]
 
 
 *inverse estimation in encoder space*
@@ -314,10 +304,20 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
   - compare mse to perceptual loss
 
 
+*perceptual quality net as loss function*
 
-#TODO[https://typst.app/universe/package/neural-netz]
+Using the perceptual (see @meth_percep_quality_net, @impl_percep_qual_net_cnn14) or objective (see  @meth_obj_quality_net, @impl_objective_quality_network) quality net as loss functions requires little architectural change from the other metrics descibed in @analyze_loss_functions.
 
+As the forward pass of a neural network is only a series of computations, all data requiring gradient calculation that is fed through the model will have the associated autograd graph built. To disable gradient calculation for the weights of the loss model the gradient requirement for each parameter of the loss model is disabled. It is important to note that this should not be done using a global environment as then all gradient calculations including those of the dereverberation network's weights will cease.
+
+As explained in @impl_percep_qual_net_init only the quality prediction was used. The final loss calculation for the dereverberation network is defined as:
+
+$ "loss" = 1.0 - "quality" + alpha dot "MSE"_"loss" $
+
+where quality is the predicted quality score described in @meth_percep_quality_net, $alpha$ is some factor between $0$ and $1$ and $"MSE"_"loss"$ is the @MSE between $s$ and $hat(s)$ (cf. @fun_mae_mse).
 
 == Placeholders
 === SOMETHING WITH SEGMENT LENGTH<segment_length>
 === LOSS FUNCTION SILENT MASK<loss_function_silent_mask>
+
+#TODO[https://typst.app/universe/package/neural-netz]

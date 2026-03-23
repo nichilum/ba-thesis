@@ -22,6 +22,10 @@ convolutions are a fast operation in the frequency domain and on GPU devices @si
 In these cases, reverberation can significantly degrade speech intelligibility, introduce unwanted coloration, and negatively affect the overall user experience @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021.
 #TODO[]
 
+=== Sound Quality
+
+https://en.wikipedia.org/wiki/Sound_quality
+
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
 
@@ -679,11 +683,11 @@ The problem is that both input signals are assumed to be two random variables wh
 
 === @SI-SNR:short<fun_si-snr>
 
-The @SI-SNR:long
+The @SI-SNR:long first introduced as the @SI-SDR in @rouxSDRHalfbakedWell2018 is defined as:
 
 $ "SI-SNR" = 10 log_10 ((||a s||^2)/(||a s - hat(s)||^2)), "where" a = (hat(s)^T s)/(||s||^2) $
 
-measures the level of distortion or noise in the predicted signal in a way that is invariant to the scaling of the signals. It has been used successfully in dereverberation tasks @luoConvTasNetSurpassingIdeal2019 but while providing invariance to signal scaling it too does not conform to the perceived loudness of the human ear nor provide invariance to signal shifting.
+. The @SI-SNR and @SI-SDR have identical formulas but different interpretations of the corruption applied to the signal $hat(s)$ (noise or distortion). The @SI-SNR measures the level of noise in the predicted signal in a way that is invariant to amplitude scaling of the signals. It has been used successfully in dereverberation tasks @luoConvTasNetSurpassingIdeal2019 but while providing invariance to signal scaling it too does not conform to the perceived loudness of the human ear nor provide invariance to signal shifting.
 
 It can also be mentioned that there are other variants, like Source-to-Artifact Ratio (SAR), Source-to-Interference Ratio (SIR), Source-to-Distortion Ratio (SDR) and Signal-to-Noise Ratio (SNR), each with Scale-Invariant (SI) forms, which are used in the field of source separation and speech enhancement, but are all inspired by the usual definition of the SNR @vincentPerformanceMeasurementBlind2006.
 

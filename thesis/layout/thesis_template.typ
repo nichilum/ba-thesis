@@ -113,6 +113,10 @@
   // --- Figures ---
   show figure: set text(size: 0.85em)
 
+  show figure.where(
+    kind: table,
+  ): set figure.caption(position: top)
+
   show heading.where(level: 1): it => {
     counter(math.equation).update(0)
     it

@@ -3,6 +3,10 @@
 #import "/thesis/utils/author.typ": *
 = Evaluation
 
+== Analyzation of Applicable Loss Functions
+
+- discussion: is the size parameter a good metric to evaluate dereverberation. akin to making the room smaller, wetness "makes the oroginal signal louder"/more absorption in the room -> explain with mental model of room and mic
+
 == Perceptual Quality Net<eval_percep_quality_net>
 #jojo
 Evaluation of the perceptual quality network is done both for the initial simple implementation as well as the CNN14 based one. The evaluation of the simple @CNN (see @eval_percep_qual_net_init) focuses on the comparison of the two approaches, examining the improvement the CNN14 based implementation made. @eval_percep_qual_net_cnn14 discusses general applicability of the perceptual quality network as loss function and its predictive performance compared to other metrics like the @SI-SNR.
@@ -118,7 +122,14 @@ These findings motivated us to proceed with the CNN14 based implementation as de
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )
 
+- das der datensatz hall beinhaltet ist konzeptuell vlt schlimmer fur das quality net
+- dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
+  - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
+    - halt ohne make data ausguführen und alles voll zu müllen
+
 == Objective Quality Net<eval_objective_quality_net>
+
+- eval: es wäre interessant gewesen mal nur auf wetness zu trainieren
 
 == Comparison of Conv-TasNet and StoRM for diverse signals
 #leo

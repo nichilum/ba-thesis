@@ -20,6 +20,11 @@
   //   longplural: "test procedure specifications",
   // ),
   //
+  GPU: (
+    short: "GPU",
+    long: "graphics processing unit",
+    group: "Other",
+  ),
   STFT: (
     short: "STFT",
     long: "short-time Fourier transform",

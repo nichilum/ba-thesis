@@ -16,6 +16,74 @@ Reverberation is a natural process bla bla, "can be recreated" approximated usin
 
 ==== Natural Reverberation
 
+stuff from @everestMasterHandbookAcoustics1989:
+- the "hanging-on" of sound in a room after the exciting signal has been removed is called reverberation
+  - it has a very important bearing on the acoustic quality of the room
+    - for audio quality: music (symphony orchestra) recorded in anechoic conditions is thinner, weaker and less resonant then even outdoor recordings
+    - reverberation was considered the single most important characteristic of an enclosed space for speech and music, today one of severas measurable parameters that define the [audio] quality of a space
+
+
+#diagram(
+  caption: [(A) Direct sound and exemplary first order reflections from source S arriving at listening position L. (B) The sound pressure at L grows stepwise. (C) The
+    sound decays exponentially after the source ceases. Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
+  short-caption: [The growth and decay of sound in a room],
+  image("/thesis/figures/sound_growth_and_decay.svg"),
+)
+
+#diagram(
+  caption: [(A) Sound-pressure on vertical scale is measured in linear units. (B) Sound-pressure level on vertical scale is measured in logarithmic units (decibels). Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
+  short-caption: [The growth and decay of sound in a room],
+  image("/thesis/figures/sound_decay_log.svg"),
+)
+
+
+- source S and a listener L
+  - S spherical sound source
+  - S is suddenly energized, sound travels outward from S in all directions
+  - direct path to the listener L: consider zero time
+  - sound pressure at L instantly jumps to a value (D) less than that which left S due to spherical divergence and small losses in the air
+  - sound pressure at L stays at this value until reflection R1 arrives (D+R1)
+    - paths of varying lengths all greater than |D|
+  - arrival of each successive reflected component causes the level of sound to increase stepwise
+    - These additions are, in reality, vector additions involving both magnitude and phase
+    - in real life the steps are so tiny that it can be
+
+- growth of sound is fast (almost instant)
+- decay is slow: more important
+
+"The ultimate level of sound in the room is determined by the energy from the
+source S. The energy it radiates is dissipated as heat in wall reflections and other
+boundary losses, along with a small loss in the air itself. With a constant input to S, the
+sound-pressure level grows, as shown in Fig. 11-1B, to a steady-state equilibrium. "
+
+"After turning off source S, the room is momentarily still filled with sound, but stability
+is destroyed because the losses are no balanced by energy from S. Support is cut off to
+the rays of sound moving through the room.
+What is the fate, for example, of the ceiling reflected component R1
+(Fig. 11-1)? As
+S is cut off, R1
+is on its way to the ceiling. It loses energy at the ceiling reflection and heads
+toward L. After passing L it strikes the rear wall, then the floor, the ceiling, the front wall,
+the floor again, and so on, losing energy at each reflection. Soon it is so weak it can be
+considered dead. The same thing happens to R2
+, R3
+, R4
+, and a multitude of others not
+shown. Figure 11-1C shows the exponential decrease of the first reflection components,
+which would also apply to the wall reflections not shown and to the many multiple
+reflection components. The sound in the room thus dies away, but it takes a finite time to
+do so because of the speed of sound, losses at reflections, the damping effect of the air,
+and divergence."
+
+- also show the decibel plot of sound decay for a one sentence explanaition of reverberation time: WE SHOULD USE REVERB TIME TO QUALIFY THE LENGTH OF 0 to 1 IN OUR PARAMETER REVERB
+
+- small rooms and large rooms in theory must be interpreted differnetly
+  - far field is stochastically homogeneros in large rooms, in small rooms single modes at specific freq.
+  - "We see now why it is difficult to apply the concept of reverberation time to small rooms having dimensions comparable to the wavelength of sound. Schultz states that reverberation time is a statistical concept “in which much of the mathematically awkward details are averaged out.” In small rooms these details are not averaged out. The reverberation-time equations of Sabine, Eyring-Norris, and others are based on the assumption of an enclosed space with a highly uniform distribution of sound energy and random direction of propagation of sound. At low frequencies in the room, energy is distributed very unevenly and direction of propagation is far from random"
+
+
+@longArchitecturalAcoustics2006
+
 ==== Convolutional Reverberation
 convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
 $

@@ -195,7 +195,7 @@ Both stages are evaluated in @eval_objective_quality_net.
 //   - show plots
 // - instead use masking appproach
 
-A first implementation of the dereverberation network was based on a fully generative approach, consisting of an encoder, a TCN and a decoder as in Conv-TasNet but without the masking operation. The decoder was expected to generate the dereverberated signal directly from the TCN representation. However this approach proved to be unfeasable with low computational cost. The model was able to overfit on the training data but did not generalize well to the validation set. We therefore switched to a masking approach, more in line with the original Conv-TasNet architecture.
+A first implementation of the dereverberation network was based on a fully generative approach, consisting of an encoder, a TCN and a decoder as in Conv-TasNet but without the masking operation. The decoder was expected to generate the dereverberated signal directly from the TCN representation. However this approach proved to be unfeasable with low computational cost, eventually requiring higher parameter counts. The model was able to overfit on the training data but did not generalize well to the validation set. We therefore switched to a masking approach, more in line with the original Conv-TasNet architecture.
 
 #TODO[show overfitting plots here or in eval/results?]
 
@@ -254,15 +254,142 @@ The sigmoid-gated mask $sigma(dots) in (0,1)^(C times T)$ suppresses reverberati
   caption: [Forward pass of the dereverberation model.],
 )<fig_forward_pass>
 
+As a loss function the dereverberation network can either use the perceptual quality network or the @SI-SNR.
+
+@tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
+
 #TODO[
-  - which versions do the want to show the implementation of? only the best one (then compare si-snr with perceptual?)
-    - show the architecture of the best version (v4)
-  - architecture is mostly the same for all
-  - show table with all hyperparameters (learning rate, batch size, etc.) for all versions
+  remove batch sizes, as they are different on HPC
 ]
 
+#box[
+  #set text(size: 7pt)
+  #figure(
+    table(
+      columns: (1.5fr, 0.8fr, 0.8fr, 0.8fr, 0.9fr, 0.9fr, 1.0fr, 0.8fr, 1.0fr, 0.8fr, 0.8fr, 0.8fr, 0.8fr, 1.4fr, 0.7fr, 0.8fr, 0.8fr, 0.7fr, 0.7fr, 1.2fr, 0.8fr, 1.0fr, 0.9fr, 0.8fr, 0.9fr, 1.4fr),
+      align: left + top,
 
+      table.header(
+        [*Run ID*],
+        [*bs*],
+        [*agb*],
+        [*ebs*],
+        [*epochs*],
+        [*lr*],
+        [*loss*],
+        [*gc*],
+        [*seg*],
+        [*seg_s*],
+        [*sr*],
+        [*N*],
+        [*win*],
+        [*tcn*],
+        [*k*],
+        [*drop*],
+        [*act*],
+        [*X*],
+        [*R*],
+        [*dil*],
+        [*causal*],
+        [*norm*],
+        [*lookahead*],
+        [*skip*],
+        [*variant*],
+        [*Notes*],
+      ),
 
+      [derev_1],
+      [16], [1], [16], [1], [1e-3], [perceptual], [true], [176400], [4.0], [44100], [64], [-], [[64x5]], [4], [0.1], [relu], [0], [0], [-], [true], [weight_norm], [0], [false], [-],
+      [Initial masking baseline],
+
+      [derev_1_increased],
+      [8], [4], [32], [100], [1e-4], [perceptual], [true], [176400], [4.0], [44100], [265], [-], [-], [3], [0.0], [relu], [8], [3], [-], [false], [layer_norm], [0], [true], [-],
+      [Higher-capacity variant],
+
+      [derev_tcn_v1],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [First tuned TCN],
+
+      [derev_mha_v1],
+      [16], [4], [64], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [mha],
+      [Attention variant],
+
+      [derev_tcn_v2_AdamW],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [Optimizer study run],
+
+      [derev_tcn_v2_MSE],
+      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [Loss ablation],
+
+      [derev_tcn_v2_Small],
+      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x6]], [3], [0.1], [relu], [6], [4], [1..32], [false], [layer_norm], [0], [true], [-],
+      [Smaller TCN],
+
+      [derev_tcn_v2_Dropout],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.2], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [Dropout ablation],
+
+      [derev_tcn_v3],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [v3 baseline],
+
+      [derev_tcn_v3_MSE],
+      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [v3 with MSE],
+
+      [derev_convtasnet],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [512], [2ms], [[512x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [Conv-TasNet-style setting],
+
+      [derev_tcn_v4_SISNR],
+      [4], [4], [16], [100], [1e-4], [sisnr], [true], [176400], [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [v4 with SI-SNR loss],
+
+      [derev_tcn_v4_percep],
+      [4], [4], [16], [100], [1e-4], [perceptual], [true], [176400], [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [v4 with perceptual loss],
+    ),
+    caption: [All dereverberation hyperparameter configurations. Abbreviations: bs=batch size, agb=accumulate grad batches, ebs=effective batch size, gc=gradient checkpointing, seg=segment length (samples), seg_s=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats. Runtime batch sizes on HPC may differ due to memory-constrained adjustments.],
+  )<tab_derev_hparams>
+]
+
+#diagram(caption: [Architecture of the dereverberation network (TCN v4)], table(
+  columns: (1fr, 1fr, 1fr),
+  align: center,
+  stroke: 0.5pt,
+
+  table.cell(colspan: 3)[*Dereverberation Network (TCN v4)*],
+
+  table.cell(colspan: 3)[
+    Waveform input \
+    sr=44100, segment length = 2-4 s
+  ],
+
+  [*Encoder*], [*Separator (TCN)*], [*Decoder*],
+
+  [1-D Conv encoder \ $N=512$, win=$2$ ms],
+  [24 residual TCN blocks \ channels=$179$, kernel size=$3$],
+  [1-D transposed Conv decoder \ waveform reconstruction],
+
+  [$E = bold(W)_"enc" * bold(x)$],
+  [Dilations: $[1,2,4,8,16,32,64,128] times 3$ \ $X=8$, $R=3$],
+  [$tilde(bold(x))$],
+
+  [Masking path],
+  [$M = sigma("TCN"(E))$],
+  [$hat(E) = E dot.o M$],
+
+  table.cell(colspan: 3)[
+    Non-causal, layer_norm, ReLU, dropout=$0.0$, lookahead=$0$, skip connections enabled
+  ],
+))<arch_impl_derev_tcn_v4>
+
+@arch_impl_derev_tcn_v4 shows the derev_tcn_v4 architecture used for the final masking-based dereverberation experiments.
+
+#TODO[point out differences between our and convtasnet (parameters, ...)]
+
+#TODO[what does this mean?]
 *inverse estimation in encoder space*
 - frequency
 - time (ConvTasNet)

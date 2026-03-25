@@ -31,10 +31,21 @@ While the growth of sound is perceived as almost instant the decay is slow.
 Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time is takes for sound to decay by 60 dB after the source stops.
 
 ==== Convolutional Reverberation<fun_conv_reverb>
+
+The idea of convolving a perfect room impulse response has been formulated as early as 1970 by #cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date")
+
+bla bla seit 2000 erst rechner schnell genug
+
 convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
+
+
+Hier formel:
 $
   (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau
 $
+
+da steht auch unnötig viel drin aber lowkey useless:
+@valimakiFiftyYearsArtificial2012
 
 ==== Delay Networks<fun_delay_reverb>
 

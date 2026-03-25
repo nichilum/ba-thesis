@@ -1,0 +1,15 @@
+[project]
+name = "rt-measure"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "numpy>=2.3.3",
+    "pedalboard>=0.9.22",
+    "pyfar>=0.8.0",
+    "pyroomacoustics>=0.8.4",
+    "soundfile>=0.13.1",
+    "tqdm>=4.67.1",
+]

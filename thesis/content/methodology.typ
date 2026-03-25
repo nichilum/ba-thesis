@@ -205,6 +205,36 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 //   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
 //   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
+#TODO[
+  - rt60s of dataset
+  - measured using schroeder method @schroederNewMethodMeasuring1968
+  - histogram spike to the right not expected
+    - wetness and size are uniformly distributed, so a "maximum" reverberation time generated, is not expected to be more common than any other reverberation time
+]
+
+#diagram(
+  caption: [$R T_60$ distribution of reverberated dataset],
+  table(
+    columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+    align: (left, right, right, right, right, right),
+
+    table.header([*Split*], [*Mean*], [*Median*], [*Std*], [*Min*], [*Max*]),
+
+    [All], [1.480289], [1.185601], [0.787817], [0.578050], [2.805147],
+    [Train], [1.481210], [1.185624], [0.788235], [0.578050], [2.805147],
+    [Val], [1.475887], [1.188571], [0.784935], [0.578050], [2.805147],
+    [Test], [1.480334], [1.180454], [0.788687], [0.578050], [2.805125],
+  ),
+)
+
+#diagram(
+  caption: [
+    Distribution of $R T_60$ values across entire reverberated dataset
+  ],
+  image("../../utils/rt-measure/plots/rt60_distribution_all.png"),
+)
+
+
 
 
 ==== Calculation of @PEAQ:short Scores<preprocessing_peaq>

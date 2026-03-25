@@ -10,23 +10,38 @@
 
 === Reverberation
 
-#TODO[]
+Reverberation is the "hanging-on" of sound in a room after the exciting signal has been removed @everestMasterHandbookAcoustics1989. It occurs naturally through late reflections of sound as described in @fun_natual_reverb or artificially utilizing convolution (@fun_conv_reverb), delay networks (@fun_delay_reverb) or room simulations (@fun_room_reverb).
 
-Reverberation is a natural process bla bla, "can be recreated" approximated using computational approaches, bla bla
+==== Natural Reverberation<fun_natual_reverb>
 
-==== Natural Reverberation
+Reverberation is casued by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRaumUnd2025 of sound that overlap with the direct sound. This natual phenomenon can be observed in every environment that allows for sound reflections. An example is given by #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date"):
 
-==== Convolutional Reverberation
+@fun_growth_decay_sound (A) shows a spherical sound source S and a listener L. Once S is energized sound travels outward from S in all directions. Sound pressure at L instantly jumps to a value ($D$) that is less than that which left S due to spherical divergence and small losses in the air. Sound pressure continues to grow with each successive arrival of reflected components unit an equilibrium is reached (cf. @fun_growth_decay_sound (B)).
+
+Once S is turned off the sound rays moving through the room lose their support and with each successive reflection they lose energy until they are considered dead. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components. These reflections are also called the reverb tail.
+
+While the growth of sound is percieved as almost instant the decay is slow.
+
+#diagram(
+  caption: [(A) Direct sound and exemplary first order reflections from source S arriving at listening position L. (B) The sound pressure at L grows stepwise. (C) The
+    sound decays exponentially after the source ceases. Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
+  short-caption: [The growth and decay of sound in a room],
+  image("/thesis/figures/sound_growth_and_decay.svg"),
+)<fun_growth_decay_sound>
+
+Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time is takes for sound to decay by 60 dB after the source stops.
+
+==== Convolutional Reverberation<fun_conv_reverb>
 convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
 $
   (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau
 $
 
-==== Delay Networks
+==== Delay Networks<fun_delay_reverb>
 
 @smithPhysicalAudioSignal2010
 
-==== Room Simulations
+==== Room Simulations<fun_room_reverb>
 
 @mannallRoomAcoustiCOpensourceRoom2025
 @scheiblerPyroomacousticsPythonPackage2018
@@ -39,6 +54,14 @@ $
 - diverse audio
 
 https://en.wikipedia.org/wiki/Sound_quality
+
+@longArchitecturalAcoustics2006
+
+
+@everestMasterHandbookAcoustics1989
+- it has a very important bearing on the acoustic quality of the room
+  - for audio quality: music (symphony orchestra) recorded in anechoic conditions is thinner, weaker and less resonant then even outdoor recordings
+  - reverberation was considered the single most important characteristic of an enclosed space for speech and music, today one of severas measurable parameters that define the [audio] quality of a space
 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.

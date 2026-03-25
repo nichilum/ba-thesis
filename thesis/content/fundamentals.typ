@@ -14,11 +14,11 @@ Reverberation is the "hanging-on" of sound in a room after the exciting signal h
 
 ==== Natural Reverberation<fun_natual_reverb>
 
-Reverberation is casued by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRaumUnd2025 of sound that overlap with the direct sound. This natual phenomenon can be observed in every environment that allows for sound reflections. An example is given by #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date"):
+Reverberation is casued by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRaumUnd2025 of sound that overlap with the direct sound. This natural phenomenon can be observed in every environment that allows for sound reflections. An example is given by #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date"):
 
 @fun_growth_decay_sound (A) shows a spherical sound source S and a listener L. Once S is energized sound travels outward from S in all directions. Sound pressure at L instantly jumps to a value ($D$) that is less than that which left S due to spherical divergence and small losses in the air. Sound pressure continues to grow with each successive arrival of reflected components unit an equilibrium is reached (cf. @fun_growth_decay_sound (B)).
 
-Once S is turned off the sound rays moving through the room lose their support and with each successive reflection they lose energy until they are considered dead. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components. These reflections are also called the reverb tail.
+Once S is turned off the sound rays moving through the room lose their support and with each successive reflection they lose energy until they are considered dead. These reflections are also called the reverb tail. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components.
 
 While the growth of sound is perceived as almost instant the decay is slow.
 
@@ -49,13 +49,14 @@ $
 
 === Sound Quality<fun_sound_quality>
 
-#TODO[can be shortended or different heading]
+@fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test or processed) audio signal sounds in comparison to its clean counterpart.
+Multiple of these metrics are perceptually motivated. This section gives an overview over parameters that impact the perception of audio. It is important to note that not all parameters listed can or should be used by quality metrics to qualify how good audio sounds (cf. @analyze_loss_functions).
 
-There are many different signal corruptions that impact perceived sound quality. Some occur naturally like reverberation or background noise, while others are of digital origin like undersampling or insufficient bit depth.
+There are many different signal corruptions that impact perceived sound quality. Some occur naturally like reverberation or background noise, while others are of digital origin like undersampling, insufficient bit depth or paket loss.
 
 The impact of different signal corruptions differs between application. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation as lower level consonants are masked by the reverb tail. On the other hand, a completely dead room, or an outdoor environment, is not optimal for intelligibility as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music as different genres benefit from different $R T$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
 
-The human auditory complex perceives signals in the 20 to 20 kHz range @isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004. A digital representation of a signal should therfore be sampled at at least 40 kHz @shannonCommunicationPresenceNoise1949. While it is possible to represent speech using 8 kHz of bandwidth @itu-tG711PulseCode1988 music and other broadband signals are missing important high frequency informations.
+The human auditory complex perceives signals in the 20 to 20 kHz range @isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004. A digital representation of a signal should therfore be sampled at at least 40 kHz @shannonCommunicationPresenceNoise1949. While it is possible to represent speech using 8 kHz of bandwidth @itu-tG711PulseCode1988 music and other broadband signals would lack important high frequency informations.
 
 While converting analog signals into digital representations bit depth is another important factor. An 8 bit quantization allows for $49.93 "dB"$ of dynamic range. While speech requires a dynamic range of about 40 to 50 dB @dunnStatisticalMeasurementsConversational1940 @pavlovicSIISpeechIntelligibility2018, music sometimes featues signal-to-noise ratios of up to 80 dB. Through the introduction of the compact disc a quantization of 16 bit (offering $98.09$ dB of dynamic range) has become the standard @frenzelAudioElectronics2010.
 
@@ -730,7 +731,7 @@ It can also be mentioned that there are other variants, like Source-to-Artifact 
 
 === @PESQ:short<fun_pesq>
 
-Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp)
+Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. In regards to its predecessors @PESQ produces more accurate scores when the signal is affected by coding distortion, packet loss, background noise, filtering or variable delay. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp).
 
 #diagram(
   caption: [The Absolute Category Rating scale used by @MOS/@PESQ],

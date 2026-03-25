@@ -20,11 +20,10 @@ Reverberation is casued by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRau
 
 Once S is turned off the sound rays moving through the room lose their support and with each successive reflection they lose energy until they are considered dead. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components. These reflections are also called the reverb tail.
 
-While the growth of sound is percieved as almost instant the decay is slow.
+While the growth of sound is perceived as almost instant the decay is slow.
 
 #diagram(
-  caption: [(A) Direct sound and exemplary first order reflections from source S arriving at listening position L. (B) The sound pressure at L grows stepwise. (C) The
-    sound decays exponentially after the source ceases. Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
+  caption: [(A) Direct sound and exemplary first order reflections from source S arriving at listening position L. (B) The sound pressure at L grows stepwise. (C) The sound decays exponentially after the source ceases. Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
   short-caption: [The growth and decay of sound in a room],
   image("/thesis/figures/sound_growth_and_decay.svg"),
 )<fun_growth_decay_sound>
@@ -50,18 +49,40 @@ $
 
 === Sound Quality
 
-- for speech
-- diverse audio
+There are many different signal corruptions that impact perceived sound quality. Some occur naturally like reverberation or background noise, while others are of digital origin like undersampling or insufficient bit depth.
+
+The impact of different signal corruptions differs between application. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation as lower level consonants are masked by the reverb tail. On the other hand, a completely dead room, or an outdoor environment, is not optimal as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music as different genres benefit from different $R T_60$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
+
+Human hearing
+
+- music quality
+
+- @STT
+
+  A good representation of a speech signal requires a bandwidth of at least ... kHz CITE.
+
+
+
+
+- Excessive reverberation can impair the intelligibility of speech by masking the lower level consonants.
+  - BUT sometimes wanted:
+  - different musical genres benefit of different RTs
+  -> SCHWIERIG mit metric weil eig metrics ausgelegt auf 100% "schlechte" signal korruptionen
 
 https://en.wikipedia.org/wiki/Sound_quality
 
-@longArchitecturalAcoustics2006
 
 
-@everestMasterHandbookAcoustics1989
+
 - it has a very important bearing on the acoustic quality of the room
   - for audio quality: music (symphony orchestra) recorded in anechoic conditions is thinner, weaker and less resonant then even outdoor recordings
   - reverberation was considered the single most important characteristic of an enclosed space for speech and music, today one of severas measurable parameters that define the [audio] quality of a space
+
+
+
+Percieved sound quality is not only guided by signal corruptions but also by the overall frequency makeup of the signal.
+- some frequencies are more annoying than others
+- hard to test for with metrics as they are supposed grade a signal based on a reference and not "is this signal annoying or not"
 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.

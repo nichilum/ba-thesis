@@ -55,6 +55,8 @@ The impact of different signal corruptions differs between application. Arguably
 
 Human hearing
 
+@isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004
+
 - music quality
 
 - @STT

@@ -47,44 +47,21 @@ $
 @allenImageMethodEfficiently1979
 @vorlanderAuralizationFundamentalsAcoustics2008
 
-=== Sound Quality
+=== Sound Quality<fun_sound_quality>
+
+#TODO[can be shortended or different heading]
 
 There are many different signal corruptions that impact perceived sound quality. Some occur naturally like reverberation or background noise, while others are of digital origin like undersampling or insufficient bit depth.
 
-The impact of different signal corruptions differs between application. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation as lower level consonants are masked by the reverb tail. On the other hand, a completely dead room, or an outdoor environment, is not optimal as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music as different genres benefit from different $R T_60$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
+The impact of different signal corruptions differs between application. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation as lower level consonants are masked by the reverb tail. On the other hand, a completely dead room, or an outdoor environment, is not optimal for intelligibility as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music as different genres benefit from different $R T$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
 
-Human hearing
+The human auditory complex perceives signals in the 20 to 20 kHz range @isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004. A digital representation of a signal should therfore be sampled at at least 40 kHz @shannonCommunicationPresenceNoise1949. While it is possible to represent speech using 8 kHz of bandwidth @itu-tG711PulseCode1988 music and other broadband signals are missing important high frequency informations.
 
-@isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004
+While converting analog signals into digital representations bit depth is another important factor. An 8 bit quantization allows for $49.93 "dB"$ of dynamic range. While speech requires a dynamic range of about 40 to 50 dB @dunnStatisticalMeasurementsConversational1940 @pavlovicSIISpeechIntelligibility2018, music sometimes featues signal-to-noise ratios of up to 80 dB. Through the introduction of the compact disc a quantization of 16 bit (offering $98.09$ dB of dynamic range) has become the standard @frenzelAudioElectronics2010.
 
-- music quality
+Most of the above named signal qualities also impact @STT performance of neural networks @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021. A signal that is badly reverberated and noisy is harder to transcribe than an anechoic one. While humans have the added benefit of being able to deduce what was said by filling the gaps between understood words @longArchitecturalAcoustics2006 machines generally lack this ability.
 
-- @STT
-
-  A good representation of a speech signal requires a bandwidth of at least ... kHz CITE.
-
-
-
-
-- Excessive reverberation can impair the intelligibility of speech by masking the lower level consonants.
-  - BUT sometimes wanted:
-  - different musical genres benefit of different RTs
-  -> SCHWIERIG mit metric weil eig metrics ausgelegt auf 100% "schlechte" signal korruptionen
-
-https://en.wikipedia.org/wiki/Sound_quality
-
-
-
-
-- it has a very important bearing on the acoustic quality of the room
-  - for audio quality: music (symphony orchestra) recorded in anechoic conditions is thinner, weaker and less resonant then even outdoor recordings
-  - reverberation was considered the single most important characteristic of an enclosed space for speech and music, today one of severas measurable parameters that define the [audio] quality of a space
-
-
-
-Percieved sound quality is not only guided by signal corruptions but also by the overall frequency makeup of the signal.
-- some frequencies are more annoying than others
-- hard to test for with metrics as they are supposed grade a signal based on a reference and not "is this signal annoying or not"
+Percieved sound quality is not only guided by signal corruptions but also by the overall frequency makeup of the signal. Although annoyance due to a sound can be highly subjective it was shown that critical bands defined by the cochlea define frequency regions in which two simultaneously played sounds are perceived as dissonant @longArchitecturalAcoustics2006.
 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.

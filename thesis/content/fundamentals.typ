@@ -110,10 +110,18 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 
 ==== Room Simulations<fun_room_reverb>
 
-@mannallRoomAcoustiCOpensourceRoom2025
-@scheiblerPyroomacousticsPythonPackage2018
-@allenImageMethodEfficiently1979
-@vorlanderAuralizationFundamentalsAcoustics2008
+There are different approaches for modeling the acoustics of a room. The two main ones are either based on numerically solving the wave equation or on the assumptions of geometrical acoustics. Wave-based modeling techniques are able to provide the most accurate results. Their drawback is high computational cost. Therfore faster but less accurate methods are often utilized @saviojaOverviewGeometricalRoom2015.
+
+#cite(<scheiblerPyroomacousticsPythonPackage2018>, form: "prose", style: "chicago-author-date") introduce the pyroomacoustics library which uses the @ISM to synthetically generate @RIR:pl of specified positions in a room which are then convolved (see @fun_conv_reverb) with the microphone signal to create the simulated output.
+The @ISM method recursively mirrors sound sources across each plane of a room model, thereby creating image sources. The amount of sources therefore grows exponentially. Each image source must be traced to the reciever position to assure a valid reflection path. It is then known, based on the distance of the image source, when the reflected sound should arrive at the listening position.
+
+Once image source locations and visibilities have been determined the impulse response is defined as
+
+$
+  a_bold(r) (bold(s)_0, n) = sum_(bold(s) in cal(V)_bold(r) (bold(s)_0)) ((1-alpha)^("gen"(bold(s))))/(4 pi ||bold(r) - bold(s)||) delta_"LP" (n-F_s (||bold(r) - bold(s)||)/c)
+$
+
+, where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
 
 === Sound Quality<fun_sound_quality>
 

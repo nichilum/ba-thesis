@@ -61,6 +61,11 @@
     long: "speech-to-text",
     group: "Acoustics",
   ),
+  ISM: (
+    short: "ISM",
+    long: "image source model",
+    group: "Acoustics",
+  ),
   // Neural Networks
   TCN: (
     short: "TCN",

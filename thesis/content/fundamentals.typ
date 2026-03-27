@@ -30,26 +30,22 @@ While the growth of sound is perceived as almost instant the decay is slow.
 
 Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time is takes for sound to decay by 60 dB after the source stops.
 
+==== Delay Networks<fun_delay_reverb>
+
+This was the first kind of artificial reverberation
+
+@smithPhysicalAudioSignal2010
+
 ==== Convolutional Reverberation<fun_conv_reverb>
 
-The idea of convolving a perfect room impulse response has been formulated as early as 1970 by #cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date")
+#cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") proposed the idea of convolving a signal with a simulated @RIR to achieve natural sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s hardware became powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
 
-bla bla seit 2000 erst rechner schnell genug
-
-convolutions are a fast operation in the frequency domain and on GPU devices @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
-
-
-Hier formel:
+The convolution of two signals $f$ and $g$ is defined as @wintnerAnalyticConvolutionsBernoulli1934:
 $
   (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau
 $
 
-da steht auch unnötig viel drin aber lowkey useless:
-@valimakiFiftyYearsArtificial2012
-
-==== Delay Networks<fun_delay_reverb>
-
-@smithPhysicalAudioSignal2010
+Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007.
 
 ==== Room Simulations<fun_room_reverb>
 

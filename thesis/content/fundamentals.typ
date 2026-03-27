@@ -113,7 +113,7 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 There are different approaches for modeling the acoustics of a room. The two main ones are either based on numerically solving the wave equation or on the assumptions of geometrical acoustics. Wave-based modeling techniques are able to provide the most accurate results. Their drawback is high computational cost. Therfore faster but less accurate methods are often utilized @saviojaOverviewGeometricalRoom2015.
 
 #cite(<scheiblerPyroomacousticsPythonPackage2018>, form: "prose", style: "chicago-author-date") introduce the pyroomacoustics library which uses the @ISM to synthetically generate @RIR:pl of specified positions in a room which are then convolved (see @fun_conv_reverb) with the microphone signal to create the simulated output.
-The @ISM method recursively mirrors sound sources across each plane of a room model, thereby creating image sources. The amount of sources therefore grows exponentially. Each image source must be traced to the reciever position to assure a valid reflection path. It is then known, based on the distance of the image source, when the reflected sound should arrive at the listening position.
+The @ISM method recursively mirrors sound sources across each plane of a room model, thereby creating image sources. The amount of sources therefore grows exponentially. Each image source must be traced to the reciever position to assure a valid reflection path. It is then known, based on the distance of the image source, when the reflected sound should arrive at the listening position @allenImageMethodEfficiently1979.
 
 Once image source locations and visibilities have been determined the impulse response is defined as
 
@@ -122,6 +122,8 @@ $
 $
 
 , where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
+
+Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflect off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections. It is available in pyroomacoustics as a complement to the @ISM @vorlanderAuralizationFundamentalsAcoustics2008.
 
 // TODO: do we want to explain basically the treble stack with wave based for low freq, ray radiosity and image source?? i think it might be overkill
 
@@ -501,12 +503,11 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
 
 @dae_training_fig shows the training procedure of a @DAE. $C(tilde(bold(x))|bold(x))$ is the corruption process which gives a distribution over corrupted versions $tilde(bold(x))$, given an original input $bold(x)$. The loss function $L$ is then minimized with respect to the parameters of the encoder $f$ and decoder $g$ from training pairs $(bold(x), tilde(bold(x)))$ @goodfellowDeepLearning2016.
 
-#TODO[talk about skip connections]
 #import "@preview/neural-netz:0.3.0": draw-network
 
 #diagram(
   caption: [
-    A U-Net architecture (FCN-8) #TODO[cite] with skip connections. The left side is the downsampling path where the input is processed through a series of convolutional and pooling layers, while the right side is the upsampling path where the feature maps are upsampled and combined with corresponding feature maps from the downsampling path through skip connections.
+    A U-Net architecture (FCN-8) @longFullyConvolutionalNetworks2015 with skip connections. The left side is the downsampling path where the input is processed through a series of convolutional and pooling layers, while the right side is the upsampling path where the feature maps are upsampled and combined with corresponding feature maps from the downsampling path through skip connections.
   ],
   short-caption: [],
   draw-network(
@@ -616,9 +617,10 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
     ),
     show-relu: true,
   ),
-)
+)<unet_fig>
 
 
+Autoencoders can also make use of skip connections between the encoder and decoder layers, first introduced by #cite(<srivastavaHighwayNetworks2015>, form: "prose", style: "chicago-author-date"), as shown in @unet_fig. This allows the decoder to access high-resolution features from the encoder, which can prevent problems like vanishing gradients @heDeepResidualLearning2015 and improve the landscape of the loss function @orhanSkipConnectionsEliminate2018, while keeping the depth and capacity of the network.
 
 
 === Supervised and Self-Supervised Learning<self_supervised_and_supervised_learning>

@@ -205,12 +205,14 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 //   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
 //   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
-#TODO[
-  - rt60s of dataset
-  - measured using schroeder method @schroederNewMethodMeasuring1968
-  - histogram spike to the right not expected
-    - wetness and size are uniformly distributed, so a "maximum" reverberation time generated, is not expected to be more common than any other reverberation time
-]
+The distribution of generated reverberation times ($R T_60$) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly, but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968 which is based on the energy decay curve of the reverberant signal.
+
+// #TODO[
+//   - rt60s of dataset
+//   - measured using schroeder method @schroederNewMethodMeasuring1968
+//   - histogram spike to the right not expected
+//     - wetness and size are uniformly distributed, so a "maximum" reverberation time generated, is not expected to be more common than any other reverberation time
+// ]
 
 #diagram(
   caption: [$R T_60$ distribution of reverberated dataset],
@@ -218,21 +220,23 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
     columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     align: (left, right, right, right, right, right),
 
-    table.header([*Split*], [*Mean*], [*Median*], [*Std*], [*Min*], [*Max*]),
+    table.header([*Split*], [*Mean [s]*], [*Median [s]*], [*Std [s]*], [*Min [s]*], [*Max [s]*]),
 
     [All], [1.480289], [1.185601], [0.787817], [0.578050], [2.805147],
     [Train], [1.481210], [1.185624], [0.788235], [0.578050], [2.805147],
     [Val], [1.475887], [1.188571], [0.784935], [0.578050], [2.805147],
     [Test], [1.480334], [1.180454], [0.788687], [0.578050], [2.805125],
   ),
-)
+)<rt60_distribution_table>
+
+The histrogram in @rt60_distribution_plot shows the distribution of $R T_60$ values across the entire reverberated dataset, with a mean of 1.48 s. Overall it shows a wide variety of reverberation times, while still being in a realistic range. The spike at the right end of the histogram is not expected as wetness and size parameters were uniformly distributed, meaning that a "maximum" reverberation time should not be more common than any other reverberation time. This could be caused by a non-linear relationship between the wetness and size parameters and the resulting $R T_60$ value, which could lead to certain combinations of parameters producing similar $R T_60$ values more frequently. Another possibility is that there is a bug in the code that generates the reverberated signals or in the code that measures the $R T_60$ values, which could lead to incorrect measurements or an overrepresentation of certain $R T_60$ values. Further investigation would be needed to determine the exact cause of this spike in the histogram.
 
 #diagram(
   caption: [
     Distribution of $R T_60$ values across entire reverberated dataset
   ],
   image("../../utils/rt-measure/plots/rt60_distribution_all.png"),
-)
+)<rt60_distribution_plot>
 
 
 

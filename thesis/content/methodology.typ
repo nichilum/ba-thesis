@@ -241,7 +241,7 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 
 For every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
 
-==== Non-Silent Parts
+==== Non-Silent Parts<meth_silent_parts>
 
 #let d_full = 819907050.9525146 / 1000 / 60 / 60
 #let d_non_silent = 539188097 / 1000 / 60 / 60
@@ -252,9 +252,9 @@ A sample is considered silent if its level is below $-40 "dBFS"$. A range of sam
 Using this formula $d_"full" approx #calc.round(d_full, digits: 2)$ hours of training data was examined. The duration of all non-silent ranges was $d_"non_silent" approx #calc.round(d_non_silent, digits: 2)$ hours leaving $d_"silent" approx #calc.round(d_full - d_non_silent, digits: 2)$ hours of silence or about
 
 $ d_"silent"/d_"full" approx #calc.round(100 * (d_full - d_non_silent) / d_full, digits: 2) % $
-. The problem is worsend by the fact that samples shorter than the segment length defined in @segment_length are zero padded to the desired length adding even more silent parts.
+. The problem is worsend by the fact that samples shorter than the segment length defined in @impl_derev_net are zero padded to the desired length adding even more silent parts.
 
-As we don't want our model to focus on generating silence a mask is generated for each sample specifying its silent ranges (cf. @silent_mask_signal). This mask is then used in the loss function to ignore the silent range (see @loss_function_silent_mask).
+As we don't want our model to focus on generating silence a mask is generated for each sample specifying its silent ranges (cf. @silent_mask_signal). This mask is then used in the loss function to ignore the silent range (see @impl_derev_net).
 
 #diagram(
   caption: [Signal with non-silent mask],

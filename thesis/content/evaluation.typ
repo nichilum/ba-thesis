@@ -198,3 +198,6 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
 - did we fuck up here?
 - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
+
+== Dereverberation Network<eval_derev_net>
+#TODO[show overfitting plots of fully generative approach here]

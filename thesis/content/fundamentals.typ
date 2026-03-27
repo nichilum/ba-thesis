@@ -32,18 +32,79 @@ Natural reverberation is classified through the reverberation-time metric ($R T$
 
 ==== Delay Networks<fun_delay_reverb>
 
-This was the first kind of artificial reverberation
+In the 1960s Schroeder first launched the field of digital artificial reverberation by introducing recursive comb filters and allpass filters as means for cheap simulation of multiple echoes.
+The allpass filters of the form
+$
+  y(n) = g x(n) +x(n-N)-g y(n-N)
+$
 
-@smithPhysicalAudioSignal2010
+, where N is any positive integer, achieve dense echoes with a flat amplitude response rate and have been used extensively in artificial reverberation @moorerThisReverberationBusiness1979 @rocchessoCirculantEllipticFeedback1997.
+#import "@preview/diagraph:0.3.6": *
+
+The Schroeder reverberator used in this thesis is called "Freeverb", a public domain program by "Jezar at Dreampoint". It found widespread adoption in the free-software world @smithPhysicalAudioSignal2010.
+
+#diagram(
+  caption: [Freeverb block diagram (left stereo channel). Replicated from #cite(<smithPhysicalAudioSignal2010>, form: "prose", style: "chicago-author-date")],
+  short-caption: [Freeverb block diagram (left stereo channel)],
+  raw-render(
+    ```dot
+      digraph pipeline {
+        rankdir=LR
+        splines=ortho
+
+        node [shape=box fontsize=15]
+        edge [fontsize=8 arrowsize=0.6]
+
+        input  [shape=plain]
+        output [shape=box style=invis margin=0.1]
+
+        plus1 [shape=circle width=0.3 fixedsize=true]
+        plus2 [shape=circle width=0.3 fixedsize=true]
+        plus3 [shape=circle width=0.3 fixedsize=true]
+
+        input -> {LBCF1 LBCF2 LBCF3 LBCF4 LBCF5 LBCF6 LBCF7 LBCF8}
+
+        {LBCF1 LBCF2 LBCF3 LBCF4} -> plus1
+        {LBCF5 LBCF6 LBCF7 LBCF8} -> plus2
+
+        plus1 -> plus3
+        plus2 -> plus3
+
+        plus3 -> AP1 -> AP2 -> AP3 -> AP4 -> output
+      }
+    ```,
+    labels: (
+      LBCF1: [$"LBCF"^(.84, .2, d)_(1557)$],
+      LBCF2: [$"LBCF"^(.84, .2, d)_(1617)$],
+      LBCF3: [$"LBCF"^(.84, .2, d)_(1491)$],
+      LBCF4: [$"LBCF"^(.84, .2, d)_(1422)$],
+      LBCF5: [$"LBCF"^(.84, .2, d)_(1277)$],
+      LBCF6: [$"LBCF"^(.84, .2, d)_(1356)$],
+      LBCF7: [$"LBCF"^(.84, .2, d)_(1188)$],
+      LBCF8: [$"LBCF"^(.84, .2, d)_(1116)$],
+      plus1: [$+$],
+      plus2: [$+$],
+      plus3: [$+$],
+      AP1: [$"AP"^(0.5)_(225)$],
+      AP2: [$"AP"^(0.5)_(556)$],
+      AP3: [$"AP"^(0.5)_(441)$],
+      AP4: [$"AP"^(0.5)_(341)$],
+    ),
+    width: 15cm,
+  ),
+)<freeverb_block_diagram>
+@freeverb_block_diagram denotes the Schroeder-Moorer lowpass-feedback-comb-filters as $"LBCF"^(f, d)_(N)$. They are constructed using a delay line, an elementary functional unit which models acoustic propagation delay, whose output is lowpass-filtered and summed with the delay line's input @smithPhysicalAudioSignal2010.
+
+The transfer function of a lowpass-feedback-comb-filter is defined as
+
+$ "LBCF"^(f, d)_(N) eq.delta (z^(-N))/(1-f dot (1-d)/(1-d dot z^(-1)) dot z^(-N)) $ as introduced by #cite(<moorerThisReverberationBusiness1979>, form: "prose", style: "chicago-author-date").
 
 ==== Convolutional Reverberation<fun_conv_reverb>
 
 #cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") proposed the idea of convolving a signal with a simulated @RIR to achieve natural sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s hardware became powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
 
 The convolution of two signals $f$ and $g$ is defined as @wintnerAnalyticConvolutionsBernoulli1934:
-$
-  (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau
-$
+$ (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau $
 
 Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007.
 

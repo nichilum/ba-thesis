@@ -123,6 +123,8 @@ $
 
 , where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
 
+// TODO: do we want to explain basically the treble stack with wave based for low freq, ray radiosity and image source?? i think it might be overkill
+
 === Sound Quality<fun_sound_quality>
 
 @fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test or processed) audio signal sounds in comparison to its clean counterpart.

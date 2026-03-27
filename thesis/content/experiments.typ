@@ -258,99 +258,73 @@ As a loss function the dereverberation network can either use the perceptual qua
 
 @tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
 
-#TODO[
-  remove batch sizes, as they are different on HPC
-]
 
 #box[
   #set text(size: 7pt)
   #figure(
     table(
-      columns: (1.5fr, 0.8fr, 0.8fr, 0.8fr, 0.9fr, 0.9fr, 1.0fr, 0.8fr, 1.0fr, 0.8fr, 0.8fr, 0.8fr, 0.8fr, 1.4fr, 0.7fr, 0.8fr, 0.8fr, 0.7fr, 0.7fr, 1.2fr, 0.8fr, 1.0fr, 0.9fr, 0.8fr, 0.9fr, 1.4fr),
+      columns: (3.3fr, 0.9fr, 1.9fr, 0.8fr, 0.8fr, 0.8fr, 0.8fr, 1.4fr, 0.7fr, 0.8fr, 0.7fr, 0.7fr, 1.2fr, 1fr, 0.8fr, 3.8fr),
       align: left + top,
 
       table.header(
         [*Run ID*],
-        [*bs*],
-        [*agb*],
-        [*ebs*],
-        [*epochs*],
         [*lr*],
         [*loss*],
-        [*gc*],
         [*seg*],
-        [*seg_s*],
         [*sr*],
         [*N*],
         [*win*],
         [*tcn*],
         [*k*],
         [*drop*],
-        [*act*],
         [*X*],
         [*R*],
         [*dil*],
         [*causal*],
-        [*norm*],
-        [*lookahead*],
         [*skip*],
-        [*variant*],
         [*Notes*],
       ),
 
-      [derev_1],
-      [16], [1], [16], [1], [1e-3], [perceptual], [true], [176400], [4.0], [44100], [64], [-], [[64x5]], [4], [0.1], [relu], [0], [0], [-], [true], [weight_norm], [0], [false], [-],
+      [derev_1], [1e-3], [perceptual],  [4.0], [44100], [64], [-], [[64x5]], [4], [0.1],  [0], [0], [-], [true],  [false], 
       [Initial masking baseline],
 
-      [derev_1_increased],
-      [8], [4], [32], [100], [1e-4], [perceptual], [true], [176400], [4.0], [44100], [265], [-], [-], [3], [0.0], [relu], [8], [3], [-], [false], [layer_norm], [0], [true], [-],
+      [derev_1_increased], [1e-4], [perceptual],   [4.0], [44100], [265], [-], [-], [3], [0.0],  [8], [3], [-], [false], [true],
       [Higher-capacity variant],
 
-      [derev_tcn_v1],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v1], [1e-4], [perceptual],  [2.0], [44100], [256], [-], [[128x8]], [3], [0.1],  [8], [4], [1..128], [false],   [true],
       [First tuned TCN],
 
-      [derev_mha_v1],
-      [16], [4], [64], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [-], [mha],
+      [derev_mha_v1], [1e-4], [perceptual],   [2.0], [44100], [-], [-], [-], [-], [-], [-], [-], [-], [-],  [-],
       [Attention variant],
 
-      [derev_tcn_v2_AdamW],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v2_AdamW],  [1e-4], [perceptual],  [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [8], [4], [1..128], [false], [true], 
       [Optimizer study run],
 
-      [derev_tcn_v2_MSE],
-      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v2_MSE],  [1e-4], [mse],   [2.0], [44100], [256], [-], [[128x8]], [3], [0.1],  [8], [4], [1..128], [false],  [true],
       [Loss ablation],
 
-      [derev_tcn_v2_Small],
-      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x6]], [3], [0.1], [relu], [6], [4], [1..32], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v2_Small],  [1e-4], [mse],  [2.0], [44100], [256], [-], [[128x6]], [3], [0.1],  [6], [4], [1..32], [false],  [true], 
       [Smaller TCN],
 
-      [derev_tcn_v2_Dropout],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.2], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v2_Dropout], [1e-4], [perceptual],  [2.0], [44100], [256], [-], [[128x8]], [3], [0.2],[8], [4], [1..128], [false],[true],
       [Dropout ablation],
 
-      [derev_tcn_v3],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v3], [1e-4], [perceptual], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1],  [8], [4], [1..128], [false], [true], 
       [v3 baseline],
 
-      [derev_tcn_v3_MSE],
-      [4], [4], [16], [100], [1e-4], [mse], [true], [88200], [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [relu], [8], [4], [1..128], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v3_MSE],  [1e-4], [mse],  [2.0], [44100], [256], [-], [[128x8]], [3], [0.1], [8], [4], [1..128], [false],  [true], 
       [v3 with MSE],
 
-      [derev_convtasnet],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [88200], [2.0], [44100], [512], [2ms], [[512x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [derev_convtasnet], [1e-4], [perceptual],   [2.0], [44100], [512], [2ms], [[512x24]], [3], [0.0], [8], [3], [1..128x3], [false],  [true], 
       [Conv-TasNet-style setting],
 
-      [derev_tcn_v4_SISNR],
-      [4], [4], [16], [100], [1e-4], [sisnr], [true], [176400], [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v4_SISNR], [1e-4], [sisnr],  [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [8], [3], [1..128x3], [false], [true], 
       [v4 with SI-SNR loss],
 
-      [derev_tcn_v4_percep],
-      [4], [4], [16], [100], [1e-4], [perceptual], [true], [176400], [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [relu], [8], [3], [1..128x3], [false], [layer_norm], [0], [true], [-],
+      [derev_tcn_v4_percep], [1e-4], [perceptual],  [4.0], [44100], [512], [2ms], [[179x24]], [3], [0.0], [8], [3], [1..128x3], [false], [true],
       [v4 with perceptual loss],
     ),
-    caption: [All dereverberation hyperparameter configurations. Abbreviations: bs=batch size, agb=accumulate grad batches, ebs=effective batch size, gc=gradient checkpointing, seg=segment length (samples), seg_s=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats. Runtime batch sizes on HPC may differ due to memory-constrained adjustments.],
+    caption: [All dereverberation hyperparameter configurations. Abbreviations: lr=learning rate, seg=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats. Runtime batch sizes on HPC may differ due to memory-constrained adjustments.],
   )<tab_derev_hparams>
 ]
 

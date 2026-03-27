@@ -503,12 +503,11 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
 
 @dae_training_fig shows the training procedure of a @DAE. $C(tilde(bold(x))|bold(x))$ is the corruption process which gives a distribution over corrupted versions $tilde(bold(x))$, given an original input $bold(x)$. The loss function $L$ is then minimized with respect to the parameters of the encoder $f$ and decoder $g$ from training pairs $(bold(x), tilde(bold(x)))$ @goodfellowDeepLearning2016.
 
-#TODO[talk about skip connections]
 #import "@preview/neural-netz:0.3.0": draw-network
 
 #diagram(
   caption: [
-    A U-Net architecture (FCN-8) #TODO[cite] with skip connections. The left side is the downsampling path where the input is processed through a series of convolutional and pooling layers, while the right side is the upsampling path where the feature maps are upsampled and combined with corresponding feature maps from the downsampling path through skip connections.
+    A U-Net architecture (FCN-8) @longFullyConvolutionalNetworks2015 with skip connections. The left side is the downsampling path where the input is processed through a series of convolutional and pooling layers, while the right side is the upsampling path where the feature maps are upsampled and combined with corresponding feature maps from the downsampling path through skip connections.
   ],
   short-caption: [],
   draw-network(
@@ -618,9 +617,10 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
     ),
     show-relu: true,
   ),
-)
+)<unet_fig>
 
 
+Autoencoders can also make use of skip connections between the encoder and decoder layers, first introduced by #cite(<srivastavaHighwayNetworks2015>, form: "prose", style: "chicago-author-date"), as shown in @unet_fig. This allows the decoder to access high-resolution features from the encoder, which can prevent problems like vanishing gradients @heDeepResidualLearning2015 and improve the landscape of the loss function @orhanSkipConnectionsEliminate2018, while keeping the depth and capacity of the network.
 
 
 === Supervised and Self-Supervised Learning<self_supervised_and_supervised_learning>

@@ -263,6 +263,7 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
 @tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
 
+#TODO[document sr, dil, skip, loss]
 
 #box[
   #set text(size: 7pt)

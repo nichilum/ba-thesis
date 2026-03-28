@@ -261,7 +261,47 @@ $ "loss" = 1.0 - "quality" + alpha dot "MSE"_"loss" $
 
 where quality is the predicted quality score described in @meth_percep_quality_net, $alpha$ is some factor between $0$ and $1$ and $"MSE"_"loss"$ is the @MSE between $s$ and $hat(s)$ (cf. @fun_mae_mse).
 
-@tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
+//@tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
+
+
+#diagram(caption: [Architecture of the dereverberation network (TCN v4)], table(
+  columns: (1fr, 1fr, 1fr),
+  align: center,
+  stroke: 0.5pt,
+
+  table.cell(colspan: 3)[*Dereverberation Network (TCN v4)*],
+
+  table.cell(colspan: 3)[
+    Waveform input \
+    sr=44100, segment length = 2-4 s
+  ],
+
+  [*Encoder*], [*Separator (TCN)*], [*Decoder*],
+
+  [1-D Conv encoder \ $N=512$, win=$2$ ms],
+  [24 residual TCN blocks \ channels=$179$, kernel size=$3$],
+  [1-D transposed Conv decoder \ waveform reconstruction],
+
+  [$E = bold(W)_"enc" * bold(x)$],
+  [Dilations: $[1,2,4,8,16,32,64,128] times 3$ \ $X=8$, $R=3$],
+  [$tilde(bold(x))$],
+
+  [Masking path],
+  [$M = sigma("TCN"(E))$],
+  [$hat(E) = E dot.o M$],
+
+  table.cell(colspan: 3)[
+    Non-causal, layer_norm, ReLU, dropout=$0.0$, lookahead=$0$, skip connections enabled
+  ],
+))<arch_impl_derev_tcn_v4>
+
+//@arch_impl_derev_tcn_v4 shows the derev_tcn_v4 architecture used for the final masking-based dereverberation experiments.
+
+
+
+As shown in @arch_impl_derev_tcn_v4 our dereverberation network follows the core Conv-TasNet principle of encoder--masking--decoder processing, but is adapted to a different task and operating regime than the original model by #cite(<luoConvTasNetSurpassingIdeal2019>, form: "prose", style: "chicago-author-date"). In contrast to the speech-separation setting of Conv-TasNet (multi-speaker mixtures at 8 kHz with permutation-invariant @SI-SNR optimization), our configuration targets single-source dereverberation on paired wet/dry signals at 44.1 kHz. The structural backbone remains comparable, including the dilation pattern with $X=8$, $R=3$ and kernel size $3$, while key capacity choices are shifted for broadband dereverberation. The encoder width is kept at $N=512$ with a 2 ms analysis window, but the TCN channel width is reduced to $179$ as shown in @tab_derev_hparams (derev_tcn_v4). In addition, optimization is not restricted to @SI-SNR, but evaluated with both @SI-SNR and perceptual/objective quality-based losses, reflecting the broader quality criteria required for diverse audio content.
+
+#TODO[how to say "179 channel width was chosen at random to match conv-tasnet 5.1 million parameters"?]
 
 #box[
   #set text(size: 7pt)
@@ -534,40 +574,6 @@ where quality is the predicted quality score described in @meth_percep_quality_n
   )<tab_derev_hparams>
 ]
 
-#diagram(caption: [Architecture of the dereverberation network (TCN v4)], table(
-  columns: (1fr, 1fr, 1fr),
-  align: center,
-  stroke: 0.5pt,
-
-  table.cell(colspan: 3)[*Dereverberation Network (TCN v4)*],
-
-  table.cell(colspan: 3)[
-    Waveform input \
-    sr=44100, segment length = 2-4 s
-  ],
-
-  [*Encoder*], [*Separator (TCN)*], [*Decoder*],
-
-  [1-D Conv encoder \ $N=512$, win=$2$ ms],
-  [24 residual TCN blocks \ channels=$179$, kernel size=$3$],
-  [1-D transposed Conv decoder \ waveform reconstruction],
-
-  [$E = bold(W)_"enc" * bold(x)$],
-  [Dilations: $[1,2,4,8,16,32,64,128] times 3$ \ $X=8$, $R=3$],
-  [$tilde(bold(x))$],
-
-  [Masking path],
-  [$M = sigma("TCN"(E))$],
-  [$hat(E) = E dot.o M$],
-
-  table.cell(colspan: 3)[
-    Non-causal, layer_norm, ReLU, dropout=$0.0$, lookahead=$0$, skip connections enabled
-  ],
-))<arch_impl_derev_tcn_v4>
-
-@arch_impl_derev_tcn_v4 shows the derev_tcn_v4 architecture used for the final masking-based dereverberation experiments.
-
-#TODO[point out differences between our and convtasnet (parameters, ...)]
 
 #TODO[what does this mean?]
 *inverse estimation in encoder space*

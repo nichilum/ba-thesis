@@ -263,11 +263,9 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
 @tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
 
-#TODO[document sr, dil, skip, loss]
-
 #box[
   #set text(size: 7pt)
-  #figure(
+  #diagram(
     table(
       columns: (
         3.3fr,
@@ -529,7 +527,10 @@ where quality is the predicted quality score described in @meth_percep_quality_n
       [true],
       [v4 with perceptual loss],
     ),
-    caption: [All dereverberation hyperparameter configurations. Abbreviations: lr=learning rate, seg=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats. Runtime batch sizes on HPC may differ due to memory-constrained adjustments.],
+    caption: [All dereverberation hyperparameter configurations. Abbreviations: lr=learning rate, seg=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats, dil=dilation pattern, sr=sample rate skip=skip connections enabled or not, loss=loss function used for training.],
+    short-caption: [
+      All dereverberation hyperparameter configurations.
+    ]
   )<tab_derev_hparams>
 ]
 

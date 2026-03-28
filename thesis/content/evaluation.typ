@@ -5,7 +5,9 @@
 
 == Analyzation of Applicable Loss Functions
 
-- discussion: is the size parameter a good metric to evaluate dereverberation. akin to making the room smaller, wetness "makes the oroginal signal louder"/more absorption in the room -> explain with mental model of room and mic
+The analyzation of applicable loss functions carried out in @analyze_loss_functions bases itself on the assumption that the size and wetness parameters which were used to parametrize the reverb are good indicators of dereverberation performance. It is reasonable to assume that wetness is a good indicator as it is used as a factor to multiple the wet signal in the freeverb implementation. Therefore it has no impact on the reverb tail itself, only making it quieter which is what we expect of our model. The size parameter behaves differently. It indirectly adjusts the intensity of each delayed signal of the comb filters. It is unclear how well a reduction in room size corresponds with reducing reverberation.
+
+@plot_metrics_against_size_and_wet shows every metric performs worse against the size parameter. This might not be the metrics fault, consequently all conclusions based on the size plots alone require further investigation.
 
 == Perceptual Quality Net<eval_percep_quality_net>
 #jojo
@@ -109,11 +111,7 @@ These findings motivated us to proceed with the CNN14 based implementation as de
 
 === CNN14<eval_percep_qual_net_cnn14>
 
-#diagram(
-  caption: [Quality score prediction analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
-  short-caption: [Quality score prediction analyzed over test dataset],
-  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
-)<plot_nn_qual_against_size_and_wet>
+
 
 - @ReLU not entirely differentiable
 

@@ -299,9 +299,7 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
 
 
-As shown in @arch_impl_derev_tcn_v4 our dereverberation network follows the core Conv-TasNet principle of encoder--masking--decoder processing, but is adapted to a different task and operating regime than the original model by #cite(<luoConvTasNetSurpassingIdeal2019>, form: "prose", style: "chicago-author-date"). In contrast to the speech-separation setting of Conv-TasNet (multi-speaker mixtures at 8 kHz with permutation-invariant @SI-SNR optimization), our configuration targets single-source dereverberation on paired wet/dry signals at 44.1 kHz. The structural backbone remains comparable, including the dilation pattern with $X=8$, $R=3$ and kernel size $3$, while key capacity choices are shifted for broadband dereverberation. The encoder width is kept at $N=512$ with a 2 ms analysis window, but the TCN channel width is reduced to $179$ as shown in @tab_derev_hparams (derev_tcn_v4). In addition, optimization is not restricted to @SI-SNR, but evaluated with both @SI-SNR and perceptual/objective quality-based losses, reflecting the broader quality criteria required for diverse audio content.
-
-#TODO[how to say "179 channel width was chosen at random to match conv-tasnet 5.1 million parameters"?]
+As shown in @arch_impl_derev_tcn_v4 our dereverberation network follows the core Conv-TasNet principle of encoder--masking--decoder processing, but is adapted to a different task and operating regime than the original model by #cite(<luoConvTasNetSurpassingIdeal2019>, form: "prose", style: "chicago-author-date"). In contrast to the speech-separation setting of Conv-TasNet (multi-speaker mixtures at 8 kHz with permutation-invariant @SI-SNR optimization), our configuration targets single-source dereverberation on paired wet/dry signals at 44.1 kHz. The structural backbone remains comparable, including the dilation pattern with $X=8$, $R=3$ and kernel size $3$, while key capacity choices are shifted for broadband dereverberation. The encoder width is kept at $N=512$ with a 2 ms analysis window, but the TCN channel width is reduced to $179$, as shown in @tab_derev_hparams (derev_tcn_v4), to align with conv-tasnet 5.1 million parameter count. In addition, optimization is not restricted to @SI-SNR, but evaluated with both @SI-SNR and perceptual/objective quality-based losses, reflecting the broader quality criteria required for diverse audio content.
 
 #box[
   #set text(size: 7pt)
@@ -570,7 +568,7 @@ As shown in @arch_impl_derev_tcn_v4 our dereverberation network follows the core
     caption: [All dereverberation hyperparameter configurations. Abbreviations: lr=learning rate, seg=segment length (seconds), N=encoder channels, k=kernel size, drop=dropout, X=num blocks per repeat, R=num repeats, dil=dilation pattern, sr=sample rate skip=skip connections enabled or not, loss=loss function used for training.],
     short-caption: [
       All dereverberation hyperparameter configurations.
-    ]
+    ],
   )<tab_derev_hparams>
 ]
 

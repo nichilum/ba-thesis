@@ -182,22 +182,20 @@ The iterative reverse diffusion inference requires many sequential neural networ
 #jojo
 
 All results presented in the following section are based on the dataset as described in @data_collection.
-Only results regarding prediction performance of the perceptual quality network are discussed. Results regarding use as a loss function are demonstrated in @results_derev_net.
-Prediction performance was analyzed using the @MAE, @MSE and correlation (cf. @fun_quality_metrics) average over the entire testing subset (cf. @subset_comp).
+Results regarding prediction performance as well as use as a loss function are discussed. Results regarding the impact of the perceptual quality network on the dereverberation network are demonstrated in @results_derev_net.
+Prediction performance was analyzed using the @MAE, @MSE and correlation (cf. @fun_quality_metrics). The average over the entire testing subset (cf. @subset_comp) is depicted in @results_percep_table.
 As discussed in @eval_percep_qual_net_init all perceptual quality network experiments were conducted using the CNN14 based implementation. Therefore no results of the simple @CNN, as detailed in @impl_percep_qual_net_init, are shown going forward.
 
+#let quality_net_metrics_table(csv_path) = {
+  let data = csv(csv_path)
 
-
-#let percep_data_195 = csv("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.csv")
-
-#diagram(
   table(
     columns: 4,
     align: (left, center, center, center),
 
     table.header([*Type*], [*MSE*], [*MAE*], [*Correlation*]),
 
-    ..percep_data_195
+    ..data
       .slice(1)
       .map(row => (
         row.at(0),
@@ -206,32 +204,63 @@ As discussed in @eval_percep_qual_net_init all perceptual quality network experi
         [#calc.round(float(row.at(3)), digits: 6)],
       ))
       .flatten(),
-  ),
+  )
+}
+
+#diagram(
+  quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all perceptual quality metrics at epoch 195],
 )<results_percep_table>
+
+To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size and wetness values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
 
 #diagram(
   caption: [@KDE plots of predicted versus ground truth values of all perceptual quality metrics at epoch 195, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
-)
+)<results_percep_pred_vs_truth>
+
+#diagram(
+  caption: [Quality score prediction analyzed over 16421 datapoints from testing subset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
+  short-caption: [Quality score prediction analyzed over testing subset],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
+)<plot_nn_qual_against_size_and_wet>
 
 == Objective Quality Network<results_objective_quality_net>
 #jojo
-update score:
+
+As described in @impl_objective_quality_network the objective quality network underwent a two stage refinement process. Retraining for 61 epochs using the updated quality score resulted in the metric averages as seen in @results_obj_score_table and the prediction versus ground truth plots as seen in @results_obj_score_pred_vs_truth.
+
+#diagram(
+  quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.csv"),
+  caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score at epoch 61],
+)<results_obj_score_table>
+
 #diagram(
   caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score at epoch 61, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
-)
-update score and update loss:
+)<results_obj_score_pred_vs_truth>
+
+Retraining for 166 epochs using the update quality score as well as the update loss function calculation metrics averages as seen in @results_obj_score_loss_table and prediction versus ground truth plots as seen in @results_obj_score_loss_pred_vs_truth were achieved.
+
+#diagram(
+  quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.csv"),
+  caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score and loss at epoch 166],
+)<results_obj_score_loss_table>
+
 #diagram(
   caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score and loss at epoch 166, with the diagonal indicating perfect agreement.],
   image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
-)
+)<results_obj_score_loss_pred_vs_truth>
 
-// this needs more thoughts
-TOTAL NUMBER OF SAMPLES: 2896664400
-Total length of audio coded in 44.1 kHz is 18.2455555556 hours
-TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
+It must be noted that with the update loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
+
+Analyzing the inference speed of the objective quality network it was found that for a total length of 18.2 hours of audio data sampled at 44.1 kHz the total length of inference time amounted to about 7.74 seconds. As the objective quality network shares the same architecture with the perceptual quality network this result can be assumed similar for all of the above tested configurations.
+
+#TODO[add the plot against size and wetness and size times wetness]
+
+// TOTAL NUMBER OF SAMPLES: 2896664400
+// Total length of audio coded in 44.1 kHz is 18.2455555556 hours
+// TOTAL LENGTH OF INFERENCE TIME: 7.738234307016683
 
 == Dereverberation Network<results_derev_net>
 #leo

@@ -263,7 +263,7 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
 //@tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
 
-
+#TODO[legend for table? N,win,X,R,sr?]
 #diagram(caption: [Architecture of the dereverberation network (TCN v4)], table(
   columns: (1fr, 1fr, 1fr),
   align: center,
@@ -273,7 +273,7 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
   table.cell(colspan: 3)[
     Waveform input \
-    sr=44100, segment length = 2-4 s
+    sr=44100, segment length = 4 s
   ],
 
   [*Encoder*], [*Separator (TCN)*], [*Decoder*],

@@ -147,7 +147,7 @@ This synthetic labeling approach is similar in concept to self-supervised traini
 
 To provide the model with reverberant audio signals two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
 
-The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2018:
+The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2018 (see @fun_reverberation):
 - convolutional
 - delay networks
 - computational acoustics

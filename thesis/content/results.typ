@@ -212,7 +212,7 @@ As discussed in @eval_percep_qual_net_init all perceptual quality network experi
   caption: [@MAE, @MSE and correlation of all perceptual quality metrics at epoch 195],
 )<results_percep_table>
 
-To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size and wetness values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
+To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size, wetness and $"size" dot "wetness"$ values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
 
 #diagram(
   caption: [@KDE plots of predicted versus ground truth values of all perceptual quality metrics at epoch 195, with the diagonal indicating perfect agreement.],
@@ -254,9 +254,11 @@ Retraining for 166 epochs using the update quality score as well as the update l
 
 It must be noted that with the update loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
 
+Plotting the objective quality network as seen in @results_obj_score_loss_table against the corresponding size, wetness and $"size" dot "wetness"$ values resulted in the plot seen in #TODO[add the plot against size and wetness and size times wetness].
+
 Analyzing the inference speed of the objective quality network it was found that for a total length of 18.2 hours of audio data sampled at 44.1 kHz the total length of inference time amounted to about 7.74 seconds. As the objective quality network shares the same architecture with the perceptual quality network this result can be assumed similar for all of the above tested configurations.
 
-#TODO[add the plot against size and wetness and size times wetness]
+
 
 // TOTAL NUMBER OF SAMPLES: 2896664400
 // Total length of audio coded in 44.1 kHz is 18.2455555556 hours

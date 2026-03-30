@@ -167,8 +167,8 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
   },
 )<conv_tasnet_storm_comparison>
 
-Across all metrics both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistens, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model.
-A recurring informal observation from listening tests and viewing spectograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison, @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
+Across all metrics both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistent, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model, meaning Conv-TasNet's performance is more inconsistent.
+A recurring informal observation from listening tests and viewing spectograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison and @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
 
 #diagram(
   caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
@@ -184,14 +184,17 @@ A recurring informal observation from listening tests and viewing spectograms is
   ),
 )<boxplot_comparison>
 
-#TODO[Think about outliers in boxplots (only show some?)]
+When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$). @SI-SNR values are also close ($-31.39$ vs. $-31.26$) but with a notably higher standard deviation for both models, also indicating that performance is more inconsistent across samples.
 
-When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$).
 
-#TODO[talk about SI-SNR, only metric left undiscussed]
+The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s ($0.12$ s per sample), while StoRM requires $6$ h $14$ m $51$ s ($10.98$ s per sample) --- approximately $91 times$ the inference time. The samples were each 10 s long, meaning...
 
-The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s, while StoRM requires $6$ h $14$ m $51$ s --- approximately $88 times$ the inference time.
-#TODO[time per sample from @conv_tasnet_storm_comparison, say how long each sample is]
+#TODO[
+  - storm "almost" realtime, but not quite, and on very powerful hardware
+  - convtasnet faster than realtime
+]
+
+Overall, the differences between the two models are minimal and likely not perceptually significant, with both struggling to generalise to non-speech content.
 
 == DISCUSS UPSAMPLING FOR TRAINING AND REVERBERATING AT LOWER (USING PLOTS)<disc_upsampling>
 
@@ -202,10 +205,14 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 - AudioSet and FSD50K are not "dry" datasets. they contain samples that are recorded under echoic conditions.
 - The model is not shown fully dereverberated sample pairs during training
 
-== SI-SNR Calculations
+== SI-SNR Calculations<eval_si_snr_calculations>
 - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
 - did we fuck up here?
 - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
+
+- explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+- 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+
 
 == Dereverberation Network<eval_derev_net>
 #TODO[show overfitting plots of fully generative approach here]

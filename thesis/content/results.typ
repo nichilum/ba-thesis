@@ -49,9 +49,7 @@ As explained in @impl_conv_tasnet, we trained a Conv-TasNet model from scratch o
 
 Three loss functions were evaluated in total. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at an unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). This could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
 
-Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs (cf. @conv_tasnet_loss_comparison).
-
-#TODO[we do not know the reason for this, might be a user error]
+Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs (cf. @conv_tasnet_loss_comparison). This is further discussed in @eval_si_snr_calculations.
 
 #diagram(
   caption: [
@@ -73,17 +71,7 @@ The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as w
 
 On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
 
-Detailed results of the evaluation done on the @MSE\-trained model can be seen in @conv_tasnet_metrics. A positive @SI-SNR and @SI-SDR indicate dereverberation, while the @PESQ score still indicates a _"poor"_ performance (cf. @fun_pesq)
-
-#TODO[write about @conv_tasnet_metrics, and how it may show signs of dereverberation (or it doesnt, but its purely audible)]
-
-#TODO[
-
-  explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
-
-  15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
-
-]
+Detailed results of the evaluation done on the @MSE\-trained model can be seen in @conv_tasnet_metrics. A positive @SI-SNR indicates dereverberation, while the @PESQ score still indicates a _"poor"_ performance (cf. @fun_pesq)
 
 #diagram(
   caption: [
@@ -101,7 +89,7 @@ On music and non-speech content, however, the model introduces noticeable timbra
     align: (left, center, center, center, center),
     table.header([*Metric*], [*Mean*], [*Std*], [*Min*], [*Max*]),
     [SI-SNR], [10.036], [3.856], [-6.669], [19.226],
-    [SI-SDR], [10.003], [3.872], [-10.015], [19.220],
+    // [SI-SDR], [10.003], [3.872], [-10.015], [19.220],
     [PESQ], [1.726], [0.304], [1.117], [3.015],
     [WV-MOS], [1.695], [0.441], [1.229], [3.350],
   ),

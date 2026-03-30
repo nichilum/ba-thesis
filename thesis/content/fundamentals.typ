@@ -509,7 +509,9 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
   caption: [
     A U-Net architecture (FCN-8) @longFullyConvolutionalNetworks2015 with skip connections. The left side is the downsampling path where the input is processed through a series of convolutional and pooling layers, while the right side is the upsampling path where the feature maps are upsampled and combined with corresponding feature maps from the downsampling path through skip connections.
   ],
-  short-caption: [],
+  short-caption: [
+    U-Net architecture with skip connections
+  ],
   draw-network(
     scale: 43%,
     (

@@ -263,8 +263,10 @@ where quality is the predicted quality score described in @meth_percep_quality_n
 
 //@tab_derev_hparams summarizes all dereverberation hyperparameter configurations. //Batch-related values are reported as configuration values.
 
-#TODO[legend for table? N,win,X,R,sr?]
-#diagram(caption: [Architecture of the dereverberation network (TCN v4)], table(
+#diagram(
+  caption: [Architecture of the dereverberation network (N=encoder channels, X=num blocks per repeat, R=num repeats)], 
+  short-caption: [Architecture of the dereverberation network], 
+  table(
   columns: (1fr, 1fr, 1fr),
   align: center,
   stroke: 0.5pt,
@@ -571,15 +573,3 @@ As shown in @arch_impl_derev_tcn_v4 our dereverberation network follows the core
     ],
   )<tab_derev_hparams>
 ]
-
-
-#TODO[what does this mean?]
-*inverse estimation in encoder space*
-- frequency
-- time (ConvTasNet)
-  - use conv tasnet mask
-  - test for diverse audio signals
-  - compare mse to perceptual loss
-
-
-

@@ -21,7 +21,7 @@ def main():
     quality_net = PerceptualQualityNet(sample_rate=sample_rate)
     quality_net.load_state_dict(
         torch.load(
-            "checkpoints/epoch_195-quality-perceptual_net_best.pth",
+            "checkpoints/epoch_166-quality-perceptual_net_best.pth",
             map_location=device,
             weights_only=True,
         )

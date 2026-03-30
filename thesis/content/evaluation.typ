@@ -137,6 +137,7 @@ Multiple shortcomings of the general approach to the training and using as a los
     - im grunde alles suppi, mal analyze loss function script abwarten
     - sonst same same wie schon mit @eval_percep_qual_net_cnn14, nur dass die schwierigkeiten mit dem ODG score wegfallen
   - eval: es wäre interessant gewesen mal nur auf wetness zu trainieren
+  - inference speed shows it is "well" usable as loss function
 ]
 
 == Comparison of Conv-TasNet and StoRM for diverse signals

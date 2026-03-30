@@ -4,7 +4,7 @@
 #import "@preview/diagraph:0.3.6": *
 #import "/thesis/utils/diagram.typ": diagram
 
-= Methodology
+= Methodology<methodology>
 
 == Dataset
 

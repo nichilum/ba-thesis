@@ -3,6 +3,8 @@
 #import "/thesis/utils/author.typ": *
 = Evaluation
 
+This chapter discusses the results shown @results in regards to the problem statement found in @intro_problem.  Shortcomings of our approach introduced in @methodology are debated and further research questions are asked.
+
 == Analyzation of Applicable Loss Functions<eval_analyze_loss_functions>
 
 The analyzation of applicable loss functions carried out in @analyze_loss_functions bases itself on the assumption that the size and wetness parameters which were used to parametrize the reverb are good indicators of dereverberation performance. It is reasonable to assume that wetness is a good indicator as it is used as a factor to multiple the wet signal in the freeverb implementation. Therefore it has no impact on the reverb tail itself, only making it quieter which is what we expect of our model. The size parameter behaves differently. It indirectly adjusts the intensity of each delayed signal of the comb filters. It is unclear how well a reduction in room size corresponds with reducing reverberation.
@@ -111,30 +113,20 @@ These findings motivated us to proceed with the CNN14 based implementation as de
 
 === CNN14<eval_percep_qual_net_cnn14>
 
-The @MSE, @MAE and correlation averages shown in @results_percep_table indicate very good prediction performance of every prediction head on unseen data. Compared with Quality-Net (see @related_quality_net) we achieved an @ODG @MSE value of 0.006775, where the @ODG was normalized, while Quality-Net showed a @PESQ @MSE of 0.1266, with @PESQ values ranging from 0 and 4. Normalizing Quality-Net's @MSE gives $0.03165$ which is still notably worse than ours.
+The @MSE, @MAE and correlation averages shown in @results_percep_table indicate very good prediction performance of every prediction head on unseen data. Compared with Quality-Net (see @related_quality_net) we achieved an @ODG @MSE value of 0.006775, where the @ODG was normalized, while Quality-Net showed a @PESQ @MSE of 0.1266, with @PESQ values ranging from 0 to 4. Dividing Quality-Net's @MSE by 4 results in a normalized @MSE of $0.03165$ which is still notably worse than ours.
 
 @results_percep_pred_vs_truth shows that the quality score as proposed in @meth_percep_quality_net is very dependent on the @ODG. This turned out to be a problem as @ODG values were unexpectedly overrepresented in the 0 to 0.2 range, meaning that most signals were classified as imperceptibly imparied. In theory this shouldn't impact the use of the network as a loss function but some signals were graded significanty worse (in the 0.8 to 1 range) making gradient descent based on the @ODG unpredictable. Wetness and size predictions behaved as expected with some skewing in the upper range (0.9 to 1). This problem can be observed in both plots although stronger impact is noticed in the size predictions. This observation lead to the stronger weighting of the wetness prediction in @meth_obj_quality_net.
 
 @plot_nn_qual_against_size_and_wet plots the quality score against size, wetness and $"size" dot "wetness"$. This visualization has the same shortcomings as the ones in @analyze_loss_functions as explained in @eval_analyze_loss_functions. It is shown that compared with the @ODG the perceptual quality network has improved reverberation prediction performance. Unfortunately it cannot compete with the @SI-SNR (cf. @plot_metrics_against_size_and_wet).
 
-@meth_silent_parts noted that about one third of our dataset was silence. It was therefore imporant to investigate whether model performance suffers from prolonged silence in an audio signal. To evaluate a single audio file was loaded and quality, size and wetness predictions were made. Iteratively parts of the audio signal were replaced with zeros. @quality_net_perf_silence shows the predicted values with increasing zero percentage. Remarkably the model's prediction kept steady up to about $90 %$ zero percentage. It was therefore concluded that using the perceptual quality network as a loss function on signals with silent parts should not pose an issue.
+@meth_silent_parts noted that about one third of our dataset was silence. It was therefore imporant to investigate whether model performance suffers from prolonged silence in an audio signal. To evaluate this a single audio file was loaded and quality, size and wetness predictions were made. Iteratively parts of the audio signal were replaced with zeros. @quality_net_perf_silence shows the predicted values with increasing zero percentage. Remarkably the model's prediction kept steady up to about $90 %$ zero percentage. It was therefore concluded that using the perceptual quality network as a loss function on signals with silent parts should not pose an issue.
 
 #diagram(
   caption: [Prediction quality of perceptual net from signal with increasing zero percentage],
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )<quality_net_perf_silence>
 
-#TODO[
-  Further Research:
-  - das der datensatz hall beinhaltet ist konzeptuell vlt schlimmer fur das quality net
-  - dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
-    - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
-      - halt ohne make data ausguführen und alles voll zu müllen
-
-  - investigate @ReLU: not entirely differentiable
-  - model auf dem gleichen datensatz trainiert wie derev net auch
-]
-
+Multiple shortcomings of the general approach to the training and using as a loss function of the perceptual quality network were identfied. As described in @data_collection our dataset is in parts composed of the AudioSet and FSD50K. The samples found in these datasets are not necessarily recorded in anechoic conditions, meaning that it is possible that an already reverberated file was reverberated with a wetness of 0 and therefore mislabled. As the FSD50K dataset is taken from a sample sharing cite it is less likely this problem has occurred there. A related issue concerns the training concept, as we used the same dataset for both the training of the perceptual quality network and the dereverberation network. While both used the same subsets (cf. @subset_comp) it is possible that the perceptual quality network wrongly overfitted on some samples. Further research should also investigate the use of activation function @ReLU as differentiability is not guaranteed (cf. @meth_percep_quality_net).
 
 == Objective Quality Net<eval_objective_quality_net>
 
@@ -217,3 +209,8 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 
 == Dereverberation Network<eval_derev_net>
 #TODO[show overfitting plots of fully generative approach here]
+#TODO[
+  - dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
+    - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
+      - halt ohne make data ausguführen und alles voll zu müllen
+]

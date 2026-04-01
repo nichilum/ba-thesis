@@ -222,3 +222,14 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
     - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
       - halt ohne make data ausguführen und alles voll zu müllen
 ]
+
+- one can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
+
+
+- gating effect
+- adds highs in some examples
+  - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
+  - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
+  - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
+- if the input signal is not so reverberant, the output only gets dereverberated very little
+- quality of dereverberation is highly dependent on the quality of the input signal

@@ -260,7 +260,48 @@ Analyzing the inference speed of the objective quality network it was found that
 
 == Dereverberation Network<results_derev_net>
 #leo
-#TODO[which versions do the want to show the results of? only the best one (then compare si-snr with perceptual?)]
+
+As described in @impl_derev_net the dereverberation network was trained using multiple loss functions. Namely @SI-SNR as well as the perceptual quality network (@meth_percep_quality_net) and objective quality network (@meth_obj_quality_net) were tested.
+
+First a baseline using the @SI-SNR was established. Training was done over 62 epochs with early stopping at epoch 55 resulting in a validation loss of 16.6097 dB (cf. @derev_tcn_v4_loss_SISNR).
+@tab_derev_sisnr_results is showing performance metrics for model outputs and is further discussed as part of the evaluation in @eval_derev_net.
+
+#figure(
+  caption: [Evaluation metrics for the SI-SNR baseline model (epoch 55, validation loss =-16.6097 dB). PEAQ metrics computed on n = 1758 samples.],
+  table(
+    columns: (auto, 1fr, 1fr, 1fr),
+    align: (left, right, right, right),
+    table.header(
+      [*Metric*], [*Baseline*], [*Enhanced*], [*Δ*],
+    ),
+    [SI-SNR (dB)],    [9.98 ± 8.67],  [18.78 ± 7.01],  [+8.80 ± 3.02],
+    [PESQ],           [1.88 ± 0.84],  [2.94 ± 0.78],   [+1.06 ± 0.38],
+    [PEAQ ODG],       [-3.57 ± 0.75], [-3.65 ± 0.34],  [-0.11 ± 0.55],
+    [PEAQ DI],        [-2.92 ± 1.41], [-2.85 ± 0.92],  [+0.01 ± 1.00],
+    [MSE],            [0.0010 ± 0.0031], [0.0216 ± 0.0233], [-0.0206 ± 0.0217],
+    // [Inference (s)],  table.cell(colspan: 3)[0.0981 ± 0.0574 \ #text(size: 0.85em, fill: gray)[min 0.0137 · max 0.5153]],
+    // [RTF],            table.cell(colspan: 3)[0.0098 ± 0.0041]
+  )
+)<tab_derev_sisnr_results>
+
+
+#grid(
+  columns: 2,
+[#diagram(
+  caption: [],
+  image(
+    "../figures/derevnet-derev_tcn_v4_loss_SISNR.svg",
+  ),
+)<derev_tcn_v4_loss_SISNR>],
+[#diagram(
+  caption: [],
+  image(
+    "../figures/derevnet-derev_tcn_v4_loss_percep.svg",
+  ),
+)<derev_tcn_v4_loss_percep>],
+)
+
+Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated, where @derev_tcn_v4_sisnr is a earlier checkpoint at 16 epochs and a validation loss of 14.3848 dB.
 
 #diagram(
   caption: [],
@@ -275,14 +316,11 @@ Analyzing the inference speed of the objective quality network it was found that
   ),
 )<derev_tcn_v4_sisnr_updated>
 
-- one can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
+Both perceptual quality network and objective quality network were not successful. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network), but showed no effective dereverberation. In fact both loss metrics failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
 
-- gating effect
-- adds highs in some examples
-  - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
-  - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
-  - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
-- if the input signal is not so reverberant, the output only gets dereverberated very little
-- quality of dereverberation is highly dependent on the quality of the input signal
-
-#TODO[measure inference time]
+#diagram(
+  caption: [],
+  image(
+    "../../experiments/perceptual-quality/test_output/derev_tcn_v4_percep-epoch=70-val_loss=0.0154/spectrograms/353-128309-0032.png",
+  ),
+)<derev_tcn_v4_percep>

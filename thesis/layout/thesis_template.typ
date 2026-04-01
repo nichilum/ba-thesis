@@ -194,11 +194,12 @@
     }
   ]
 
+
+  pagebreak()
+  bibliography("/thesis/dereverberation.bib")
+
   // Appendix.
   pagebreak()
   heading(numbering: none)[Appendix A: Supplementary Material]
   include "/thesis/layout/appendix.typ"
-
-  pagebreak()
-  bibliography("/thesis/dereverberation.bib")
 }

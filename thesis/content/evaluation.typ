@@ -226,9 +226,7 @@ As mentioned in @impl_derev_net a first implementation of the dereverberation ne
   ),
 )<derevnet_derev_1_overfit_version_22_loss>
 
-Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum.
-
-#TODO[guess why this happens]
+Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum. The precise cause of this phenomenon remains unclear. However, it can be hypothesized that, as discussed in @eval_percep_qual_net_cnn14, the shared training dataset between both models may be a contributing factor. Theoretically, a network exhibiting the performance characteristics shown in @results_objective_quality_net should be sufficient, as comparable models have been successfully employed in prior work @fuMetricGANImprovedVersion2021.
 
 // - gating effect
 // - adds highs in some examples

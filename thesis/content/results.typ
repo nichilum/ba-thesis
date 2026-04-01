@@ -202,10 +202,6 @@ As discussed in @eval_percep_qual_net_init all perceptual quality network experi
 
 To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size, wetness and $"size" dot "wetness"$ values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
 
-#diagram(
-  caption: [@KDE plots of predicted versus ground truth values of all perceptual quality metrics at epoch 195, with the diagonal indicating perfect agreement.],
-  image("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.svg"),
-)<results_percep_pred_vs_truth>
 
 #diagram(
   caption: [Quality score prediction of the perceptual quality network at epoch 195 analyzed as loss function over 16421 datapoints from the testing subset (cf. @subset_comp). Data between the 15th and 85th percentile is shown in color.],
@@ -223,22 +219,12 @@ As described in @impl_objective_quality_network the objective quality network un
   caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score at epoch 61],
 )<results_obj_score_table>
 
-#diagram(
-  caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score at epoch 61, with the diagonal indicating perfect agreement.],
-  image("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.svg"),
-)<results_obj_score_pred_vs_truth>
-
 Retraining for 166 epochs using the update quality score as well as the update loss function calculation metrics averages as seen in @results_obj_score_loss_table and prediction versus ground truth plots as seen in @results_obj_score_loss_pred_vs_truth were achieved.
 
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score and loss at epoch 166],
 )<results_obj_score_loss_table>
-
-#diagram(
-  caption: [@KDE plots of predicted versus ground truth values of all objective quality metrics using the updated quality score and loss at epoch 166, with the diagonal indicating perfect agreement.],
-  image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
-)<results_obj_score_loss_pred_vs_truth>
 
 It must be noted that with the updated loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_table and @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
 

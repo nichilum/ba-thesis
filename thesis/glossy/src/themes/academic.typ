@@ -3,7 +3,7 @@
   section: (title, body) => {
       // heading(numbering: none, title)
       text( 1.5em, weight: 700, "Glossary")
-      v(15mm)
+      v(10mm)
       // v(1em)
       body
   },
@@ -12,9 +12,9 @@
     if name != "" and total > 1 {
       v(1.5em)
       align(left, text(weight: "bold", size: 1.2em, name))
-      v(0.75em)
+      v(0.0em)
       line(length: 100%, stroke: 0.5pt)
-      v(0.75em)
+      v(0.0em)
     }
     body
   },
@@ -39,7 +39,8 @@
         size: 0.95em,
         {
           grid(
-            columns: (1fr, auto),
+            columns: (1.5fr, 1fr),
+            align: (left, right),
             gutter: 0.75em,
             [#short-display#long-display#description#entry.label],
             text(fill: rgb("#666666"), entry.pages)

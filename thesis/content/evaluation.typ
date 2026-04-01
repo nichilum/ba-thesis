@@ -206,13 +206,6 @@ The most unambiguous differentiator is computational cost: at comparable out-of-
 
 Overall, the differences between the two models are minimal and likely not perceptually significant, with both struggling to generalise to non-speech content.
 
-== DISCUSS UPSAMPLING FOR TRAINING AND REVERBERATING AT LOWER (USING PLOTS)<disc_upsampling>
-
-#TODO[]
-
-reverberation was made in native sample rate, then upsampled for training:
-meaning that some files lack proper wide band reverberation and might "confuse" model
-
 == Dereverberation Network<eval_derev_net>
 
 As mentioned in @impl_derev_net a first implementation of the dereverberation network followed a purely generative approach, without masking operations. To validate the capacity of the model a subset of the dataset was used to try and overfit this first implementation. This was successfully done as seen in @derevnet_derev_1_overfit_version_22_loss, which shows a steady decrease in training and validation loss. The training loss reaches a value of $0.00005$ and the validation loss of $0.0005$, which is a strong indication that capacity is sufficient to learn the dereverberation of the training data. However, we could not replicate this behaviour on the full dataset, meaning the model could not generalize well, which is why we switched to the masking approach described in @impl_derev_net.
@@ -241,7 +234,7 @@ The dereverberation network using @SI-SNR was evaluated both using spectograms (
 
 In @derev_tcn_v4_sisnr_updated one can see a dereverberated speech signal in the center. Individual transients are clearly visible and the rhythmic structure of the syllables is preserved. Reverberation tails are reduced in both magnitude and duration, though not fully eliminated. The spectral envelope remains close to that of the clean reference, indicating that the model does not introduce significant spectral distortion. An audible gating or pumping effect is noticeable, likely caused by the model suppressing regions between transients.
 
-A further observation is that the model introduces additional high-frequency energy in some examples. This is consistent with the network having been trained on signals upsampled to 44.1 kHz, as described in @preprocessing_reverberation. The model may have learned high-frequency patterns from the upsampling process rather than from genuine acoustic content. The resulting effect is occasionally perceived as a subtle enhancement, though it also introduces unwanted artefacts in other cases. This motivates the discussion in @disc_upsampling of whether reverberation should instead have been applied at the native 44.1 kHz prior to training.
+A further observation is that the model introduces additional high-frequency energy in some examples. This is consistent with the network having been trained on signals upsampled to 44.1 kHz, as described in @preprocessing_reverberation. The model may have learned high-frequency patterns from the upsampling process rather than from genuine acoustic content. The resulting effect is occasionally perceived as a subtle enhancement, though it also introduces unwanted artifacts in other cases. This raises the question of whether reverberation should instead have been applied at the native 44.1 kHz prior to training.
 
 One can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the @SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for the example shown.
 

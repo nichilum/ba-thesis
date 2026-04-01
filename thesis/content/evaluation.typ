@@ -224,6 +224,10 @@ As mentioned in @impl_derev_net a first implementation of the dereverberation ne
   )
 )<derevnet_derev_1_overfit_version_22_loss>
 
+Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum.
+
+#TODO[guess why this happens]
+
 // - gating effect
 // - adds highs in some examples
 //   - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
@@ -232,7 +236,6 @@ As mentioned in @impl_derev_net a first implementation of the dereverberation ne
 // - if the input signal is not so reverberant, the output only gets dereverberated very little
 // - quality of dereverberation is highly dependent on the quality of the input signal
 
-#TODO[using objective quality net @derev_tcn_v4_percep]
 
 The dereverberation network using @SI-SNR was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
 

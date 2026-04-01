@@ -198,6 +198,7 @@ As discussed in @eval_percep_qual_net_init all perceptual quality network experi
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all perceptual quality metrics at epoch 195],
+  short-caption: [@MAE, @MSE and correlation of all perceptual quality metrics]
 )<results_percep_table>
 
 To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size, wetness and $"size" dot "wetness"$ values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
@@ -217,6 +218,7 @@ As described in @impl_objective_quality_network the objective quality network un
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score at epoch 61],
+  short-caption: [@MAE, @MSE and correlation of all objective objective quality metrics]
 )<results_obj_score_table>
 
 Retraining for 166 epochs using the update quality score as well as the update loss function calculation metrics averages as seen in @results_obj_score_loss_table and prediction versus ground truth plots as seen in @results_obj_score_loss_pred_vs_truth were achieved.
@@ -224,6 +226,7 @@ Retraining for 166 epochs using the update quality score as well as the update l
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score and loss at epoch 166],
+  short-caption: [@MAE, @MSE and correlation of all objective objective quality metrics]
 )<results_obj_score_loss_table>
 
 It must be noted that with the updated loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_table and @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
@@ -252,8 +255,9 @@ As described in @impl_derev_net the dereverberation network was trained using mu
 First a baseline using the @SI-SNR was established. Training was done over 62 epochs with early stopping at epoch 55 resulting in a validation loss of 16.6097 dB (cf. @derev_tcn_v4_loss_SISNR).
 @tab_derev_sisnr_results is showing performance metrics for model outputs and is further discussed as part of the evaluation in @eval_derev_net.
 
-#figure(
+#diagram(
   caption: [Evaluation metrics for the SI-SNR baseline model (epoch 55, validation loss = 16.6097 dB). PEAQ metrics computed on n = 1758 samples.],
+  short-caption: [Evaluation metrics for the SI-SNR baseline model],
   table(
     columns: (auto, 1fr, 1fr, 1fr),
     align: (left, right, right, right),

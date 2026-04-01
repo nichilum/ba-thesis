@@ -313,7 +313,7 @@ Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4
   ),
 )<derev_tcn_v4_sisnr_updated>
 
-Both perceptual quality network and objective quality network were not successful. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network), but showed no effective dereverberation. In fact both loss metrics failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
+Both the perceptual quality network and objective quality network were not successful in their application. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network), but showed no effective dereverberation. In fact both loss metrics failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
 
 #diagram(
   caption: [

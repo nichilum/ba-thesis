@@ -126,7 +126,7 @@ The @MSE, @MAE and correlation averages shown in @results_percep_table indicate 
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )<quality_net_perf_silence>
 
-Multiple shortcomings of the general approach to the training and using as a loss function of the perceptual quality network were identified. As described in @data_collection our dataset is in parts composed of the AudioSet and FSD50K. The samples found in these datasets are not necessarily recorded in anechoic conditions, meaning that it is possible that an already reverberated file was reverberated with a wetness of 0 and therefore mislabled. As the FSD50K dataset is taken from a sample sharing cite it is less likely this problem has occurred there. A related issue concerns the training concept, as we used the same dataset for both the training of the perceptual quality network and the dereverberation network. While both used the same subsets (cf. @subset_comp) it is possible that the perceptual quality network wrongly overfitted on some samples. Further research should also investigate the use of activation function @ReLU as differentiability is not guaranteed (cf. @meth_percep_quality_net).
+Multiple shortcomings of the general approach to the training and using as a loss function of the perceptual quality network were identified. As described in @data_collection our dataset is in parts composed of the AudioSet and FSD50K. The samples found in these datasets are not necessarily recorded in anechoic conditions, meaning that it is possible that an already reverberated file was reverberated with a wetness of 0 and therefore mislabled. As the FSD50K dataset is taken from a sample sharing site it is less likely this problem has occurred there. A related issue concerns the training concept, as we used the same dataset for both the training of the perceptual quality network and the dereverberation network. While both used the same subsets (cf. @subset_comp) it is possible that the perceptual quality network wrongly overfitted on some samples. Further research should also investigate the use of activation function @ReLU as differentiability is not guaranteed (cf. @meth_percep_quality_net).
 
 == Objective Quality Net<eval_objective_quality_net>
 
@@ -202,10 +202,6 @@ Overall, the differences between the two models are minimal and likely not perce
 reverberation was made in native sample rate, then upsampled for training:
 meaning that some files lack proper wide band reverberation and might "confuse" model
 
-== (An)echoic dataset
-- AudioSet and FSD50K are not "dry" datasets. they contain samples that are recorded under echoic conditions.
-- The model is not shown fully dereverberated sample pairs during training
-
 == SI-SNR Calculations<eval_si_snr_calculations>
 - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
 - did we fuck up here?
@@ -222,6 +218,11 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
     - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
       - halt ohne make data ausguführen und alles voll zu müllen
 ]
+
+
+The topic of reverberation being present in our dataset was touched upon in @eval_percep_qual_net_cnn14. It is discussed that the AudioSet and FSD50K datasets were not necessarily recorded in anechoic conditions. This can lead to mislabeling of data for use in training of the quality networks. Another problem arising is that the dereverberation network is shown echoic samples as ground truth therefore not learning to eliminate reverberation but only reducing it. In the worst case, this occurs in $46.9 %$ of instances (cf. @dataset_comp). It can be hypothesized that a considerable proportion of AudioSet samples originate from voiceover recordings, which are typically captured under near-anechoic conditions. Furthermore, FreeSound, as a sample-sharing platform, likely contains a high prevalence of acoustically dry recordings.
+
+Further investigation is warranted to systematically compare datasets comprising exclusively anechoic recordings against those biased toward dry samples yet containing a non-negligible proportion of reverberant signals.
 
 - one can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
 

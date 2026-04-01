@@ -11,16 +11,16 @@ import matplotlib.ticker as ticker
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 # Update these paths to point to your model's loss CSV files
-MODEL_NAME = "derevnet-derev_tcn_v4"
-TRAIN_CSV = Path(__file__).parents[2] / "utils" / "plots" / "data" / "derevnet-derev_tcn_v4_percep_version_2_train_loss.csv"
-VAL_CSV   = Path(__file__).parents[2] / "utils" / "plots" / "data" / "derevnet-derev_tcn_v4_percep_version_2_val_loss.csv"
+MODEL_NAME = "derevnet-derev_1_overfit_version_22"
+TRAIN_CSV = Path(__file__).parents[2] / "utils" / "plots" / "data" / "derevnet-derev_1_overfit_version_22_train_loss.csv"
+VAL_CSV   = Path(__file__).parents[2] / "utils" / "plots" / "data" / "derevnet-derev_1_overfit_version_22_val_loss.csv"
 OUT_DIR   = Path(__file__).parents[2] / "thesis" / "figures"
 
 # Smoothing parameter for EMA (0.05 matches TensorBoard default)
 SMOOTHING_ALPHA = 0.05
 
 # Steps per epoch (adjust based on your dataset)
-STEPS_PER_EPOCH = 1192
+STEPS_PER_EPOCH = 10
 
 
 def load_csv(path: Path) -> tuple[list[int], list[float]]:

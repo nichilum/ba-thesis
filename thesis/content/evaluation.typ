@@ -140,6 +140,18 @@ Inference speed at 7.74 seconds for 18.2 hourse of audio data sampled at 44.1 kH
 
 Non of the shortcomings as identified in @eval_percep_qual_net_cnn14 were addressed or mitigated in any meaningful capacity.
 
+== SI-SNR Calculations<eval_si_snr_calculations>
+// - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
+// - did we fuck up here?
+// - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
+
+// - explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+// - 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+
+The @SI-SNR values reported in @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison warrant closer scrunity. Specifically, when our Conv-TasNet re-implementation was trained using @SI-SNR loss, convergence did not proceed as expected, with the loss failing to decrease in a manner consistent with the improvements observed under @MSE training. This raises the question of whether the @SI-SNR calculations used for that training were correctly implemented and whether this accounts for the unexpected training behaviour.
+
+To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was evaluated on the LibriSpeech test set and yielded an @SI-SNR of 10.0 dB. This falls short of the 15.3 dB reported in the original Conv-TasNet paper @luoConvTasNetSurpassingIdeal2019, a gap that is too large to attribute solely to differences in training data or hyperparameters. While the model was not trained under identical conditions to the original work, the magnitude of the discrepancy suggests that a systematic issue may be present in the @SI-SNR calculation. It should be noted that while the @MSE checkpoint does fall short in @SI-SNR compared to the original paper, it still demonstrates a significant improvement over the reverberant input, indicating that the model is learning to dereverberate to some extent.
+
 == Comparison of Conv-TasNet and StoRM for diverse signals
 #leo
 Both Conv-TasNet and StoRM were trained exclusively on speech recordings and had no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
@@ -201,22 +213,22 @@ Overall, the differences between the two models are minimal and likely not perce
 reverberation was made in native sample rate, then upsampled for training:
 meaning that some files lack proper wide band reverberation and might "confuse" model
 
-== SI-SNR Calculations<eval_si_snr_calculations>
-// - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
-// - did we fuck up here?
-// - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
-
-// - explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
-// - 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
-
-The @SI-SNR values reported in @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison warrant closer scrunity. Specifically, when our Conv-TasNet re-implementation was trained using @SI-SNR loss, convergence did not proceed as expected, with the loss failing to decrease in a manner consistent with the improvements observed under @MSE training. This raises the question of whether the @SI-SNR calculations used for that training were correctly implemented and whether this accounts for the unexpected training behaviour.
-
-To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was evaluated on the LibriSpeech test set and yielded an @SI-SNR of 10.0 dB. This falls short of the 15.3 dB reported in the original Conv-TasNet paper @luoConvTasNetSurpassingIdeal2019, a gap that is too large to attribute solely to differences in training data or hyperparameters. While the model was not trained under identical conditions to the original work, the magnitude of the discrepancy suggests that a systematic issue may be present in the @SI-SNR calculation. It should be noted that while the @MSE checkpoint does fall short in @SI-SNR compared to the original paper, it still demonstrates a significant improvement over the reverberant input, indicating that the model is learning to dereverberate to some extent.
-
-
 == Dereverberation Network<eval_derev_net>
-#TODO[show overfitting plots of fully generative approach here]
 
+As mentioned in @impl_derev_net a first implementation of the dereverberation network followed a purely generative approach, without masking operations. To validate the capacity of the model a subset of the dataset was used to try and overfit this first implementation. This was successfully done as seen in @derevnet_derev_1_overfit_version_22_loss, which shows a steady decrease in training and validation loss. The training loss reaches a value of $0.00005$ and the validation loss of $0.0005$, which is a strong indication that capacity is sufficient to learn the dereverberation of the training data. However, we could not replicate this behaviour on the full dataset, meaning the model could not generalize well, which is why we switched to the masking approach described in @impl_derev_net.
+
+#diagram(
+  caption: [
+    Loss curves of the first dereverberation network implementation, trained on a subset of the dataset using the perceptual quality network as a loss function.
+  ],
+  image(
+    "../figures/derevnet-derev_1_overfit_version_22_loss.svg",
+  ),
+)<derevnet_derev_1_overfit_version_22_loss>
+
+Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum.
+
+#TODO[guess why this happens]
 
 // - gating effect
 // - adds highs in some examples
@@ -227,7 +239,7 @@ To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was eva
 // - quality of dereverberation is highly dependent on the quality of the input signal
 
 
-The dereverberation network was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
+The dereverberation network using @SI-SNR was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
 
 In @derev_tcn_v4_sisnr_updated one can see a dereverberated speech signal in the center. Individual transients are clearly visible and the rhythmic structure of the syllables is preserved. Reverberation tails are reduced in both magnitude and duration, though not fully eliminated. The spectral envelope remains close to that of the clean reference, indicating that the model does not introduce significant spectral distortion. An audible gating or pumping effect is noticeable, likely caused by the model suppressing regions between transients.
 
@@ -246,7 +258,6 @@ When comparing with StoRM and Conv-TasNet, the dereverberation network achieves.
 
 - in diverse audio
   - music is well dereverberated (describe snare example)
-
 
 Evaluation of the dereverberation network lead to the identification of multiple shortcomings. As discussed in @meth_percep_quality_net, the motivation for developing the perceptual and objective quality network extended beyond identifying an optimal indicator of dereverberation performance; it also eliminated the requirement for a clean reference signal during training. This improvement could have allowed us to train fully unsupervised on a larger subset of the AudioSet dataset, as it would have included many reverberant signals. This approach was not explored within the scope of this work.
 

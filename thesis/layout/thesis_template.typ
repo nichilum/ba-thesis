@@ -117,7 +117,16 @@
     kind: table,
   ): set figure.caption(position: top)
 
-  set figure(numbering: (..num) => numbering("1.1", counter(heading).get().first(), num.pos().first()))
+  // set figure(numbering: (..num) => numbering("1.1", counter(heading).get().first(), num.pos().first()))
+
+  set figure(numbering: it => {
+    //workaround...
+    let appx = state("backmatter", false).get()
+    let alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let hdr = counter(heading).get().at(0)
+    if appx [#alph.at(hdr - 1).#it]
+    else [#hdr.#it]
+  })
 
   show heading.where(level: 1): it => {
     // reset figure counters so they are counted per chapter
@@ -200,12 +209,20 @@
     }
   ]
 
+  let backmatter(content) = {
+	set heading(numbering: "A.1")
+	counter(heading).update(0)
+	state("backmatter").update(true)
+	content
+}
+
 
   pagebreak()
   bibliography("/thesis/dereverberation.bib")
 
   // Appendix.
   pagebreak()
-  heading(numbering: none)[Appendix A: Supplementary Material]
+  show: backmatter 
+  heading(numbering: "A")[Appendix: Supplementary Material]
   include "/thesis/layout/appendix.typ"
 }

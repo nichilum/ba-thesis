@@ -256,8 +256,10 @@ Informal listening tests conducted on a selected set of samples yield the unexpe
 When compared against StoRM and Conv-TasNet, the dereverberation network achieves markedly superior performance on diverse audio signals, a result that is consistent with expectations given the domain-specific training. However, it remains an open question whether Conv-TasNet or StoRM would yield comparable performance if trained exclusively on the same dataset.
 
 #diagram(
-  caption: [],
-  short-caption: [],
+  caption: [
+    Comparison of dereverberation performance of our model against StoRM and Conv-TasNet across in-domain speech and out-of-domain diverse audio samples.
+  ],
+  short-caption: [Comparison of dereverberation performance of our model against StoRM and Conv-TasNet],
   table(
     // columns: (1fr, 1fr, 1fr),
     columns: 3,

@@ -253,7 +253,7 @@ The @PEAQ metrics tell a different story. The @ODG decreases marginally by $-0.1
 
 Informal listening tests conducted on a selected set of samples yield the unexpected finding that music signals are well-suited to the proposed dereverberation approach. While the structural integrity of the recordings is preserved, reverberation-induced transient extensions and elongated decay times of percussive elements are effectively attenuated. Notably, this improvement remains perceptually noticeable even in fully mixed recordings, where the percussive components are masked by concurrent instrumental layers.
 
-When compared against StoRM and Conv-TasNet, the dereverberation network achieves markedly superior performance on diverse audio signals, a result that is consistent with expectations given the domain-specific training. However, it remains an open question whether Conv-TasNet or StoRM would yield comparable performance if trained exclusively on the same dataset.
+When compared against StoRM and Conv-TasNet, the dereverberation network achieves markedly superior performance on diverse audio signals (cf. @final_comparison_of_results_table), a result that is consistent with expectations given the domain-specific training. However, it remains an open question whether Conv-TasNet or StoRM would yield comparable performance if trained exclusively on the same dataset.
 
 #diagram(
   caption: [],
@@ -270,7 +270,7 @@ When compared against StoRM and Conv-TasNet, the dereverberation network achieve
     [StoRM], [6.5 $plus.minus$ 4.0 dB], [-31.39 $plus.minus$ 11.71 dB],
     [Ours], [-], [8.80 $plus.minus$ 3.02 dB],
   ),
-)
+)<final_comparison_of_results_table>
 
 
 Evaluation of the dereverberation network lead to the identification of multiple shortcomings. As discussed in @meth_percep_quality_net, the motivation for developing the perceptual and objective quality network extended beyond identifying an optimal indicator of dereverberation performance; it also eliminated the requirement for a clean reference signal during training. This improvement could have allowed us to train fully unsupervised on a larger subset of the AudioSet dataset, as it would have included many reverberant signals. This approach was not explored within the scope of this work.

@@ -58,7 +58,7 @@ The output of all prediction heads are compared to their ground truth counterpar
 
 #diagram(
   caption: [Metric comparison of the quality score, taken from the best epoch of the first 10, between the simple @CNN and CNN14 implementation],
-
+  short-caption: [Metric comparison between simple @CNN and CNN14 implementation],
   table(
     columns: 4,
     align: (left, center, center, right),
@@ -84,7 +84,7 @@ The output of all prediction heads are compared to their ground truth counterpar
 
 #diagram(
   caption: [Relative improvement from the CNN14 implementation as compared to the simple @CNN implementation over all metrics and parameters, taken from the best epoch of the first 10],
-
+  short-caption: [Relative improvement of CNN14 implementation],
   table(
     columns: 5,
     align: (left, center, center, center),
@@ -162,6 +162,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and had
   caption: [
     Comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples, evaluated on 2048 random AudioSet samples. The runtime is measured on a single H100 GPU (CLAIX-2023-ML) @CLAIX2023RWTHHigh with 2048 Random AudioSet Samples.
   ],
+  short-caption: [Comparison of dereverberation performance of diverse audio samples],
   {
     // set text(size: 7pt)
     table(

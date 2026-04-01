@@ -208,8 +208,8 @@ To visualize prediction performance @KDE plots as seen in @results_percep_pred_v
 )<results_percep_pred_vs_truth>
 
 #diagram(
-  caption: [Quality score prediction analyzed over 16421 datapoints from testing subset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
-  short-caption: [Quality score prediction analyzed over testing subset],
+  caption: [Quality score prediction of the perceptual quality network at epoch 195 analyzed as loss function over 16421 datapoints from the testing subset (cf. @subset_comp). Data between the 15th and 85th percentile is shown in color.],
+  short-caption: [Perceptual quality network's quality score prediction analyzed as loss function over testing subset],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_quality.svg"),
 )<plot_nn_qual_against_size_and_wet>
 
@@ -240,9 +240,15 @@ Retraining for 166 epochs using the update quality score as well as the update l
   image("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.svg"),
 )<results_obj_score_loss_pred_vs_truth>
 
-It must be noted that with the update loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
+It must be noted that with the updated loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_table and @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
 
-Plotting the objective quality network as seen in @results_obj_score_loss_table against the corresponding size, wetness and $"size" dot "wetness"$ values resulted in the plot seen in #TODO[add the plot against size and wetness and size times wetness].
+Plotting the objective quality network as seen in @results_obj_score_loss_table against the corresponding size, wetness and $"size" dot "wetness"$ values resulted in the plot seen in @results_obj_score_loss_analyze. This visualization is discussed in @eval_objective_quality_net.
+
+#diagram(
+  caption: [Quality score prediction of the objective quality network using the updated quality score and loss at epoch 166 analyzed as loss function over 16421 datapoints from the testing subset (cf. @subset_comp). Data between the 15th and 85th percentile is shown in color.],
+  short-caption: [Objective quality network's quality score prediction analyzed as loss function over testing subset],
+  image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_objective_score_lossy.svg"),
+)<results_obj_score_loss_analyze>
 
 Analyzing the inference speed of the objective quality network it was found that for a total length of 18.2 hours of audio data sampled at 44.1 kHz the total length of inference time amounted to about 7.74 seconds. As the objective quality network shares the same architecture with the perceptual quality network this result can be assumed similar for all of the above tested configurations.
 

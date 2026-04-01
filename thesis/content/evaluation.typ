@@ -126,19 +126,19 @@ The @MSE, @MAE and correlation averages shown in @results_percep_table indicate 
   image("/experiments/perceptual-quality/plots/perceptual_net_zeros_preds.svg"),
 )<quality_net_perf_silence>
 
-Multiple shortcomings of the general approach to the training and using as a loss function of the perceptual quality network were identfied. As described in @data_collection our dataset is in parts composed of the AudioSet and FSD50K. The samples found in these datasets are not necessarily recorded in anechoic conditions, meaning that it is possible that an already reverberated file was reverberated with a wetness of 0 and therefore mislabled. As the FSD50K dataset is taken from a sample sharing cite it is less likely this problem has occurred there. A related issue concerns the training concept, as we used the same dataset for both the training of the perceptual quality network and the dereverberation network. While both used the same subsets (cf. @subset_comp) it is possible that the perceptual quality network wrongly overfitted on some samples. Further research should also investigate the use of activation function @ReLU as differentiability is not guaranteed (cf. @meth_percep_quality_net).
+Multiple shortcomings of the general approach to the training and using as a loss function of the perceptual quality network were identified. As described in @data_collection our dataset is in parts composed of the AudioSet and FSD50K. The samples found in these datasets are not necessarily recorded in anechoic conditions, meaning that it is possible that an already reverberated file was reverberated with a wetness of 0 and therefore mislabled. As the FSD50K dataset is taken from a sample sharing cite it is less likely this problem has occurred there. A related issue concerns the training concept, as we used the same dataset for both the training of the perceptual quality network and the dereverberation network. While both used the same subsets (cf. @subset_comp) it is possible that the perceptual quality network wrongly overfitted on some samples. Further research should also investigate the use of activation function @ReLU as differentiability is not guaranteed (cf. @meth_percep_quality_net).
 
 == Objective Quality Net<eval_objective_quality_net>
 
-#TODO[
-  - first stage
-    - used learning capacity to still adjust weights for the odg score, also for the singular wetness and size prediction heads which we didn't actually use at that stage
-  - second stage
-    - im grunde alles suppi, mal analyze loss function script abwarten
-    - sonst same same wie schon mit @eval_percep_qual_net_cnn14, nur dass die schwierigkeiten mit dem ODG score wegfallen
-  - eval: es wäre interessant gewesen mal nur auf wetness zu trainieren
-  - inference speed shows it is "well" usable as loss function
-]
+The @MSE, @MAE and correlation averages of the quality score shown in @results_obj_score_table demonstrate worse performance than the ones of the perceptual quality net (cf. @results_percep_table). This is to be expected as now all values of the quality score are uniformly distributed in the range of 0 to 1.
+
+As we did not utilize the singular @ODG, size and wetness predictions it was decided that the extra computational resources used to propagate errors stemming from these prediction heads can be saved. Using the updated loss function (cf. @impl_objective_quality_network) the metric averages of the quality score did not improve notably (cf. @results_obj_score_loss_table).
+
+@results_obj_score_loss_analyze shows that the quality score stemming from the objective quality network using the updated loss function is competitive with the @SI-SNR metric for indicating dereverberation performance (cf. @analyze_loss_functions). Predictions against the size parameter have improved substantially, exhibiting markedly reduced error. While predictions against the wetness parameter remain more dispersed, the nonlinear curvature previously observed in the @SI-SNR visualization (cf. @plot_metrics_against_size_and_wet) is no longer present, indicating that optimization with respect to this metric should yield more stable and predictable convergence behavior.
+
+Inference speed at 7.74 seconds for 18.2 hourse of audio data sampled at 44.1 kHz means that using this network as a loss function should not pose any significant drawbacks in regards to training speed.
+
+Non of the shortcomings as identified in @eval_percep_qual_net_cnn14 were addressed or mitigated in any meaningful capacity.
 
 == Comparison of Conv-TasNet and StoRM for diverse signals
 #leo

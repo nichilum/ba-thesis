@@ -140,6 +140,18 @@ Inference speed at 7.74 seconds for 18.2 hourse of audio data sampled at 44.1 kH
 
 Non of the shortcomings as identified in @eval_percep_qual_net_cnn14 were addressed or mitigated in any meaningful capacity.
 
+== SI-SNR Calculations<eval_si_snr_calculations>
+// - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
+// - did we fuck up here?
+// - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
+
+// - explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+// - 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+
+The @SI-SNR values reported in @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison warrant closer scrunity. Specifically, when our Conv-TasNet re-implementation was trained using @SI-SNR loss, convergence did not proceed as expected, with the loss failing to decrease in a manner consistent with the improvements observed under @MSE training. This raises the question of whether the @SI-SNR calculations used for that training were correctly implemented and whether this accounts for the unexpected training behaviour.
+
+To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was evaluated on the LibriSpeech test set and yielded an @SI-SNR of 10.0 dB. This falls short of the 15.3 dB reported in the original Conv-TasNet paper @luoConvTasNetSurpassingIdeal2019, a gap that is too large to attribute solely to differences in training data or hyperparameters. While the model was not trained under identical conditions to the original work, the magnitude of the discrepancy suggests that a systematic issue may be present in the @SI-SNR calculation. It should be noted that while the @MSE checkpoint does fall short in @SI-SNR compared to the original paper, it still demonstrates a significant improvement over the reverberant input, indicating that the model is learning to dereverberate to some extent.
+
 == Comparison of Conv-TasNet and StoRM for diverse signals
 #leo
 Both Conv-TasNet and StoRM were trained exclusively on speech recordings and have no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
@@ -199,26 +211,11 @@ Overall, the differences between the two models are minimal and likely not perce
 reverberation was made in native sample rate, then upsampled for training:
 meaning that some files lack proper wide band reverberation and might "confuse" model
 
-== SI-SNR Calculations<eval_si_snr_calculations>
-// - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
-// - did we fuck up here?
-// - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
-
-// - explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
-// - 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
-
-The @SI-SNR values reported in @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison warrant closer scrunity. Specifically, when our Conv-TasNet re-implementation was trained using @SI-SNR loss, convergence did not proceed as expected, with the loss failing to decrease in a manner consistent with the improvements observed under @MSE training. This raises the question of whether the @SI-SNR calculations used for that training were correctly implemented and whether this accounts for the unexpected training behaviour.
-
-To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was evaluated on the LibriSpeech test set and yielded an @SI-SNR of 10.0 dB. This falls short of the 15.3 dB reported in the original Conv-TasNet paper @luoConvTasNetSurpassingIdeal2019, a gap that is too large to attribute solely to differences in training data or hyperparameters. While the model was not trained under identical conditions to the original work, the magnitude of the discrepancy suggests that a systematic issue may be present in the @SI-SNR calculation. It should be noted that while the @MSE checkpoint does fall short in @SI-SNR compared to the original paper, it still demonstrates a significant improvement over the reverberant input, indicating that the model is learning to dereverberate to some extent.
-
-
 == Dereverberation Network<eval_derev_net>
+
+As mentioned in @impl_derev_net a first implementation...
+
 #TODO[show overfitting plots of fully generative approach here]
-#TODO[
-  - dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
-    - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
-      - halt ohne make data ausguführen und alles voll zu müllen
-]
 
 // - gating effect
 // - adds highs in some examples
@@ -246,7 +243,11 @@ The @PEAQ metrics tell a different story. The ODG decreases marginally by $-0.11
 
 When comparing with StoRM and Conv-TasNet, the dereverberation network achieves...
 
-
+#TODO[
+  - dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
+    - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
+      - halt ohne make data ausguführen und alles voll zu müllen
+]
 
 
 The topic of reverberation being present in our dataset was touched upon in @eval_percep_qual_net_cnn14. It is discussed that the AudioSet and FSD50K datasets were not necessarily recorded in anechoic conditions. This can lead to mislabeling of data for use in training of the quality networks. Another problem arising is that the dereverberation network is shown echoic samples as ground truth therefore not learning to eliminate reverberation but only reducing it. In the worst case, this occurs in $46.9 %$ of instances (cf. @dataset_comp). It can be hypothesized that a considerable proportion of AudioSet samples originate from voiceover recordings, which are typically captured under near-anechoic conditions. Furthermore, FreeSound, as a sample-sharing platform, likely contains a high prevalence of acoustically dry recordings.

@@ -125,8 +125,6 @@ $
 
 Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflect off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections. It is available in pyroomacoustics as a complement to the @ISM @vorlanderAuralizationFundamentalsAcoustics2008.
 
-// TODO: do we want to explain basically the treble stack with wave based for low freq, ray radiosity and image source?? i think it might be overkill
-
 === Sound Quality<fun_sound_quality>
 
 @fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test or processed) audio signal sounds in comparison to its clean counterpart.

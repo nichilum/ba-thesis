@@ -265,7 +265,15 @@ Ours: 8.8 dB diverse
 #diagram(
   caption: [],
   short-caption: [],
-  table(),
+  table(
+    // columns: (1fr, 1fr, 1fr),
+    columns: 3,
+    align: (left, right, right),
+    table.header([*Model*], [*Speech*], [*Diverse*]),
+    [Conv-TasNet], [15.3 $plus.minus$ ? dB #footnote[@SI-SNR taken from #cite(<luoConvTasNetSurpassingIdeal2019>, form: "prose", style: "chicago-author-date"), standard deviation not reported]], [-31.26 $plus.minus$ 18.6 dB],
+    [StoRM], [6.5 $plus.minus$ 4.0 dB], [-31.39 $plus.minus$ 11.71 dB],
+    [Ours], [-], [8.80 $plus.minus$ 3.02 dB],
+  ),
 )
 
 

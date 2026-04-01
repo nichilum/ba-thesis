@@ -213,9 +213,16 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
 
 == Dereverberation Network<eval_derev_net>
 
-As mentioned in @impl_derev_net a first implementation...
+As mentioned in @impl_derev_net a first implementation of the dereverberation network followed a purely generative approach, without masking operations. To validate the capacity of the model a subset of the dataset was used to try and overfit this first implementation. This was successfully done as seen in @derevnet_derev_1_overfit_version_22_loss, which shows a steady decrease in training and validation loss. The training loss reaches a value of $0.00005$ and the validation loss of $0.0005$, which is a strong indication that capacity is sufficient to learn the dereverberation of the training data. However, we could not replicate this behaviour on the full dataset, meaning the model could not generalize well, which is why we switched to the masking approach described in @impl_derev_net.
 
-#TODO[show overfitting plots of fully generative approach here]
+#diagram(
+  caption: [
+    Loss curves of the first dereverberation network implementation, trained on a subset of the dataset using the perceptual quality network as a loss function.
+  ],
+  image(
+    "../figures/derevnet-derev_1_overfit_version_22_loss.svg",
+  )
+)<derevnet_derev_1_overfit_version_22_loss>
 
 // - gating effect
 // - adds highs in some examples
@@ -225,8 +232,9 @@ As mentioned in @impl_derev_net a first implementation...
 // - if the input signal is not so reverberant, the output only gets dereverberated very little
 // - quality of dereverberation is highly dependent on the quality of the input signal
 
+#TODO[using objective quality net @derev_tcn_v4_percep]
 
-The dereverberation network was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
+The dereverberation network using @SI-SNR was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
 
 In @derev_tcn_v4_sisnr_updated one can see a dereverberated speech signal in the center. Individual transients are clearly visible and the rhythmic structure of the syllables is preserved. Reverberation tails are reduced in both magnitude and duration, though not fully eliminated. The spectral envelope remains close to that of the clean reference, indicating that the model does not introduce significant spectral distortion. An audible gating or pumping effect is noticeable, likely caused by the model suppressing regions between transients.
 

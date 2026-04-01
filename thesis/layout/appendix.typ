@@ -1,5 +1,5 @@
 #import "/thesis/utils/diagram.typ": diagram
-== Implementation of Dereverberation Network
+== Implementations of Dereverberation Network
 
 #v(0.5cm)
 #align(center + horizon, scale(

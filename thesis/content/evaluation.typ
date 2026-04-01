@@ -154,7 +154,7 @@ To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was eva
 
 == Comparison of Conv-TasNet and StoRM for diverse signals
 #leo
-Both Conv-TasNet and StoRM were trained exclusively on speech recordings and have no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
+Both Conv-TasNet and StoRM were trained exclusively on speech recordings and had no exposure to music, environmental noise, or other non-speech content. To assess how each model generalises outside this group, both were applied to 2048 randomly sampled AudioSet clips spanning a wide range of acoustic scenes and event categories. @conv_tasnet_storm_comparison summarises these metrics, while the full distributions are shown in @boxplot_comparison.
 
 #import "/thesis/content/results.typ": convtasnetCSV, d, stormCSV, v
 
@@ -182,6 +182,8 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and hav
 
 Across all metrics both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistent, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model, meaning Conv-TasNet's performance is more inconsistent.
 A recurring informal observation from listening tests and viewing spectograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison and @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
+
+It should be noted that the @SI-SNR values obtained from our Conv-TasNet implementation trained with the MSE loss function may deviate from those reported by the original implementation (see @eval_si_snr_calculations), although a comparable disparity between in-domain and out-of-domain performance can be anticipated when using the original implementation under analogous conditions.
 
 #diagram(
   caption: [Boxplot comparison of different metrics for the evaluation of dereverberation performance of diverse audio samples. (Outliers not shown)],
@@ -221,12 +223,10 @@ As mentioned in @impl_derev_net a first implementation of the dereverberation ne
   ],
   image(
     "../figures/derevnet-derev_1_overfit_version_22_loss.svg",
-  )
+  ),
 )<derevnet_derev_1_overfit_version_22_loss>
 
-Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum.
-
-#TODO[guess why this happens]
+Evaluation of the dereverberation network using the objective quality network was carried out sparsely as the model's output was not producing meaningful results. This can be seen in @derev_tcn_v4_percep, where the spectrum in the center shows the output, which barely resembles the clean reference on the right. The signal is distributed across the full model bandwidth (22.05 kHz) adding high frequency noise, while the reverberation tail remains entirely unattenuated. The only discernible structure preserved from the clean signal is the gross syllabic rhythm; however, transient onsets are severely smeared across this otherwise incoherent spectrum. The precise cause of this phenomenon remains unclear. However, it can be hypothesized that, as discussed in @eval_percep_qual_net_cnn14, the shared training dataset between both models may be a contributing factor. Theoretically, a network exhibiting the performance characteristics shown in @results_objective_quality_net should be sufficient, as comparable models have been successfully employed in prior work @fuMetricGANImprovedVersion2021.
 
 // - gating effect
 // - adds highs in some examples
@@ -249,17 +249,15 @@ The degree of dereverberation is closely tied to the characteristics of the inpu
 
 @tab_derev_sisnr_results shows a substabtial @SI-SNR improvement of $+8.80$ dB on average, which is slightly worse than the validation loss of $16.61$ dB, but still confirms that the dereverberation network is able to generalise to unseen data. @PESQ improves from $1.88$ to $2.94$, an increase of $+1.06$, indicating a meaningful gain in predicted speech quality. Notably, the standard deviation of both @SI-SNR and @PESQ is reduced in the enhanced signal relative to the baseline, suggesting that the model produces more consistent outputs across varying degrees of input reverberation.
 
-The @PEAQ metrics tell a different story. The ODG decreases marginally by $-0.11$, and the DI shows a negligible change of $+0.01$, with both deltas exhibiting standard deviations larger than the mean shift itself. This is contrary to the improvements observed in @SI-SNR and @PESQ, again raising the question of whether @PEAQ is a suitable metric for evaluating dereverberation performance, as discussed in @eval_analyze_loss_functions. The @MSE increase from $0.0010$ to $0.0216$ is a direct consequence of the SI-SNR training objective, which optimises signal-to-noise ratio rather than sample-wise reconstruction fidelity, and is therefore expected.
+The @PEAQ metrics tell a different story. The @ODG decreases marginally by $-0.11$, and the @DI shows a negligible change of $+0.01$, with both deltas exhibiting standard deviations larger than the mean shift itself. This is contrary to the improvements observed in @SI-SNR and @PESQ, again raising the question of whether @PEAQ is a suitable metric for evaluating dereverberation performance, as discussed in @analyze_loss_functions. The @MSE increase from $0.0010$ to $0.0216$ is a direct consequence of the @SI-SNR training objective, which optimises signal-to-noise ratio rather than sample-wise reconstruction fidelity, and is therefore expected.
 
 
 When comparing with StoRM and Conv-TasNet, the dereverberation network achieves...
 
-#TODO[
-  - dass das quality net keine Referenz mehr braucht haben wir gar nicht ausgenutzt
-    - im grunde hätten wir auf viel mehr daten von zb audioset die reverb beinhalten trainieren können
-      - halt ohne make data ausguführen und alles voll zu müllen
-]
+- in diverse audio
+  - music is well dereverberated (describe snare example)
 
+Evaluation of the dereverberation network lead to the identification of multiple shortcomings. As discussed in @meth_percep_quality_net, the motivation for developing the perceptual and objective quality network extended beyond identifying an optimal indicator of dereverberation performance; it also eliminated the requirement for a clean reference signal during training. This improvement could have allowed us to train fully unsupervised on a larger subset of the AudioSet dataset, as it would have included many reverberant signals. This approach was not explored within the scope of this work.
 
 The topic of reverberation being present in our dataset was touched upon in @eval_percep_qual_net_cnn14. It is discussed that the AudioSet and FSD50K datasets were not necessarily recorded in anechoic conditions. This can lead to mislabeling of data for use in training of the quality networks. Another problem arising is that the dereverberation network is shown echoic samples as ground truth therefore not learning to eliminate reverberation but only reducing it. In the worst case, this occurs in $46.9 %$ of instances (cf. @dataset_comp). It can be hypothesized that a considerable proportion of AudioSet samples originate from voiceover recordings, which are typically captured under near-anechoic conditions. Furthermore, FreeSound, as a sample-sharing platform, likely contains a high prevalence of acoustically dry recordings.
 

@@ -188,27 +188,28 @@ A recurring informal observation from listening tests and viewing spectograms is
 When comparing the two models against each other, the differences across most metrics are small relative to the standard deviation. Conv-TasNet achieves a marginally lower MSE ($0.028$ vs. $0.030$) and slightly higher PESQ-WB ($1.45$ vs. $1.35$), while StoRM scores better to a slight extent on ODG ($-3.67$ vs. $-3.83$) and DI ($-3.14$ vs. $-3.50$), suggesting it introduces fewer perceptual artifacts per sample on average. PESQ-NB is effectively equal ($1.82$ vs. $1.81$). @SI-SNR values are also close ($-31.39$ vs. $-31.26$) but with a notably higher standard deviation for both models, also indicating that performance is more inconsistent across samples.
 
 
-The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s ($0.12$ s per sample), while StoRM requires $6$ h $14$ m $51$ s ($10.98$ s per sample) --- approximately $91 times$ the inference time. The samples were each 10 s long, meaning...
-
-#TODO[
-  - storm "almost" realtime, but not quite, and on very powerful hardware
-  - convtasnet faster than realtime
-]
+The most unambiguous differentiator is computational cost: at comparable out-of-domain performance, Conv-TasNet processes all 2048 samples in $4$ m $15$ s ($0.12$ s per sample), while StoRM requires $6$ h $14$ m $51$ s ($10.98$ s per sample) --- approximately $91 times$ the inference time. The samples were each 10 s long, meaning that Conv-TasNet processes audio roughly $83times$ faster than real time, while StoRM operates at approximately $0.91times$ real time, just below the threshold for real-time applicability, and notably on comparatively powerful hardware.
 
 Overall, the differences between the two models are minimal and likely not perceptually significant, with both struggling to generalise to non-speech content.
 
 == DISCUSS UPSAMPLING FOR TRAINING AND REVERBERATING AT LOWER (USING PLOTS)<disc_upsampling>
 
+#TODO[]
+
 reverberation was made in native sample rate, then upsampled for training:
 meaning that some files lack proper wide band reverberation and might "confuse" model
 
 == SI-SNR Calculations<eval_si_snr_calculations>
-- @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
-- did we fuck up here?
-- maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
+// - @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison
+// - did we fuck up here?
+// - maybe thats why training Conv-TasNet with SI-SNR loss did not work as expected
 
-- explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
-- 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+// - explain that the MSE checkpoint does return comparable SISNR values from the librispeech dataset as the original ConvTasNet paper reports
+// - 15.3 dB in @luoConvTasNetSurpassingIdeal2019 vs 10.0 dB in @conv_tasnet_metrics
+
+The @SI-SNR values reported in @conv_tasnet_loss_comparison and @conv_tasnet_storm_comparison warrant closer scrunity. Specifically, when our Conv-TasNet re-implementation was trained using @SI-SNR loss, convergence did not proceed as expected, with the loss failing to decrease in a manner consistent with the improvements observed under @MSE training. This raises the question of whether the @SI-SNR calculations used for that training were correctly implemented and whether this accounts for the unexpected training behaviour.
+
+To validate the implementation, the @MSE\-trained Conv-TasNet checkpoint was evaluated on the LibriSpeech test set and yielded an @SI-SNR of 10.0 dB. This falls short of the 15.3 dB reported in the original Conv-TasNet paper @luoConvTasNetSurpassingIdeal2019, a gap that is too large to attribute solely to differences in training data or hyperparameters. While the model was not trained under identical conditions to the original work, the magnitude of the discrepancy suggests that a systematic issue may be present in the @SI-SNR calculation. It should be noted that while the @MSE checkpoint does fall short in @SI-SNR compared to the original paper, it still demonstrates a significant improvement over the reverberant input, indicating that the model is learning to dereverberate to some extent.
 
 
 == Dereverberation Network<eval_derev_net>
@@ -219,18 +220,36 @@ meaning that some files lack proper wide band reverberation and might "confuse" 
       - halt ohne make data ausguführen und alles voll zu müllen
 ]
 
+// - gating effect
+// - adds highs in some examples
+//   - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
+//   - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
+//   - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
+// - if the input signal is not so reverberant, the output only gets dereverberated very little
+// - quality of dereverberation is highly dependent on the quality of the input signal
+
+
+The dereverberation network was evaluated both using spectograms (@derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated) on a selected slice of the test set and on selected metrics (@tab_derev_sisnr_results), allowing comparison both with StoRM and Conv-TasNet.
+
+In @derev_tcn_v4_sisnr_updated one can see a dereverberated speech signal in the center. Individual transients are clearly visible and the rhythmic structure of the syllables is preserved. Reverberation tails are reduced in both magnitude and duration, though not fully eliminated. The spectral envelope remains close to that of the clean reference, indicating that the model does not introduce significant spectral distortion. An audible gating or pumping effect is noticeable, likely caused by the model suppressing regions between transients.
+
+A further observation is that the model introduces additional high-frequency energy in some examples. This is consistent with the network having been trained on signals upsampled to 44.1 kHz, as described in @preprocessing_reverberation. The model may have learned high-frequency patterns from the upsampling process rather than from genuine acoustic content. The resulting effect is occasionally perceived as a subtle enhancement, though it also introduces unwanted artefacts in other cases. This motivates the discussion in @disc_upsampling of whether reverberation should instead have been applied at the native 44.1 kHz prior to training.
+
+One can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the @SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for the example shown.
+
+The degree of dereverberation is closely tied to the characteristics of the input signal. Samples with little reverberation show only marginal improvement after processing, suggesting that the model scales its output to the perceived degree of reverberation in the input rather than applying a fixed transformation. More broadly, the perceptual quality of the enhanced signal is strongly dependent on the quality of the input. Clean or mildly reverberant signals tend to be processed faithfully, while heavily degraded inputs yield less consistent results.
+
+@tab_derev_sisnr_results shows a substabtial @SI-SNR improvement of $+8.80$ dB on average, which is slightly worse than the validation loss of $16.61$ dB, but still confirms that the dereverberation network is able to generalise to unseen data. @PESQ improves from $1.88$ to $2.94$, an increase of $+1.06$, indicating a meaningful gain in predicted speech quality. Notably, the standard deviation of both @SI-SNR and @PESQ is reduced in the enhanced signal relative to the baseline, suggesting that the model produces more consistent outputs across varying degrees of input reverberation.
+
+The @PEAQ metrics tell a different story. The ODG decreases marginally by $-0.11$, and the DI shows a negligible change of $+0.01$, with both deltas exhibiting standard deviations larger than the mean shift itself. This is contrary to the improvements observed in @SI-SNR and @PESQ, again raising the question of whether @PEAQ is a suitable metric for evaluating dereverberation performance, as discussed in @eval_analyze_loss_functions. The @MSE increase from $0.0010$ to $0.0216$ is a direct consequence of the SI-SNR training objective, which optimises signal-to-noise ratio rather than sample-wise reconstruction fidelity, and is therefore expected.
+
+
+When comparing with StoRM and Conv-TasNet, the dereverberation network achieves...
+
+
+
 
 The topic of reverberation being present in our dataset was touched upon in @eval_percep_qual_net_cnn14. It is discussed that the AudioSet and FSD50K datasets were not necessarily recorded in anechoic conditions. This can lead to mislabeling of data for use in training of the quality networks. Another problem arising is that the dereverberation network is shown echoic samples as ground truth therefore not learning to eliminate reverberation but only reducing it. In the worst case, this occurs in $46.9 %$ of instances (cf. @dataset_comp). It can be hypothesized that a considerable proportion of AudioSet samples originate from voiceover recordings, which are typically captured under near-anechoic conditions. Furthermore, FreeSound, as a sample-sharing platform, likely contains a high prevalence of acoustically dry recordings.
 
 Further investigation is warranted to systematically compare datasets comprising exclusively anechoic recordings against those biased toward dry samples yet containing a non-negligible proportion of reverberant signals.
 
-- one can see the effect of the additional #{ 55 - 16 } epochs of training when comparing @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated. While the reverberation tail is only slightly further reduced in magnitude, the high-frequency noise is substantially reduced, but still present. This is reflected in the SI-SNR improvement, which increases from $11.8$ dB to $16.2$ dB for this example.
-
-
-- gating effect
-- adds highs in some examples
-  - makes sense because of "learning" at 44.1 kHz (@preprocessing_reverberation)
-  - "upsampling" effect almost pleasant in some cases, but also adds unwanted artifacts in others
-  - discussion: maybe reverberating at 44.1 kHz would have made sense (@disc_upsampling)
-- if the input signal is not so reverberant, the output only gets dereverberated very little
-- quality of dereverberation is highly dependent on the quality of the input signal

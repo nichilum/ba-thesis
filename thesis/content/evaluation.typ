@@ -251,11 +251,10 @@ The degree of dereverberation is closely tied to the characteristics of the inpu
 
 The @PEAQ metrics tell a different story. The @ODG decreases marginally by $-0.11$, and the @DI shows a negligible change of $+0.01$, with both deltas exhibiting standard deviations larger than the mean shift itself. This is contrary to the improvements observed in @SI-SNR and @PESQ, again raising the question of whether @PEAQ is a suitable metric for evaluating dereverberation performance, as discussed in @analyze_loss_functions. The @MSE increase from $0.0010$ to $0.0216$ is a direct consequence of the @SI-SNR training objective, which optimises signal-to-noise ratio rather than sample-wise reconstruction fidelity, and is therefore expected.
 
+Informal listening tests conducted on a selected set of samples yield the unexpected finding that music signals are well-suited to the proposed dereverberation approach. While the structural integrity of the recordings is preserved, reverberation-induced transient extensions and elongated decay times of percussive elements are effectively attenuated. Notably, this improvement remains perceptually noticeable even in fully mixed recordings, where the percussive components are masked by concurrent instrumental layers.
 
 When comparing with StoRM and Conv-TasNet, the dereverberation network achieves...
 
-- in diverse audio
-  - music is well dereverberated (describe snare example)
 
 Evaluation of the dereverberation network lead to the identification of multiple shortcomings. As discussed in @meth_percep_quality_net, the motivation for developing the perceptual and objective quality network extended beyond identifying an optimal indicator of dereverberation performance; it also eliminated the requirement for a clean reference signal during training. This improvement could have allowed us to train fully unsupervised on a larger subset of the AudioSet dataset, as it would have included many reverberant signals. This approach was not explored within the scope of this work.
 

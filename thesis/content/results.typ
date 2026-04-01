@@ -271,46 +271,57 @@ First a baseline using the @SI-SNR was established. Training was done over 62 ep
   table(
     columns: (auto, 1fr, 1fr, 1fr),
     align: (left, right, right, right),
-    table.header(
-      [*Metric*], [*Baseline*], [*Enhanced*], [*Δ*],
-    ),
-    [SI-SNR (dB)],    [9.98 ± 8.67],  [18.78 ± 7.01],  [+8.80 ± 3.02],
-    [PESQ],           [1.88 ± 0.84],  [2.94 ± 0.78],   [+1.06 ± 0.38],
-    [PEAQ ODG],       [-3.57 ± 0.75], [-3.65 ± 0.34],  [-0.11 ± 0.55],
-    [PEAQ DI],        [-2.92 ± 1.41], [-2.85 ± 0.92],  [+0.01 ± 1.00],
-    [MSE],            [0.0010 ± 0.0031], [0.0216 ± 0.0233], [-0.0206 ± 0.0217],
+    table.header([*Metric*], [*Baseline*], [*Enhanced*], [*Δ*]),
+    [SI-SNR (dB)], [9.98 ± 8.67], [18.78 ± 7.01], [+8.80 ± 3.02],
+    [PESQ], [1.88 ± 0.84], [2.94 ± 0.78], [+1.06 ± 0.38],
+    [PEAQ ODG], [-3.57 ± 0.75], [-3.65 ± 0.34], [-0.11 ± 0.55],
+    [PEAQ DI], [-2.92 ± 1.41], [-2.85 ± 0.92], [+0.01 ± 1.00],
+    [MSE], [0.0010 ± 0.0031], [0.0216 ± 0.0233], [-0.0206 ± 0.0217],
     // [Inference (s)],  table.cell(colspan: 3)[0.0981 ± 0.0574 \ #text(size: 0.85em, fill: gray)[min 0.0137 · max 0.5153]],
     // [RTF],            table.cell(colspan: 3)[0.0098 ± 0.0041]
-  )
+  ),
 )<tab_derev_sisnr_results>
 
 
 #grid(
   columns: 2,
-[#diagram(
-  caption: [],
-  image(
-    "../figures/derevnet-derev_tcn_v4_loss_SISNR.svg",
-  ),
-)<derev_tcn_v4_loss_SISNR>],
-[#diagram(
-  caption: [],
-  image(
-    "../figures/derevnet-derev_tcn_v4_loss_percep.svg",
-  ),
-)<derev_tcn_v4_loss_percep>],
+  column-gutter: 1cm,
+  [#diagram(
+    caption: [
+      Loss curve of the dereverberation network trained with @SI-SNR loss. Smoothed using an exponential moving average with $alpha=0.05$.
+    ],
+    short-caption: [Loss curve of the dereverberation network trained with @SI-SNR:short loss],
+    image(
+      "../figures/derevnet-derev_tcn_v4_loss_SISNR.svg",
+    ),
+  )<derev_tcn_v4_loss_SISNR>],
+  [#diagram(
+    caption: [
+      Loss curve of the dereverberation network trained with the objective perceptual network. Smoothed using an exponential moving average with $alpha=0.05$.
+    ],
+    short-caption: [Loss curve of the dereverberation network trained with the objective perceptual network],
+    image(
+      "../figures/derevnet-derev_tcn_v4_loss_percep.svg",
+    ),
+  )<derev_tcn_v4_loss_percep>],
 )
 
 Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated, where @derev_tcn_v4_sisnr is a earlier checkpoint at 16 epochs and a validation loss of 14.3848 dB.
 
 #diagram(
-  caption: [],
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of the dereverberation network trained with @SI-SNR loss at epoch 16 (validation loss = -14.3848 dB). The rightmost plot shows the original clean signal for reference.
+  ],
+  short-caption: [Spectrogram comparison of input and output of the dereverberation network trained with @SI-SNR:short loss at epoch 16],
   image(
     "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=16-val_loss=-14.3848/spectrograms/353-128309-0032.png",
   ),
 )<derev_tcn_v4_sisnr>
 #diagram(
-  caption: [],
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of the dereverberation network trained with @SI-SNR loss at epoch 55 (validation loss = -16.6097 dB). The rightmost plot shows the original clean signal for reference.
+  ],
+  short-caption: [Spectrogram comparison of input and output of the dereverberation network trained with @SI-SNR:short loss at epoch 55],
   image(
     "../../experiments/perceptual-quality/test_output/derev_tcn_v4_SISNR-epoch=55-val_loss=-16.6097/spectrograms/353-128309-0032.png",
   ),
@@ -319,7 +330,10 @@ Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4
 Both perceptual quality network and objective quality network were not successful. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network), but showed no effective dereverberation. In fact both loss metrics failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
 
 #diagram(
-  caption: [],
+  caption: [
+    Spectrogram comparison of input (left) and output (middle) of the dereverberation network trained with the objective perceptual network at epoch 70 (validation loss = 0.0154). The rightmost plot shows the original clean signal for reference.
+  ],
+  short-caption: [Spectrogram comparison of input and output of the dereverberation network trained with the objective perceptual network at epoch 70],
   image(
     "../../experiments/perceptual-quality/test_output/derev_tcn_v4_percep-epoch=70-val_loss=0.0154/spectrograms/353-128309-0032.png",
   ),

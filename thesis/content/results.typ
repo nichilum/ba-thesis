@@ -253,7 +253,7 @@ First a baseline using the @SI-SNR was established. Training was done over 62 ep
 @tab_derev_sisnr_results is showing performance metrics for model outputs and is further discussed as part of the evaluation in @eval_derev_net.
 
 #figure(
-  caption: [Evaluation metrics for the SI-SNR baseline model (epoch 55, validation loss =-16.6097 dB). PEAQ metrics computed on n = 1758 samples.],
+  caption: [Evaluation metrics for the SI-SNR baseline model (epoch 55, validation loss = 16.6097 dB). PEAQ metrics computed on n = 1758 samples.],
   table(
     columns: (auto, 1fr, 1fr, 1fr),
     align: (left, right, right, right),

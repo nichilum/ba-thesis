@@ -6,6 +6,9 @@
 
 = Theoretical Background
 
+This section establishes the theoretical foundations necessary to understand the thesis. Acoustical fundamentals are covered first, addressing the origins of reverberation to ensure a clear understanding of the problem and to introduce the digital reverberators employed in the dataset creation. Sound quality is then described to convey the significance and practical application of the relevant metrics.
+The types of neural networks used throughout the thesis are subsequently introduced, followed by an overview of loss functions and their role in model training, highlighting the importance of selecting an appropriate loss function. Finally, the various quality metrics analyzed in @analyze_loss_functions are presented.
+
 == Acoustics
 
 === Reverberation<fun_reverberation>
@@ -14,13 +17,13 @@ Reverberation is the "hanging-on" of sound in a room after the exciting signal h
 
 ==== Natural Reverberation<fun_natual_reverb>
 
-Reverberation is casued by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRaumUnd2025 of sound that overlap with the direct sound. This natural phenomenon can be observed in every environment that allows for sound reflections. An example is given by #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date"):
+Reverberation is caused by late reflections ($>50-80$ ms) @kuhn-rahloffSchallRaumUnd2025 of sound that overlap with the direct sound. This natural phenomenon can be observed in every environment that allows for sound reflections. An example is given by #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date"):
 
-@fun_growth_decay_sound (A) shows a spherical sound source S and a listener L. Once S is energized sound travels outward from S in all directions. Sound pressure at L instantly jumps to a value ($D$) that is less than that which left S due to spherical divergence and small losses in the air. Sound pressure continues to grow with each successive arrival of reflected components unit an equilibrium is reached (cf. @fun_growth_decay_sound (B)).
+@fun_growth_decay_sound (A) shows a spherical sound source S and a listener L. Once S is energized, sound travels outward from S in all directions. Sound pressure at L instantly jumps to a value ($D$) that is less than that which left S due to spherical divergence and small losses in the air. Sound pressure continues to grow with each successive arrival of reflected components until an equilibrium is reached (cf. @fun_growth_decay_sound (B)).
 
-Once S is turned off the sound rays moving through the room lose their support and with each successive reflection they lose energy until they are considered dead. These reflections are also called the reverb tail. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components.
+Once S is turned off, the sound rays moving through the room lose their support, and with each successive reflection, they lose energy until they are considered dead. These reflections are also called the reverb tail. @fun_growth_decay_sound (C) shows the exponential decrease of the first reflection components.
 
-While the growth of sound is perceived as almost instant the decay is slow.
+While the growth of sound is perceived as almost instant, the decay is slow.
 
 #diagram(
   caption: [(A) Direct sound and exemplary first order reflections from source S arriving at listening position L. (B) The sound pressure at L grows stepwise. (C) The sound decays exponentially after the source ceases. Taken from #cite(<everestMasterHandbookAcoustics1989>, form: "prose", style: "chicago-author-date").],
@@ -28,11 +31,11 @@ While the growth of sound is perceived as almost instant the decay is slow.
   image("/thesis/figures/sound_growth_and_decay.svg"),
 )<fun_growth_decay_sound>
 
-Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time is takes for sound to decay by 60 dB after the source stops.
+Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time it takes for sound to decay by 60 dB after the source stops.
 
 ==== Delay Networks<fun_delay_reverb>
 
-In the 1960s Schroeder first launched the field of digital artificial reverberation by introducing recursive comb filters and allpass filters as means for cheap simulation of multiple echoes.
+In the 1960s, Schroeder first launched the field of digital artificial reverberation by introducing recursive comb filters and allpass filters as means for cheap simulation of multiple echoes.
 The allpass filters of the form
 $
   y(n) = g x(n) +x(n-N)-g y(n-N)
@@ -93,7 +96,7 @@ The Schroeder reverberator used in this thesis is called "Freeverb", a public do
     width: 15cm,
   ),
 )<freeverb_block_diagram>
-@freeverb_block_diagram denotes the Schroeder-Moorer lowpass-feedback-comb-filters as $"LBCF"^(f, d)_(N)$. They are constructed using a delay line, an elementary functional unit which models acoustic propagation delay, whose output is lowpass-filtered and summed with the delay line's input @smithPhysicalAudioSignal2010.
+@freeverb_block_diagram shows a block diagram of the left stereo channel of the Freeverb reverberator. The Schroeder-Moorer lowpass-feedback-comb-filters are denoted as $"LBCF"^(f, d)_(N)$. They are constructed using a delay line, an elementary functional unit that models acoustic propagation delay, whose output is low-pass filtered and summed with the delay line's input @smithPhysicalAudioSignal2010.
 
 The transfer function of a lowpass-feedback-comb-filter is defined as
 
@@ -101,7 +104,7 @@ $ "LBCF"^(f, d)_(N) eq.delta (z^(-N))/(1-f dot (1-d)/(1-d dot z^(-1)) dot z^(-N)
 
 ==== Convolutional Reverberation<fun_conv_reverb>
 
-#cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") proposed the idea of convolving a signal with a simulated @RIR to achieve natural sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s hardware became powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016
+#cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") proposed the idea of convolving a signal with a simulated @RIR to achieve natural-sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s did hardware become powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016.
 
 The convolution of two signals $f$ and $g$ is defined as @wintnerAnalyticConvolutionsBernoulli1934:
 $ (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau $
@@ -110,37 +113,37 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 
 ==== Room Simulations<fun_room_reverb>
 
-There are different approaches for modeling the acoustics of a room. The two main ones are either based on numerically solving the wave equation or on the assumptions of geometrical acoustics. Wave-based modeling techniques are able to provide the most accurate results. Their drawback is high computational cost. Therfore faster but less accurate methods are often utilized @saviojaOverviewGeometricalRoom2015.
+There are different approaches for modeling the acoustics of a room. The two main ones are either based on numerically solving the wave equation or on the assumptions of geometrical acoustics. Wave-based modeling techniques are able to provide the most accurate results. Their drawback is high computational cost. Therefore, faster but less accurate methods are often utilized @saviojaOverviewGeometricalRoom2015.
 
-#cite(<scheiblerPyroomacousticsPythonPackage2018>, form: "prose", style: "chicago-author-date") introduce the pyroomacoustics library which uses the @ISM to synthetically generate @RIR:pl of specified positions in a room which are then convolved (see @fun_conv_reverb) with the microphone signal to create the simulated output.
-The @ISM method recursively mirrors sound sources across each plane of a room model, thereby creating image sources. The amount of sources therefore grows exponentially. Each image source must be traced to the reciever position to assure a valid reflection path. It is then known, based on the distance of the image source, when the reflected sound should arrive at the listening position @allenImageMethodEfficiently1979.
+#cite(<scheiblerPyroomacousticsPythonPackage2018>, form: "prose", style: "chicago-author-date") introduce the pyroomacoustics library, which uses the @ISM to synthetically generate @RIR:pl of specified positions in a room, which are then convolved (see @fun_conv_reverb) with the microphone signal to create the simulated output.
+The @ISM method recursively mirrors sound sources across each plane of a room model, thereby creating image sources. The number of sources therefore grows exponentially. Each image source must be traced to the receiver position to assure a valid reflection path. It is then known, based on the distance of the image source, when the reflected sound should arrive at the listening position @allenImageMethodEfficiently1979.
 
-Once image source locations and visibilities have been determined the impulse response is defined as
+Once image source locations and visibilities have been determined, the impulse response is defined as
 
 $
   a_bold(r) (bold(s)_0, n) = sum_(bold(s) in cal(V)_bold(r) (bold(s)_0)) ((1-alpha)^("gen"(bold(s))))/(4 pi ||bold(r) - bold(s)||) delta_"LP" (n-F_s (||bold(r) - bold(s)||)/c)
 $
 
-, where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
+, where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound, and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
 
-Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflect off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections. It is available in pyroomacoustics as a complement to the @ISM @vorlanderAuralizationFundamentalsAcoustics2008.
+Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflects off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections. It is available in pyroomacoustics as a complement to the @ISM @vorlanderAuralizationFundamentalsAcoustics2008.
 
 === Sound Quality<fun_sound_quality>
 
-@fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test or processed) audio signal sounds in comparison to its clean counterpart.
-Multiple of these metrics are perceptually motivated. This section gives an overview over parameters that impact the perception of audio. It is important to note that not all parameters listed can or should be used by quality metrics to qualify how good audio sounds (cf. @analyze_loss_functions).
+@fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test, or processed) audio signal sounds in comparison to its clean counterpart.
+Multiple of these metrics are perceptually motivated. This section gives an overview of parameters that impact the perception of audio. It is important to note that not all parameters listed can or should be used by quality metrics to qualify how good audio sounds (cf. @analyze_loss_functions).
 
-There are many different signal corruptions that impact perceived sound quality. Some occur naturally like reverberation or background noise, while others are of digital origin like undersampling, insufficient bit depth or paket loss.
+There are many different signal corruptions that impact perceived sound quality. Some occur naturally, like reverberation or background noise, while others are of digital origin, like undersampling, insufficient bit depth, or packet loss.
 
-The impact of different signal corruptions differs between application. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation as lower level consonants are masked by the reverb tail. On the other hand, a completely dead room, or an outdoor environment, is not optimal for intelligibility as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music as different genres benefit from different $R T$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
+The impact of different signal corruptions differs between applications. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal, as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation, as lower-level consonants are masked by the reverb tail. On the other hand, a completely dead room or an outdoor environment is not optimal for intelligibility, as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music, as different genres benefit from different $R T$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
 
-The human auditory complex perceives signals in the 20 to 20 kHz range @isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004. A digital representation of a signal should therfore be sampled at at least 40 kHz @shannonCommunicationPresenceNoise1949. While it is possible to represent speech using 8 kHz of bandwidth @itu-tG711PulseCode1988 music and other broadband signals would lack important high frequency informations.
+The human auditory complex perceives signals in the 20 to 20 kHz range @isoAcousticsReferenceZero2019a @pumphreyUpperLimitFrequency1950 @mollerHearingLowInfrasonic2004. A digital representation of a signal should therefore be sampled at a rate exceeding 40 kHz @shannonCommunicationPresenceNoise1949. While it is possible to represent speech using 8 kHz of bandwidth @itu-tG711PulseCode1988 music and other broadband signals would lack important high-frequency informations.
 
-While converting analog signals into digital representations bit depth is another important factor. An 8 bit quantization allows for $49.93 "dB"$ of dynamic range. While speech requires a dynamic range of about 40 to 50 dB @dunnStatisticalMeasurementsConversational1940 @pavlovicSIISpeechIntelligibility2018, music sometimes featues signal-to-noise ratios of up to 80 dB. Through the introduction of the compact disc a quantization of 16 bit (offering $98.09$ dB of dynamic range) has become the standard @frenzelAudioElectronics2010.
+While converting analog signals into digital representations, bit depth is another important factor. An 8-bit quantization allows for $49.93 "dB"$ of dynamic range. While speech requires a dynamic range of about 40 to 50 dB @dunnStatisticalMeasurementsConversational1940 @pavlovicSIISpeechIntelligibility2018, music sometimes features signal-to-noise ratios of up to 80 dB. Through the introduction of the compact disc, a quantization of 16 bits (offering $98.09$ dB of dynamic range) has become the standard @frenzelAudioElectronics2010.
 
-Most of the above named signal qualities also impact @STT performance of neural networks @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021. A signal that is badly reverberated and noisy is harder to transcribe than an anechoic one. While humans have the added benefit of being able to deduce what was said by filling the gaps between understood words @longArchitecturalAcoustics2006 machines generally lack this ability.
+Most of the above-named signal qualities also impact @STT performance of neural networks @neumanCombinedEffectsNoise2010 @puglisiEffectReverberationNoise2021. A signal that is badly reverberated and noisy is harder to transcribe than an anechoic one. While humans have the added benefit of being able to deduce what was said by filling the gaps between understood words @longArchitecturalAcoustics2006 machines generally lack this ability.
 
-Percieved sound quality is not only guided by signal corruptions but also by the overall frequency makeup of the signal. Although annoyance due to a sound can be highly subjective it was shown that critical bands defined by the cochlea define frequency regions in which two simultaneously played sounds are perceived as dissonant @longArchitecturalAcoustics2006.
+Perceived sound quality is not only guided by signal corruptions but also by the overall frequency makeup of the signal. Although annoyance due to a sound can be highly subjective, it was shown that critical bands defined by the cochlea define frequency regions in which two simultaneously played sounds are perceived as dissonant @longArchitecturalAcoustics2006.
 
 == Neural Networks<fun_neural_networks>
 Neural networks are parameterized function approximators composed of interconnected layers of simple computational units. During training, their weights and biases are iteratively adjusted so that the network maps an input to a desired output through minimizing a loss function @goodfellowDeepLearning2016. In practice, modern architectures differ mainly in how they organize these computations and which inductive bias they impose on the data. For this thesis, the most relevant families are @CNN:pl, @RNN:pl, and @TCN:pl.
@@ -155,7 +158,7 @@ In audio machine learning, @CNN:pl are widely used on time-frequency representat
 
 ==== @RNN:short<fun_rnn>
 
-@RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can aggregate information over longer temporal spans than shallow feed-forward models.
+@RNN:pl are designed for sequential data. In addition to the current input, each recurrent step receives a hidden state that carries information from previous time steps, allowing the network to model temporal dependencies. This makes @RNN:pl conceptually well suited for signals, text, and time series, where the interpretation of one sample often depends on earlier context, @rumelhartLearningRepresentationsBackpropagating1986 @goodfellowDeepLearning2016. In audio applications, recurrent layers have been used for tasks such as speech enhancement, quality prediction, and sequence modeling because they can better aggregate information over longer temporal spans than shallow feed-forward models.
 
 #diagram(
   caption: [@RNN architecture for an input sequence $x$, hidden connections parametrized by a weight matrix $U$ and hidden-to-hidden recurrent connections parametrized by a weight matrix $W$. Shown on the right is the unrolled version of an @RNN cell across three time steps. Replicated from #cite(<goodfellowDeepLearning2016>, form: "prose", style: "chicago-author-date").],
@@ -265,7 +268,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 ==== @TCN:short<fun_tcn>
 
-@TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally, where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
+@TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally (cf. @tcn_figure_dilation), where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
 
 #import "@preview/fletcher:0.5.8": diagram as fletcher-diagram, edge, node
 
@@ -326,7 +329,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
     edge((2, 9), "d", "-|>"),
     // edge((2,6), (0,8), "drr,u", "-|>"),
   )),
-)
+)<tcn_figure_residual_block>
 
 
 #let circ(pos, fill) = node(
@@ -454,7 +457,7 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
       node((7.5, 2.5), [$d=4$]),
     ),
   ),
-)
+)<tcn_figure_dilation>
 
 
 ==== Autoencoders
@@ -499,7 +502,7 @@ $ L(bold(x), g(f(tilde(bold(x))))) $
   ),
 )<dae_training_fig>
 
-@dae_training_fig shows the training procedure of a @DAE. $C(tilde(bold(x))|bold(x))$ is the corruption process which gives a distribution over corrupted versions $tilde(bold(x))$, given an original input $bold(x)$. The loss function $L$ is then minimized with respect to the parameters of the encoder $f$ and decoder $g$ from training pairs $(bold(x), tilde(bold(x)))$ @goodfellowDeepLearning2016.
+@dae_training_fig shows the training procedure of a @DAE. $C(tilde(bold(x))|bold(x))$ is the corruption process that gives a distribution over corrupted versions $tilde(bold(x))$, given an original input $bold(x)$. The loss function $L$ is then minimized with respect to the parameters of the encoder $f$ and decoder $g$ from training pairs $(bold(x), tilde(bold(x)))$ @goodfellowDeepLearning2016.
 
 #import "@preview/neural-netz:0.3.0": draw-network
 
@@ -626,9 +629,9 @@ Autoencoders can also make use of skip connections between the encoder and decod
 === Supervised and Self-Supervised Learning<self_supervised_and_supervised_learning>
 #leo
 
-Training data can be given to a network in different ways. The most common way is to use supervised learning where each input data point is paired with a target output. The network learns to map inputs to their corresponding targets by minimizing a loss function that quantifies the error between the predicted output and the true target. We call this process *supervied learning*, because one can imagine a supervisor who shows the network the correct answer for each input and the network learns to mimic this behavior @goodfellowDeepLearning2016.
+Training data can be given to a network in different ways. The most common way is to use supervised learning, where each input data point is paired with a target output. The network learns to map inputs to their corresponding targets by minimizing a loss function that quantifies the error between the predicted output and the true target. We call this process *supervised learning* because one can imagine a supervisor who shows the network the correct answer for each input, and the network learns to mimic this behavior @goodfellowDeepLearning2016.
 
-*Self-supervised* learning is a form of unsupervised learning where, instead of relying on external labels, the data itself is used to generate supervisory signals. This is often done by augmentation of the input data to formulate this signal. Self-supervised learning has been successfull in recent years, especially in labeled data scarce domains such aus audio processing, as shown by #cite(<baevskiWav2vec20Framework2020>, form: "prose", style: "chicago-author-date"). However, as our task is a supervised regression from reverberant to dry audio, we cannot classify our approach as self-supervised.
+*Self-supervised* learning is a form of unsupervised learning where, instead of relying on external labels, the data itself is used to generate supervisory signals. This is often done by augmentation of the input data to formulate this signal. Self-supervised learning has been successful in recent years, especially in labeled data-scarce domains such as audio processing, as shown by #cite(<baevskiWav2vec20Framework2020>, form: "prose", style: "chicago-author-date"). However, as our task is a supervised regression from reverberant to dry audio, we cannot classify our approach as self-supervised.
 
 === Training of a Neural Network
 #jojo
@@ -636,34 +639,34 @@ Training data can be given to a network in different ways. The most common way i
 The loss function is parameterized through an input-output function as well as the weights of the model.
 Optimizing the loss function means optimizing the weights.
 
-We can image a multidimensional error landscape formed by the weights. To traverse this error landscape into a local minimum we use the partial derivative of the loss function, also called gradient. This process coined gradient descent is discussed in @fun_gradient_descent.
+We can imagine a multidimensional error landscape formed by the weights. To traverse this error landscape into a local minimum, we use the partial derivative of the loss function, also called the gradient. This process, coined gradient descent, is discussed in @fun_gradient_descent.
 
-This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid the process modern networks use automatic differentiation based on the backpropagation method as introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date").
+This gradient was historically computed analytically (see @fun_loss_function). Modern multi-million parameter networks make this approach impossible. To aid the process, modern networks use automatic differentiation based on the backpropagation method as introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date").
 
 ==== Loss Function<fun_loss_function>
 
-A loss function, also called cost function, is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
+A loss function, also called a cost function, is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction from its ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error.
 
-To introduce the application of loss functions we want to discuss one of the eariest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
+To introduce the application of loss functions, we want to discuss one of the earliest and simplest neural networks called Adaline @widrowAdaptiveAdalineNeuron1960. This single-layer neural network defines its input-output function as:
 
 $ y(bold(x),bold(w)) = sum_(n=1)^N x_n w_n + b $
 
-where $bold(x)$ is the input vector, $bold(w)$ the weight vector, $N$ the number of inputs, $b$ some bias and $y$ the model ouput. Assuming that $x_0 = 1$ and $w_0 = b$ the output is simplified to:
+where $bold(x)$ is the input vector, $bold(w)$ the weight vector, $N$ the number of inputs, $b$ some bias, and $y$ the model output. Assuming that $x_0 = 1$ and $w_0 = b$ the output is simplified to:
 
 $ y(bold(x),bold(w)) = sum_(n=1)^N x_n w_n $
 
-. Adaline uses the @LMS algorithm to define its loss, also called cost function:
+. Adaline uses the @LMS algorithm to define its loss function:
 
 $ C(d, y) = (d - y(bold(x),bold(w)))^2 $
 
-where $d$ is the desired target. For analytical simplicity the loss function is often denoted as:
+where $d$ is the desired target. For analytical simplicity, the loss function is often denoted as:
 
 $
   C(d, y) & = 1/2 (y(bold(x),bold(w)) - d)^2 \
           & = 1/2 (x_1 w_1 + x_2 w_2 + ... + x_n w_n - d)^2
 $<fun_loss_func_equ>
 
-. The partial derivative, also called gradient, can be calculated analytically (here for the first weight) by deriving the input-output function:
+. The partial derivative can be calculated analytically (here for the first weight) by deriving the input-output function:
 
 $
   (partial C)/(partial w_1) & = 1/2 dot 2 dot (y(bold(x),bold(w)) - d) dot y(bold(x),bold(w))'_w_1 \
@@ -675,31 +678,31 @@ $
 $ bold(w) arrow.l bold(w) + eta (d - y(bold(x),bold(w))) bold(x) $<fun_apply_gradient_to_loss_eq>
 
 where $eta$ is some factor called the learning rate. This update rule implements gradient descent for linear regression.
-It should be noted that $y$ is quadratic in the above loss function. Therefore no local minima are offered and only a global minium is approached @amariBackpropagationStochasticGradient1993.
+It should be noted that $y$ is quadratic in the above loss function. Therefore no local minima are offered, and only a global minimum is approached @amariBackpropagationStochasticGradient1993.
 
-It can be concluded from the example above that analytical derivation of such loss functions becomes near impossible for complex input-output functions featuring non-linearities (activation functions) and millions of parameters. To solve this issue the backpropagation algorithm is used.
+It can be concluded from the example above that analytical derivation of such loss functions becomes near impossible for complex input-output functions featuring non-linearities (activation functions) and millions of parameters. To solve this issue, the backpropagation algorithm is used.
 
 ==== Backpropagation and Autograd<fun_backpropagation>
 
-Training a neural network happens in two steps. Initially the input is run through each of the networks functions. Through this process, called forward propagation, the neural network makes its best guess about the correct output.
+Training a neural network happens in two steps. Initially the input is run through each of the network's functions. Through this process, called forward propagation, the neural network makes its best guess about the correct output.
 
-Once an input-output pair is computed the neural network calculates the gradient of the error function in regards to its guess by traversing backwards through its layers, collecting the derivatives of the error with respect to the parameters of the functions which are later used to change each weight. This operation is also known as gradient descent (see @fun_gradient_descent).
+Once an input-output pair is computed, the neural network calculates the gradient of the error function in regard to its guess by traversing backwards through its layers, collecting the derivatives of the error with respect to the parameters of the functions, which are later used to change each weight. This operation is also known as gradient descent (see @fun_gradient_descent).
 
 The following section will discuss backpropagation as introduced by #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date").
 
-Expanding on the network example of @fun_loss_function we define our multi-layer network as having a leftmost layer of input units, any number of intermediate layers and a rightmost layer of output units. Connections within a layer or from right to left are forbidden, but connections can skip intermediate layers.
+Expanding on the network example of @fun_loss_function we define our multi-layer network as having a leftmost layer of input units, any number of intermediate layers, and a rightmost layer of output units. Connections within a layer or from right to left are forbidden, but connections can skip intermediate layers.
 The states of the units in each layer are determined by applying equations @fun_b_s_e_1 and @fun_b_s_e_2
 
 $ x_j = sum_i y_i w_(j i) $<fun_b_s_e_1>
 $ y_j = 1/(1+e^(-x_j)) $<fun_b_s_e_2>
 
-, also called the forward pass, where @fun_b_s_e_2 is the sigmoid function which today is often replace by the @ReLU activation function.
+, also called the forward pass, where @fun_b_s_e_2 is the sigmoid function, which today is often replaced by the @ReLU activation function.
 
 The total error $E$ is defined as (cf. @fun_loss_func_equ)
 
 $ E = 1/2 sum_c sum_j (y_(j,c) - d_(j,c))^2 $<fun_b_total_loss>
-where $c$ is an index over all input-output paris, $j$ is an index over output units, $y$ is the actual state of an output unit and $d$ is the desired state.
-The backward pass starts by computing the parital derivative of $E$ in respect to $x_j$ for each output unit. Differentiating @fun_b_total_loss for a single input-output pair
+where $c$ is an index over all input-output pairs, $j$ is an index over output units, $y$ is the actual state of an output unit, and $d$ is the desired state.
+The backward pass starts by computing the partial derivative of $E$ with respect to $x_j$ for each output unit. Differentiating @fun_b_total_loss for a single input-output pair
 
 $
   E & =1/2(y_j -d_j)^2 \
@@ -713,37 +716,33 @@ $
                             & = (partial E)/(partial y_j) dot y_j (1-y_j)
 $
 
-. This shows the affecting change is just a linear function of the states of the layer before making it "easy" @rumelhartLearningRepresentationsBackpropagating1986 to compute how the error will be affected by changing states in the intermediate layers. For a weight $w_(j i)$ the derivative is
+. This shows the affecting change is just a linear function of the states of the layer before, making it "easy" @rumelhartLearningRepresentationsBackpropagating1986 to compute how the error will be affected by changing states in the intermediate layers. For a weight $w_(j i)$ the derivative is
 
 $
   (partial E)/(partial w_(j i)) & = (partial E)/(partial x_(j)) dot y_i
 $
 
-The output of the $i$#super("th") unit taking into account all emerging connections results in
+. The output of the $i$#super("th") unit, taking into account all emerging connections, results in
 
 $ (partial E)/(partial y_i) = sum_j (partial E)/(partial x_j) dot w_(j i) $
 
 . This shows how $(partial E)/(partial y)$ of the output layer can be computed when $(partial E)/(partial y_i)$ of the layer before is given. This procedure can therefore be repeated for each layer going backwards.
 
-Historically these computations have been done manually by the researchers @baydinAutomaticDifferentiationMachine2015. This task is tedious and error prone. Here automatic differentiation algorithms are of assistance. Pytorch's autograd system stores all functional computations that create the neural network's guess in a directed acyclic graph "whose leaves are the input tensors and roots are the output tensors. By tracing this graph from roots to leaves, you can automatically compute the gradients using the chain rule"
-@AutogradMechanicsPyTorch. It is important to note that this automatic process requires every function to respect the input data's need for a gradient. During computation gradient calculation can be accidentally disabled. This problem can occur when using another neural network as the loss function. This is further discussed in @impl_derev_net.
-
-
-
+Historically these computations have been done manually by the researchers @baydinAutomaticDifferentiationMachine2015. This task is tedious and error-prone. Here automatic differentiation algorithms are of assistance. PyTorch's autograd system records all functional computations involved in generating the network's output in a directed acyclic graph, with input tensors as leaves and output tensors as roots. By traversing this graph from roots to leaves, gradients can be computed automatically via the chain rule @AutogradMechanicsPyTorch. It is important to note that this automatic process requires every function to respect the input data's need for a gradient. During computation, gradient calculation can be accidentally disabled. This problem can occur when using another neural network as the loss function. This is further discussed in @impl_derev_net.
 
 ==== Gradient Descent<fun_gradient_descent>
 
-In @fun_backpropagation is is discussed how partial derivatives of the error function $E$ can be calculated either manually or through the use of an automatic differentiation system.
+In @fun_backpropagation, it is discussed how partial derivatives of the error function $E$ can be calculated either manually or through the use of an automatic differentiation system.
 
-Once $gradient E$ is calculated each weight can be adjusted so that the loss is further minimized (cf. @fun_apply_gradient_to_loss_eq). Through this process is called gradient descent a local minium is searched. Finding a global minimum is not necessary, as experts "suspect that, for sufficiently large neural networks, most local minima have a low cost function value, and that it is not important to find a true global minimum" @goodfellowDeepLearning2016.
+Once $gradient E$ is calculated, each weight can be adjusted so that the loss is further minimized (cf. @fun_apply_gradient_to_loss_eq). Through this process, called gradient descent, a local minimum is searched. Finding a global minimum is not necessary, as experts "suspect that, for sufficiently large neural networks, most local minima have a low cost function value, and that it is not important to find a true global minimum" @goodfellowDeepLearning2016.
 
-#cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") introduce the simplest version of gradient descent as the accumulation of all gradients over all training examples and changing each weight by an amount proportional to the accumulated $(partial E)/(partial w)$. There are in fact improvements to this approach in the @SGD method which approximates the gradient of the entire dataset over a small subset of training examples also called minibatches. This lowers the computational cost of calculating a gradient over the entire dataset which is especially useful when dealing with large amounts of data. It is not guaranteed that the @SGD method arrives at a local minimum in a reasonable amount of time, but often a useful "low enough" loss is found @goodfellowDeepLearning2016.
+#cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") introduce the simplest version of gradient descent as the accumulation of all gradients over all training examples and changing each weight by an amount proportional to the accumulated $(partial E)/(partial w)$. There are, in fact, improvements to this approach in the @SGD method, which approximates the gradient of the entire dataset over a small subset of training examples, also called minibatches. This lowers the computational cost of calculating a gradient over the entire dataset, which is especially useful when dealing with large amounts of data. It is not guaranteed that the @SGD method arrives at a local minimum in a reasonable amount of time, but often a useful "low enough" loss is found @goodfellowDeepLearning2016.
 
 @SGD is used during training of our perceptual quality network as well as the dereverberation network.
 
 ==== Taxonomy of Loss Functions<fun_taxonomy_loss>
 
-@fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years many different loss functions for different problem sets have been envisioned each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
+@fun_loss_function and @fun_backpropagation made clear what impact a loss function can have on the training process of a neural network. Over the recent years, many different loss functions for different problem sets have been envisioned, each best suited for a specific input-output function with specific input-output data pairs @ciampiconiSurveyTaxonomyLoss2024.
 
 #diagram(
   caption: [A taxonomy of loss functions taken from #cite(<ciampiconiSurveyTaxonomyLoss2024>, form: "prose", style: "chicago-author-date").],
@@ -751,18 +750,18 @@ Once $gradient E$ is calculated each weight can be adjusted so that the loss is 
   image("/thesis/figures/taxonomy.svg"),
 )<taxonomy_fig>
 
-@taxonomy_fig shows a map that identifies five major tasks for which loss functions can be designed, namely regression, classification, ranking as well as generative and energy based models. Optimization strategies for each task category are proposed including error-based, probabilistic and margin based loss functions.
+@taxonomy_fig shows a map that identifies five major tasks for which loss functions can be designed, namely regression, classification, and ranking, as well as generative and energy-based models. Optimization strategies for each task category are proposed, including error-based, probabilistic, and margin-based loss functions.
 
-The problem of dereverberation can be attributed to a regressive task. It is shown that for the problem of regression, error-based loss functions are applicable. The following section will discuss error-based metrics which can be utilized as loss functions. An analysis of their performance as such is discussed in @analyze_loss_functions.
+The problem of dereverberation can be attributed to a regressive task. It is shown that for the problem of regression, error-based loss functions are applicable. The following section will discuss error-based metrics that can be utilized as loss functions. An analysis of their performance as such is discussed in @analyze_loss_functions.
 
 == Quality Metrics<fun_quality_metrics>
 #jojo
-The following section will present different quality metrics desgined for comparative analysis of two input vectors. Going forward the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
+The following section will present different quality metrics designed for comparative analysis of two input vectors. Going forward, the input vectors will be considered signals as we are examining these measures from a signal processing standpoint.
 
-/ $s$: is defined as the ground truth, also named reference or true, signal.
+/ $s$: is defined as the ground truth, also named reference or true signal.
 / $hat(s)$: is defined as the predicted, also named test or processed, signal.
 
-All subsequent measures are investigated for general usability in audio adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @meth_percep_quality_net.
+All subsequent measures are investigated for general usability in audio-adjacent machine learning tasks. Most are used in @results for comparative evaluation of different neural networks. A discussion of usability as a loss function for a dereverberation neural network is found in @meth_percep_quality_net.
 
 === @MAE:short and @MSE:short<fun_mae_mse>
 
@@ -770,21 +769,21 @@ The @MAE
 
 $ "MAE" = 1/n sum_(i=1)^n (s_i - hat(s)_i) $
 
-measures the average absolute error between to signals. The @MSE:long
+measures the average absolute error between two signals. The @MSE:long
 
 $ "MSE" = 1/n sum_(i=1)^n (s_i - hat(s)_i)^2 $
 
-measures the average squared difference between the predicted and the ground truth signal. Although both the @MSE and @MAE were used successfully as loss functions in e.g. music source separation approaches @defossezMusicSourceSeparation2019 @stollerWaveUNetMultiScaleNeural2018 @takahashiD3NetDenselyConnected2020 they fall short in generative and human-ear centered tasks as both unfairly penalize shifts in time and amplitude of the predicted signal and do not conform to the equal-loudness levels as perceived by the human ear @AcousticsNormalEqualloudnesslevel2023 and therefore overweight the importance of low frequencies.
+measures the average squared difference between the predicted and the ground truth signal. Although both the @MSE and @MAE were used successfully as loss functions in, for example, music source separation approaches @defossezMusicSourceSeparation2019 @stollerWaveUNetMultiScaleNeural2018 @takahashiD3NetDenselyConnected2020 they fall short in generative and human-ear-centered tasks as both unfairly penalize shifts in time and amplitude of the predicted signal and do not conform to the equal-loudness levels as perceived by the human ear @AcousticsNormalEqualloudnesslevel2023 and therefore overweight the importance of low frequencies.
 
 === Correlation<fun_corr>
 
-The Pearson's product-momentum coefficient is defined as:
+The Pearson's product-moment coefficient is defined as:
 
 $
   rho_(s, hat(s)) = "corr"(s, hat(s))="cov"(s, hat(s))/(sigma_s sigma_hat(s)) = ("E"[(s-mu_s)(hat(s)-mu_hat(s))])/(sigma_s sigma_hat(s)), "if" sigma_s sigma_hat(s) > 0
 $
 
-where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_hat(s)$ the expected values and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp, where negative values mean inverse association:
+where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_hat(s)$ the expected values, and $"E"$ the expected values operator @benestyPearsonCorrelationCoefficient2009. The result of the Pearson coefficient can be interpreted as seen in @p_coeff_interp, where negative values mean inverse association:
 
 #diagram(caption: [Interpretation of the Pearson coefficient], table(
   columns: 3,
@@ -797,7 +796,7 @@ where $sigma_s "and" sigma_hat(s)$ are the standard deviations, $mu_s "and" mu_h
 ))<p_coeff_interp>
 
 
-The problem is that both input signals are assumed to be two random variables which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019 using a statistical relationship to compare a reference to a test signal proved challenging (see @analyze_loss_functions).
+The problem is that both input signals are assumed to be two random variables, which is technically not the case. Although correlation has been used successfully in computational audio tasks such as simultaneous sound event localization @cordourierGCCPHATCrossCorrelationAudio2019, using a statistical relationship to compare a reference to a test signal proved challenging (see @analyze_loss_functions).
 
 === @SI-SNR:short<fun_si-snr>
 
@@ -805,13 +804,13 @@ The @SI-SNR:long first introduced as the @SI-SDR in @rouxSDRHalfbakedWell2018 is
 
 $ "SI-SNR" = 10 log_10 ((||a s||^2)/(||a s - hat(s)||^2)), "where" a = (hat(s)^T s)/(||s||^2) $
 
-. The @SI-SNR and @SI-SDR have identical formulas but different interpretations of the corruption applied to the signal $hat(s)$ (noise or distortion). The @SI-SNR measures the level of noise in the predicted signal in a way that is invariant to amplitude scaling of the signals. It has been used successfully in dereverberation tasks @luoConvTasNetSurpassingIdeal2019 but while providing invariance to signal scaling it too does not conform to the perceived loudness of the human ear nor provide invariance to signal shifting.
+. The @SI-SNR and @SI-SDR have identical formulas but different interpretations of the corruption applied to the signal $hat(s)$ (noise or distortion). The @SI-SNR measures the level of noise in the predicted signal in a way that is invariant to amplitude scaling of the signals. It has been used successfully in dereverberation tasks @luoConvTasNetSurpassingIdeal2019 but while providing invariance to signal scaling, it too does not conform to the perceived loudness of the human ear nor provide invariance to signal shifting.
 
-It can also be mentioned that there are other variants, like Source-to-Artifact Ratio (SAR), Source-to-Interference Ratio (SIR), Source-to-Distortion Ratio (SDR) and Signal-to-Noise Ratio (SNR), each with Scale-Invariant (SI) forms, which are used in the field of source separation and speech enhancement, but are all inspired by the usual definition of the SNR @vincentPerformanceMeasurementBlind2006.
+It is also worth noting that several related variants exist, including the Source-to-Artifact Ratio (SAR), Source-to-Interference Ratio (SIR), Source-to-Distortion Ratio (SDR), and Signal-to-Noise Ratio (SNR), each available in Scale-Invariant (SI) forms. These metrics are widely used in source separation and speech enhancement, and are all rooted in the conventional definition of the SNR @vincentPerformanceMeasurementBlind2006.
 
 === @PESQ:short<fun_pesq>
 
-Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. In regards to its predecessors @PESQ produces more accurate scores when the signal is affected by coding distortion, packet loss, background noise, filtering or variable delay. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp).
+Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both model (a successor to the @BSD and @PSQM models) is both invariant to signal scaling and shifting. In regard to its predecessors, @PESQ produces more accurate scores when the signal is affected by coding distortion, packet loss, background noise, filtering, or variable delay. The @PESQ score reflects speech quality on a continuous scale ranging from 1 to 5 (cf. @pesq_score_interp).
 
 #diagram(
   caption: [The Absolute Category Rating scale used by @MOS/@PESQ],
@@ -826,7 +825,7 @@ Answering the shortcoming of metrics like the @MSE and @SI-SNR, the @PESQ:both m
   ),
 )<pesq_score_interp>
 
-The scale shown in @pesq_score_interp corresponds to the @MOS scale. During analysis the signal is mapped into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001 which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961 therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
+The scale shown in @pesq_score_interp corresponds to the @MOS scale. During analysis, the signal is mapped into a representation of perceived loudness in time and frequency through a psychoacoustic model based on the bark scale @rixPerceptualEvaluationSpeech2001, which is a psychoacoustical scale on which equal distances correspond with perceptually equal distances @zwickerSubdivisionAudibleFrequency1961, therefore assuring conformity with the human auditory system (cf. @speech_quality_pipeline).
 
 #diagram(
   caption: [Structure of @PESQ:both model taken from #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date").],
@@ -898,7 +897,7 @@ The scale shown in @pesq_score_interp corresponds to the @MOS scale. During anal
 
 === @PEAQ:short<fun_peaq>
 
-The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general it compares two time aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
+The @PEAQ model is based on the @PAQM model and has been an ITU-R recommendation since 1999 @rixPerceptualEvaluationSpeech2001. In general, it compares two time-aligned signals, one processed and one original. Concurrent frames of each signal are transformed to a basilar membrane representation whose differences are further analyzed by a cognitive model @thiedePEAQITUStandard2000 (cf. @audio_quality_pipeline). The two offered metrics, namely the @ODG:both and @DI:both, are therefore not invariant to signal shifting, but they conform to the human perception of sound loudness. The @ODG corresponds with the @SDG and indicates the audio quality of the tested signal on a continuous scale from -4 (very annoying impairment) to 0 (imperceptible impairment). The @DI is a quality indicator like the @ODG, except for its higher sensitivity towards very low signal qualities @khalifehPerceptualEvaluationAudio2017.
 
 #diagram(
   caption: [High-level representation of the @PEAQ:both model taken from #cite(<thiedePEAQITUStandard2000>, form: "prose", style: "chicago-author-date").],

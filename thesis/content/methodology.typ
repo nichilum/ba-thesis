@@ -8,19 +8,19 @@
 
 == Dataset
 
-Other machine learning fields mainly @CV and @LLM have long been trained on publically available diverse datasets @dengImageNetLargeScaleHierarchical2009 namely mC4, MassiveText or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.
+Other machine learning fields, mainly @CV and @LLM:pl, have long been trained on publicly available diverse datasets @dengImageNetLargeScaleHierarchical2009, namely mC4, MassiveText, or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.
 
-As shown in @related_work previous work in the field of audio dereverberation has generally focused on speech signals. As this limitation is the same for many audio based machine learning problems (e.g. multi speaker seperation, noise cancellation and speech to text) many of the most used large audio datasets, like LibriSpeech or WSJ0, consist only of speech signals which are reduced in bandwidth as well as language diversity and recored in anechoic conditions @garofolojohns.CSRIWSJ0Complete2007 @panayotovLibrispeechASRCorpus2015 @richterEARSAnechoicFullband2024.
+As shown in @related_work, previous work in the field of audio dereverberation has generally focused on speech signals. As this limitation is the same for many audio-based machine learning problems (e.g., multi-speaker separation, noise cancellation, and @STT), many of the most used large audio datasets, like LibriSpeech or WSJ0, consist only of speech signals that are reduced in bandwidth as well as language diversity and recorded in anechoic conditions @garofolojohns.CSRIWSJ0Complete2007 @panayotovLibrispeechASRCorpus2015 @richterEARSAnechoicFullband2024.
 
-Datasets of diverse audio signals have emerged from audio classification problems. Early examples being private self collected datasets of indivdual researchers @woodardModelingClassificationNatural1992 @ellisDetectingAlarmSounds2001.
-Over the recent years interest in audio classification has surged as can be seen in the amount of entries in the @DCASE challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The @DCASE has also been a major influence in the increase of publically available datasets as prior to the @DCASE challenges only a limited amount were available most notably RWCP @smithPhysicalAudioSignal2010.
+Datasets of diverse audio signals have emerged from audio classification problems. Early examples are private, self-collected datasets of individual researchers @woodardModelingClassificationNatural1992 @ellisDetectingAlarmSounds2001.
+Over the recent years, interest in audio classification has surged, as can be seen in the amount of entries in the @DCASE challenge series that increased from 31 in 2013 to 428 in 2023 @mesarosDecadeDCASEAchievements2024. The @DCASE has also been a major influence in the increase of publicly available datasets, as prior to the @DCASE challenges, only a limited amount were available, most notably RWCP @smithPhysicalAudioSignal2010.
 
-The current largest dataset of diverse audio signals is Google's fittingly named AudioSet containing over 5,800 hours of audio recordings with 527 classes
-of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10 second clips drawn from YouTube videos. Building on top of the AudioSet classes the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publically available while AudioSet released embedding features of the raw audio data necessitating a private download from YouTube. Both datasets are human-labeled while AudioSet specifies that sounds are human-verified and classes are suggested using YouTube metadata.
+The current largest dataset of diverse audio signals is Google's fittingly named AudioSet, containing over 5,800 hours of audio recordings with 527 classes
+of annotated sounds @gemmekeAudioSetOntology2017. These recordings are 10-second clips drawn from YouTube videos. Building on top of the AudioSet classes, the FSD50K dataset contains 100 hours of audio composed of 51,197 individual samples @fonsecaFSD50KOpenDataset2022 taken from the "freesound.org" audio sharing site. The FSD50K dataset is publicly available, while AudioSet released embedding features of the raw audio data, necessitating a private download from YouTube. Both datasets are human-labeled, while AudioSet specifies that sounds are human-verified and classes are suggested using YouTube metadata.
 
 === Data Collection<data_collection>
 
-Our proposed approach requires a diverse dataset of dry audio data. In total 108,775 indivdual audio samples were collected resulting in the following dataset:
+Our proposed approach requires a diverse dataset of dry audio data. In total, 108,775 individual audio samples were collected, resulting in the following dataset:
 
 #diagram(caption: [Dataset composition], table(
   columns: 3,
@@ -32,11 +32,11 @@ Our proposed approach requires a diverse dataset of dry audio data. In total 108
   [_Total_], [108775], [324h 44m 49s],
 ))<dataset_comp>
 
-Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used as to eliminate any bias occurring in one of the datasets (e.g. YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes english utterances recored in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight as we felt clean speech was underrepresented in the other datasets.
+Diverse audio data from the AudioSet and FSD50K datasets were downloaded in 44.1 kHz. Both datasets were used to eliminate any bias occurring in one of the datasets (e.g., YouTube compression artifacts). The LibriSpeech dataset @panayotovLibrispeechASRCorpus2015 includes English utterances recorded in anechoic conditions and sampled at 16 kHz. These were included in hopes of giving speech signals a greater weight, as we felt clean speech was underrepresented in the other datasets.
 
-A final dataset split of $70%$ training, $15%$ validation and $15%$ testing data was decided. Each sample was randomly assigned to one subset allowing for equal distribution of the entire dataset (cf. @dataset_comp) in each subset.
+A final dataset split of $70%$ training, $15%$ validation, and $15%$ testing data was decided. Each sample was randomly assigned to one subset, allowing for equal distribution of the entire dataset (cf. @dataset_comp) in each subset.
 
-To assure reproducibility the file name of each sample is hashed using MD5 @rivestMD5MessagedigestAlgorithm1992:
+To assure reproducibility, the file name of each sample is hashed using MD5 @rivestMD5MessagedigestAlgorithm1992:
 
 $
   h & = op("MD5")(italic("name")) \
@@ -53,7 +53,7 @@ $
   )
 $
 
-With $S_"train"=0.7 "and" S_"val"=0.15$. A final distribution as can be seen in @subset_comp was achieved.
+With $S_"train"=0.7 "and" S_"val"=0.15$. A final distribution, as can be seen in @subset_comp, was achieved.
 
 #diagram(caption: [Subset composition], table(
   columns: 3,
@@ -108,7 +108,7 @@ A supervised training approach (as explained in @self_supervised_and_supervised_
 ))<derev_process_pipeline>
 
 
-Additional labels used for the perceptual loss model (see @meth_percep_quality_net) were saved during parameter based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
+Additional labels used for the perceptual loss model (see @meth_percep_quality_net) were saved during parameter-based reverberation (see @preprocessing_reverberation) and calculated from the dry-reverberant-sample pairs (see @preprocessing_peaq).
 
 #diagram(caption: [Perceptual loss preprocessing pipeline], raw-render(
   ```dot
@@ -141,28 +141,25 @@ Additional labels used for the perceptual loss model (see @meth_percep_quality_n
   ),
 ))<percep_process_pipeline>
 
-This synthetic labeling approach is similar in concept to self-supervised training where a supervisory signal is generated through augmentation. For instance in @CV:long tasks self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio it cannot be classified as such (see @self_supervised_and_supervised_learning).
+This synthetic labeling approach is similar in concept to self-supervised training, where a supervisory signal is generated through augmentation (see @self_supervised_and_supervised_learning). For instance, in @CV:long tasks, self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio, self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However, as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio, it cannot be classified as such (see @self_supervised_and_supervised_learning).
 
 ==== Reverberation<preprocessing_reverberation>
 
-To provide the model with reverberant audio signals two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand saving compute time but sacrificing disk space.
+To provide the model with reverberant audio signals, two kinds of preprocessing approaches were considered. The signals could either be reverberated  _"live"_, after loading a sample into memory during training, or _"offline"_ beforehand, saving compute time but sacrificing disk space.
 
-The three main ways of digital reverberation are @schlechtFeedbackDelayNetworks2018 (see @fun_reverberation):
-- convolutional
-- delay networks
-- computational acoustics
+The three primary approaches to digital reverberation @schlechtFeedbackDelayNetworks2018 are convolutional methods, delay networks, and computational acoustics (see @fun_reverberation).
 
-Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately convolution reverbs do not expose many parameters or controls, making labeling of samples which are fed to our loss network (see @meth_percep_quality_net) difficult.
+Reverberation through convolution via @RIR:pl is the most realistic way of generating synthetic reverb, as it mimics the scattering characteristics of a real-world room at the @RIR:pl recording position @farinaImpulseResponseMeasurements2007. Generally this comes at a higher computational cost and latency @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016. Unfortunately, convolution reverbs do not expose many parameters or controls, making labeling of samples that are fed to our loss network (see @meth_percep_quality_net) difficult.
 
-Parameter based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @meth_percep_quality_net).
+Parameter-based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @meth_percep_quality_net).
 
-In computational acoustics room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials and microphone placements. This is done either by trying to solve the wave-equation by the discretization of the space, geometric solutions like the Image Source Method (ISM) @allenImageMethodEfficiently1979 or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
+In computational acoustics, room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials, and microphone placements. This is done either by trying to solve the wave equation by the discretization of the space, geometric solutions like the @ISM @allenImageMethodEfficiently1979, or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
 
-A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangable framework. Using this the original Conv-TasNet dataloader was adjusted to use the @RIR implementation.
+A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangeable framework. Using this, the original Conv-TasNet data loader was adjusted to use the @RIR implementation.
 
-After getting access to the RWTH Aachen CLAIX compute cluster, we pivoted to an offline dataset as compute time was of more importance than disk space. As mentioned parameter based reverberation was suited best for our own networks, due to the access to size and wetness controls.
+After getting access to the RWTH Aachen CLAIX compute cluster, we pivoted to an offline dataset as compute time was of more importance than disk space. As mentioned, parameter-based reverberation was suited best for our own networks due to the access to size and wetness controls.
 
-Specifically, we first used Valhalla Supermassive in VST3 format, which was later abandoned, as it lacked Linux compatibility. We then chose a FreeVerb implementation @smithPhysicalAudioSignal2010 in the `pedalboard` Python package @sobotPedalboard2023.
+Specifically, we first used Valhalla Supermassive in the VST3 format, which was later abandoned, as it lacked Linux compatibility. We then chose a FreeVerb implementation @smithPhysicalAudioSignal2010 in the `pedalboard` Python package @sobotPedalboard2023.
 
 // - two kinds of preprocessing either live during training in memory saving on disk space or before "offline" saving on compute during training but sacificing disk space
 // - first implementation was in memory
@@ -187,9 +184,9 @@ Specifically, we first used Valhalla Supermassive in VST3 format, which was late
 //     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
 //     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
-When processing the data from our dataset, the desicion was made to reverberate all files in their native sample rate and then later upsample them to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and Freesound at 44.1 kHz.
+When processing the data from our dataset, the decision was made to reverberate all files in their native sample rate and then later upsample them to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and FreeSound at 44.1 kHz.
 
-While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented as shown by the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwith of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation.
+While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented, as shown by the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwidth of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation.
 
 // - sample rate: upscaling downscaling possible??
 // - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
@@ -205,7 +202,7 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 //   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
 //   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
-The distribution of generated reverberation times ($R T_60$) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly, but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968 which is based on the energy decay curve of the reverberant signal.
+The distribution of generated reverberation times ($R T_60$) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968, which is based on the energy decay curve of the reverberant signal.
 
 // #TODO[
 //   - rt60s of dataset
@@ -229,7 +226,7 @@ The distribution of generated reverberation times ($R T_60$) is shown in @rt60_d
   ),
 )<rt60_distribution_table>
 
-The histrogram in @rt60_distribution_plot shows the distribution of $R T_60$ values across the entire reverberated dataset, with a mean of 1.48 s. Overall it shows a wide variety of reverberation times, while still being in a realistic range. The spike at the right end of the histogram is not expected as wetness and size parameters were uniformly distributed, meaning that a "maximum" reverberation time should not be more common than any other reverberation time. This could be caused by a non-linear relationship between the wetness and size parameters and the resulting $R T_60$ value, which could lead to certain combinations of parameters producing similar $R T_60$ values more frequently. Another possibility is that there is a bug in the code that generates the reverberated signals or in the code that measures the $R T_60$ values, which could lead to incorrect measurements or an overrepresentation of certain $R T_60$ values. Further investigation would be needed to determine the exact cause of this spike in the histogram.
+The histogram in @rt60_distribution_plot shows the distribution of $R T_60$ values across the entire reverberated dataset, with a mean of 1.48 s. Overall, it shows a wide variety of reverberation times while still being in a realistic range. The spike at the right end of the histogram is not expected, as wetness and size parameters were uniformly distributed, meaning that a "maximum" reverberation time should not be more common than any other reverberation time. This could be caused by a non-linear relationship between the wetness and size parameters and the resulting $R T_60$ value, which could lead to certain combinations of parameters producing similar $R T_60$ values more frequently. Another possibility is that there is a bug in the code that generates the reverberated signals or in the code that measures the $R T_60$ values, which could lead to incorrect measurements or an overrepresentation of certain $R T_60$ values. Further investigation would be needed to determine the exact cause of this spike in the histogram.
 
 #diagram(
   caption: [
@@ -243,7 +240,7 @@ The histrogram in @rt60_distribution_plot shows the distribution of $R T_60$ val
 
 ==== Calculation of @PEAQ:short Scores<preprocessing_peaq>
 
-For every dry-reverberant-sample pair the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk making a live implementation not feasable. All samples were upsampled to 48 kHz for use with @PEAQ.
+For every dry-reverberant-sample pair, the @PEAQ scores @ODG and @DI (see @fun_peaq) were calculated. As the GStreamer implementation "GstPEAQ" was used @holtersGstPEAQOpenSource2015, GStreamer Python bindings were utilized to automate this process @GStreamerGstpython2026. This approach meant we needed both reference and test files written to disk, making a live implementation not feasible. All samples were upsampled to 48 kHz for use with @PEAQ.
 
 ==== Non-Silent Parts<meth_silent_parts>
 
@@ -269,23 +266,23 @@ As we don't want our model to focus on generating silence a mask is generated fo
 == Analyzation of Applicable Loss Functions<analyze_loss_functions>
 #jojo
 
-As described in @fun_loss_function a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction to their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance this error must be minimized.
+As described in @fun_loss_function, a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction from their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance, this error must be minimized.
 
-As shown in @fun_taxonomy_loss different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
+As shown in @fun_taxonomy_loss, different loss functions exist for different problem sets. Each research endeavor in machine learning must decide which loss function to use based on the nature of the problem, the data available, and the type of machine learning algorithm to be solved @ciampiconiSurveyTaxonomyLoss2024.
 
-In the time or waveform domain error-based regressive loss functions (e.g. @MSE, @SI-SNR and @PESQ) have identfied themselfs as well performing in the field of dereverberation (see @related_work and @fun_quality_metrics).
+In the time or waveform domain, error-based regressive loss functions (e.g., @MSE, @SI-SNR, and @PESQ) have identified themselves as well-performing in the field of dereverberation (see @related_work and @fun_quality_metrics).
 
 
-The metrics described in @fun_quality_metrics can technically all be used a loss functions. The problem that all of them have in common is that non are specific to our task of dereverberation. It was shown that reverberation has the ability to either degrade or enhance a signal (cf. @fun_sound_quality). Therefore most metrics focus on signal corruptions that purely degrade sound quality (e.g. noise or sampling artifacts, ). @PESQ comes close beeing a perceptual scale- and shift-invariant metric but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date") write: "Certain other applications have not yet been fully characterised or may need parts of the model to be changed. These include: music quality [...]". An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
+The metrics described in @fun_quality_metrics can technically all be used as loss functions. The problem that all of them have in common is that none are specific to our task of dereverberation. It was shown that reverberation has the ability to either degrade or enhance a signal (cf. @fun_sound_quality). Therefore, most metrics focus on signal corruptions that purely degrade sound quality (e.g., noise or sampling artifacts). In theory, @PESQ appears to be a strong candidate, as it is a perceptual metric that is invariant to both scaling and shifting, but as it is made for the evaluation of speech signals, effectiveness in diverse audio signals is doubtful. #cite(<rixPerceptualEvaluationSpeech2001>, form: "prose", style: "chicago-author-date") write: "Certain other applications have not yet been fully characterised or may need parts of the model to be changed. These include: music quality [...]". An alternative lies in the @PEAQ:both model (cf. @fun_peaq).
 
-Other state-of-the-art measures include Google's @ViSQOL @chinenViSQOLV3Open2020 as well as PEMO-Q @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020 meaning that @ViSQOL and PEMO-Q were not further considered.
+Other state-of-the-art measures include Google's @ViSQOL @chinenViSQOLV3Open2020 as well as PEMO-Q @huberPEMOQANewMethod2006 (cf. @fun_quality_metrics). But comparison indicates that @PEAQ's performance is not only competitive but sometimes even superior to newer approaches @delgadoCanWeStill2020, meaning that @ViSQOL and PEMO-Q were not further considered.
 
-As explained in @preprocessing_reverberation the final dataset was reverberated offline using an implementation of the FreeVerb reverberator allowing for export of size and wetness parameters on a per sample basis. The wetness and size parameters are objective measurements which we know to be true.
+As explained in @preprocessing_reverberation, the final dataset was reverberated offline using an implementation of the FreeVerb reverberator, allowing for export of size and wetness parameters on a per-sample basis. The wetness and size parameters are objective measurements, which we know to be true.
 A fully reverberated signal is defined as:
 $ ("wetness" = 1) and ("size"= 1) $<size_and_wetness_eq>
 . A fully dereverberated signal is defined as:
 $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
-. This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or in other words how well each metric estimates reverberation (and in turn dereverberation) of a signal.
+. This enables us to plot the different quality metrics against these objective measures and assess their applicability for the dereverberation task. Or, in other words, how well each metric estimates reverberation (and in turn dereverberation) of a signal.
 
 #diagram(
   caption: [Metrics usable as loss functions analyzed over 16421 datapoints from test dataset (cf. @subset_comp), data between the 15th and 85th percentile is shown in color],
@@ -293,62 +290,60 @@ $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>
 
-@plot_metrics_against_size_and_wet shows a two dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
+@plot_metrics_against_size_and_wet shows a two-dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
 
-A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
+A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points, therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
 
-The dotted blue line represents a linear regression over all data points including outliers. The light blue confidence interval band represents the 95% confidence interval for the regression line.
+The dotted blue line represents a linear regression over all data points, including outliers. The light blue confidence interval band represents the 95% confidence interval for the regression line.
 
 All tested signals were time and amplitude aligned. The only difference being the reverberation of the processed signal. Wetness and size values of the reverberator are selected randomly from a uniform distribution.
 
-Prior to analysis the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @meth_percep_quality_net.
-@plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values meaning that most test signals even those with little reverberation were classified as annoyingly impaired.
+Prior to analysis, the @ODG score was normalized $ "ODG"_"norm" = (("ODG" +4)/4 )^(bot_1)_(top_0) $. This procedure did neither aid nor hinder analysis but meant that the interpretation of the absolute value of the @ODG score changes from "lower is better" to "lower is worse". It was carried out as a remnant from early tests described in @meth_percep_quality_net.
 
-The @DI score was not normalized as exact value range is unkown to us. It behaved similarily to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter where many strongly reverberated signals are classified as "good".
+@plot_metrics_against_size_and_wet shows that @ODG is not a good indicator of dereverberation performance, as most values stay between 0 and 0.2 in similar densities for the entire range of size and wetness values, meaning that most test signals, even those with little reverberation, were classified as annoyingly impaired.
 
-Although @PESQ was only proven to work on speech signals it showed a slightly improved performance compared to the @DI score.
+The @DI score was not normalized as the exact value range is unknown to us. It behaved similarly to the @ODG score but showed slightly better performance against the wetness parameter but arguably worse performance against the size parameter, where many strongly reverberated signals are classified as "good".
 
-It is evident that the @SI-SNR metric performs best as a judgement of dereverberation performance. The wetness @KDE plot show a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution the @SI-SNR density stays mostly the same over the entire wetness range which is the desired behavior.
+Although @PESQ was only proven to work on speech signals, it showed a slightly improved performance compared to the @DI score.
 
-Although more outlier data is present in the size plot a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
+It is evident that the @SI-SNR metric performs best as a judgment of dereverberation performance. The wetness @KDE plot shows a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution, the @SI-SNR density stays mostly the same over the entire wetness range, which is the desired behavior. Although more outlier data is present in the size plot, a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
 
 The @MSE metric shows not only no real predictive performance in the @KDE plot but also a broad confidence interval negating the expression of the regression line.
 
-In similar fashion, the @MAE shows poor performance against the size parameter. The wetness plot shows a slight increase of @MAE against increasing wetness values. The problem being that this increase happens all below 0.04 meaning that every wetness value is a assigned a very low error value or in other words is interpreted as "good".
+In similar fashion, the @MAE shows poor performance against the size parameter. The wetness plot shows a slight increase of @MAE against increasing wetness values. The problem is that this increase happens all below 0.04, meaning that every wetness value is assigned a very low error value or, in other words, is interpreted as "good".
 
-The correlation metric exhibits a similar problem where not only the size plot shows subpar performance but the values in the wetness plot range from 1 to 0.8 which signifies a "very strong association" across the entire wetness range (cf. @fun_corr) making interpretation of the correlation value with respect to reverberation challenging. Furthermore the density of the correlatin-wetness plot does not align with the uniform distribution.
+The correlation metric exhibits a similar problem where not only the size plot shows subpar performance, but the values in the wetness plot range from 1 to 0.8, which signifies a "very strong association" across the entire wetness range (cf. @fun_corr) making interpretation of the correlation value with respect to reverberation challenging. Furthermore, the density of the correlation-wetness plot does not align with the uniform distribution.
 
 
 == Perceptual Quality Network<meth_percep_quality_net>
 #jojo
-Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is near impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR like all metrics introduced in @fun_quality_metrics suffers from the need of a "golden" reference which as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings we introduce our own loss network initially coined "Perceptual Quality Network".
+Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is nearly impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail, which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR, like all metrics introduced in @fun_quality_metrics, suffers from the need for a "golden" reference, which, as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings, we introduce our own loss network initially coined "Perceptual Quality Network".
 
-We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection) it must support wideband analysis up to 44.1 kHz.
+We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection), it must support wideband analysis up to 44.1 kHz.
 
-Differentiability is given by the fact that the computations of a nerual network are differentiable. The only exception being the activation function @ReLU which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero so this was ignored.
+Differentiability is given by the fact that the computations of a neural network are differentiable. The only exception is the activation function @ReLU, which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero, so this was ignored.
 
-Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018 which estimates a @PESQ score for a given signal (see @related_quality_net) our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore our model combines a perceptual and an objective approach.
+Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018, which estimates a @PESQ score for a given signal (see @related_quality_net), our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore, our model combines a perceptual and an objective approach.
 
 
-Every training example combines a reverberated audio sample as the input for the neural network,
-the normalized size and wetness parameters used for the reverberation of the input audio sample, the normalized @ODG score taken from the comparison to the original sample using @PEAQ and a quality score defined as:
+Every training data pair consists of a reverberated audio sample serving as the network's input, along with four target values the network is trained to predict: the normalized size and wetness parameters used to generate the reverberation, the normalized @ODG score derived from a @PEAQ comparison with the original sample, and a quality score defined as:
 
 $ "quality" = "ODG"_"norm" dot (1 - "wetness"_"norm" dot 0.4) dot (1 - "size"_"norm" dot 0.3) $
 
 . This quality score is used as a loss in the dereverberation network (see @impl_derev_net).
 
-Implementation details regarding model architecture and loss functions used qualify @ODG, size, wetness and quality predictions are discussed in @impl_percep_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance of the perceptual quality net is found in @eval_percep_quality_net.
+Implementation details regarding model architecture and loss functions used to qualify @ODG, size, wetness, and quality predictions are discussed in @impl_percep_quality_network. Results are shown in @results_percep_quality_net, and an evaluation of the performance of the perceptual quality network is found in @eval_percep_quality_net.
 
 == Objective Quality Network<meth_obj_quality_net>
 
 @analyze_loss_functions shows @PEAQ as being a flawed metric to estimate dereverberation performance. This conclusion is supported by the findings in @eval_percep_quality_net.
-Challenging the idea that a perceptual metric is best we decided to test a purley objective network as a loss function.
+Challenging the idea that a perceptual metric is best, we decided to test a purely objective network as a loss function.
 
-Adopting the same structure as the perceptual quality network the objective quality network only estimates the size and wetness attributes by defining the quality score as:
+Adopting the same structure as the perceptual quality network, the objective quality network only estimates the size and wetness attributes by defining the quality score as:
 
 
 $ "quality" = 1- 0.6 dot "wetness" - 0.4 dot "size" $
 
 Wetness was given more importance because @results_percep_quality_net has shown the network as having better estimation performance for the wetness parameter.
 
-Implementation details regarding model architecture and loss functions are discussed in @impl_objective_quality_network. Results are shown in @results_percep_quality_net and an evaluation of the performance is found in @eval_objective_quality_net.
+Implementation details regarding model architecture and loss functions are discussed in @impl_objective_quality_network. Results are shown in @results_percep_quality_net, and an evaluation of the performance is found in @eval_objective_quality_net.

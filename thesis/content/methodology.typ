@@ -265,7 +265,7 @@ As we don't want our model to focus on generating silence a mask is generated fo
 )<silent_mask_signal>
 
 
-== Analyzation of Applicable Loss Functions<analyze_loss_functions>
+== Analysis of Applicable Loss Functions<analyze_loss_functions>
 #jojo
 
 As described in @fun_loss_function, a loss function is a qualitative function that is used to objectively measure model performance by calculating the deviation of the model's prediction from their ground truth counterpart. This deviation is mapped onto a real number that intuitively represents some error. To optimize model performance, this error must be minimized.

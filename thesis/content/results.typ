@@ -43,11 +43,13 @@
 
 = Results<results>
 
+This chapter presents the results obtained from all evaluated models: the two state-of-the-art baselines Conv-TasNet and StoRM, the perceptual and objective quality networks, and the dereverberation network. The discussion covers performance on speech dereverberation, diverse audio dereverberation, and, in the case of the quality networks, their ability to indicate dereverberation performance.
+
 == Conv-TasNet
 #leo
 As explained in @impl_conv_tasnet, we trained a Conv-TasNet model from scratch on the LibriSpeech `train-clean-100` split, using the original Conv-TasNet architecture @luoConvTasNetSurpassingIdeal2019 and training procedure, but with @MSE instead of @SI-SNR as the loss function.
 
-Three loss functions were evaluated in total. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS likewise showed convergence but only at an unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). This could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
+Three loss functions were evaluated in total. The @SI-SNR, which serves as the original Conv-TasNet training objective, did not converge: the loss remained negative throughout and continued to decrease without producing usable predictions, with the best checkpoint reaching a validation @SI-SNR of $-69.72$ dB after 118 epochs (cf. @conv_tasnet_loss_comparison). A @MSS loss likewise showed convergence but only at an unreasonably high value, reaching a validation loss of $165,861.84$ after 119 epochs (cf. @conv_tasnet_mss_loss). This could be attributed to some configuration choices that were set implicitly and thus often fail to provide informative gradients as claimed by #cite(<schwarMultiScaleSpectralLoss2023>, form: "prose", style: "chicago-author-date").
 
 Switching to a standard @MSE loss resolved the issue: training converged stably to a validation loss of approximately 0.0009 after 125 epochs (cf. @conv_tasnet_loss_comparison). This is further discussed in @eval_si_snr_calculations.
 
@@ -69,9 +71,9 @@ Switching to a standard @MSE loss resolved the issue: training converged stably 
 
 The @MSE\-trained model was evaluated on the LibriSpeech `test-clean` split as well as on a diverse random subset taken from AudioSet covering speech, music, vehicles, and environmental sounds.
 
-On speech samples the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
+On speech samples, the model reduces reverberation tails and produces audible dereverberation. It can also be observed that the model applies a low-pass filter, reducing high frequencies above about 2.5 kHz by about 20 dB (see @spectrogram_comparison).
 
-Detailed results of the evaluation done on the @MSE\-trained model can be seen in @conv_tasnet_metrics. A positive @SI-SNR indicates dereverberation, while the @PESQ score still indicates a _"poor"_ performance (cf. @fun_pesq)
+Detailed results of the evaluation done on the @MSE\-trained model can be seen in @conv_tasnet_metrics. A positive @SI-SNR indicates dereverberation, while the @PESQ score still indicates a _"poor"_ performance (cf. @fun_pesq).
 
 #diagram(
   caption: [
@@ -102,6 +104,8 @@ These limitations -- the 4 kHz bandwidth ceiling, speech-only training data, and
 == StoRM
 #leo
 Unlike Conv-TasNet, StoRM was not trained from scratch. We used the official pretrained dereverberation checkpoint provided by the authors, trained on the WSJ0 corpus reverberated with the REVERB challenge dataset @lemercierStoRMDiffusionbasedStochastic2023 @kinoshitaReverbChallengeCommon2013 @garofolojohns.CSRIWSJ0Complete2007. The training data consists of speech recordings sampled at 16 kHz, establishing an 8 kHz frequency ceiling. Architecturally, StoRM follows a generative stochastic regeneration approach: a discriminative denoiser first produces an initial estimate of the clean signal, which a score-based diffusion model then refines through a learned reverse process @lemercierStoRMDiffusionbasedStochastic2023. This contrasts with Conv-TasNet's discriminative masking, and the iterative inference required by the diffusion component has direct implications for computational cost.
+
+#TODO[welche implikationen??]
 
 On in-domain speech signals, StoRM achieves strong dereverberation quality. @storm_paper_metrics shows the evaluation from the original paper. These numbers serve as an upper bound for speech dereverberation quality achievable with this model.
 
@@ -152,7 +156,9 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
     [$bold(22.9 plus.minus 8.2)$],
     [$bold(6.5 plus.minus 3.9)$],
   ),
-)<storm_paper_metrics> In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female" @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
+)<storm_paper_metrics>
+
+In our own listening tests on speech samples, this quality is confirmed: reverberation tails are cleanly removed with rarely any audible artifacts (see @spectrogram_comparison_storm). Informally, the model appears to perform slightly worse on female voices, which may be attributable to a gender bias in the WSJ0 training corpus toward male utterances, even though the authors claim: "[...] about half the speakers are male and half female" @garofolojohns.CSRIWSJ0Complete2007. Compared to Conv-TasNet, StoRM produces a markedly wider frequency response up to 8 kHz, avoiding the strong low-pass filtering effect observed in the MSE-trained Conv-TasNet output.
 
 #diagram(
   caption: [
@@ -162,7 +168,7 @@ On in-domain speech signals, StoRM achieves strong dereverberation quality. @sto
   image("../figures/spectrogram_comparison_storm.png"),
 )<spectrogram_comparison_storm>
 
-On music and other non-speech content, the model's behaviour is less predictable. As the pretrained checkpoint has no exposure to non-speech signals during training, generalisation is limited to the extent that spectral patterns of broadband audio are covered by the speech-domain prior. In listening tests, music samples processed by StoRM tend to exhibit subtle timbral changes compared to the unprocessed input, without achieving a consistent reduction of the reverberant tail. This out-of-domain degradation is expected given the training data composition and is explored further in the quantitative comparison in the next section.
+On music and other non-speech content, the model's behavior is less predictable. As the pretrained checkpoint has no exposure to non-speech signals during training, generalization is limited to the extent that spectral patterns of broadband audio are covered by the speech-domain prior. In listening tests, music samples processed by StoRM tend to exhibit subtle timbral changes compared to the unprocessed input, without achieving a consistent reduction of the reverberant tail. This out-of-domain degradation is expected given the training data composition and is explored further in the quantitative comparison in the next section.
 
 The iterative reverse diffusion inference requires many sequential neural network evaluations per sample, making StoRM substantially more expensive than Conv-TasNet. On a single H100 GPU (CLAIX-2023-ML), processing 2048 AudioSet samples took 6 h 14 m 51 s, compared to 4 m 15 s for Conv-TasNet --- approximately $88times$ slower (cf. @conv_tasnet_storm_comparison). Real-time application of this pretrained model is therefore not feasible without architectural modifications such as reducing the number of reverse diffusion steps or distillation.
 
@@ -172,7 +178,7 @@ The iterative reverse diffusion inference requires many sequential neural networ
 All results presented in the following section are based on the dataset as described in @data_collection.
 Results regarding prediction performance as well as use as a loss function are discussed. Results regarding the impact of the perceptual quality network on the dereverberation network are demonstrated in @results_derev_net.
 Prediction performance was analyzed using the @MAE, @MSE and correlation (cf. @fun_quality_metrics). The average over the entire testing subset (cf. @subset_comp) is depicted in @results_percep_table.
-As discussed in @eval_percep_qual_net_init all perceptual quality network experiments were conducted using the CNN14 based implementation. Therefore no results of the simple @CNN, as detailed in @impl_percep_qual_net_init, are shown going forward.
+As discussed in @eval_percep_qual_net_init, all perceptual quality network experiments were conducted using the CNN14-based implementation. Therefore no results of the simple @CNN, as detailed in @impl_percep_qual_net_init, are shown going forward.
 
 #let quality_net_metrics_table(csv_path) = {
   let data = csv(csv_path)
@@ -198,10 +204,10 @@ As discussed in @eval_percep_qual_net_init all perceptual quality network experi
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_195-odg-perceptual_net_best.csv"),
   caption: [@MAE, @MSE and correlation of all perceptual quality metrics at epoch 195],
-  short-caption: [@MAE, @MSE and correlation of all perceptual quality metrics]
+  short-caption: [@MAE, @MSE and correlation of all perceptual quality metrics],
 )<results_percep_table>
 
-To visualize prediction performance @KDE plots as seen in @results_percep_pred_vs_truth were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data-pair of the testing subset. Akin to the testing done in @analyze_loss_functions the quality score which was used as the loss function of the dereverberation network (see @impl_derev_net) was plotted against the real size, wetness and $"size" dot "wetness"$ values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
+To visualize prediction performance, @KDE plots, as seen in @results_percep_pred_vs_truth, were generated. Each prediction-head output (quality, wetness, size, @ODG) is plotted against its ground truth counterpart for each data pair of the testing subset. Akin to the testing done in @analyze_loss_functions, the quality score, which was used as the loss function of the dereverberation network (see @impl_derev_net), was plotted against the real size, wetness, and $"size" dot "wetness"$ values of the testing data (cf. @plot_nn_qual_against_size_and_wet). Further evaluation of these plots is found in @eval_percep_qual_net_cnn14.
 
 
 #diagram(
@@ -213,33 +219,33 @@ To visualize prediction performance @KDE plots as seen in @results_percep_pred_v
 == Objective Quality Network<results_objective_quality_net>
 #jojo
 
-As described in @impl_objective_quality_network the objective quality network underwent a two stage refinement process. Retraining for 61 epochs using the updated quality score resulted in the metric averages as seen in @results_obj_score_table and the prediction versus ground truth plots as seen in @results_obj_score_pred_vs_truth.
+As described in @impl_objective_quality_network, the objective quality network underwent a two-stage refinement process. Retraining for 61 epochs using the updated quality score resulted in the metric averages as seen in @results_obj_score_table and the prediction versus ground truth plots as seen in @results_obj_score_pred_vs_truth.
 
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_61-quality-perceptual_net_best.csv"),
-  caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score at epoch 61],
-  short-caption: [@MAE, @MSE and correlation of all objective objective quality metrics]
+  caption: [@MAE, @MSE and correlation of all objective quality metrics using the updated quality score at epoch 61],
+  short-caption: [@MAE, @MSE and correlation of all objective quality metrics],
 )<results_obj_score_table>
 
-Retraining for 166 epochs using the update quality score as well as the update loss function calculation metrics averages as seen in @results_obj_score_loss_table and prediction versus ground truth plots as seen in @results_obj_score_loss_pred_vs_truth were achieved.
+Retraining for 166 epochs using the updated quality score as well as the updated loss function calculation resulted in metric averages as seen in @results_obj_score_loss_table and prediction versus ground truth plots as seen in @results_obj_score_loss_pred_vs_truth.
 
 #diagram(
   quality_net_metrics_table("/experiments/perceptual-quality/plots/epoch_166-quality-perceptual_net_best.csv"),
-  caption: [@MAE, @MSE and correlation of all objective objective quality metrics using the updated quality score and loss at epoch 166],
-  short-caption: [@MAE, @MSE and correlation of all objective objective quality metrics]
+  caption: [@MAE, @MSE and correlation of all objective quality metrics using the updated quality score and loss at epoch 166],
+  short-caption: [@MAE, @MSE and correlation of all objective quality metrics],
 )<results_obj_score_loss_table>
 
-It must be noted that with the updated loss function calculation which only uses the predicted quality score to adjust the models weights the results in @results_obj_score_loss_table and @results_obj_score_loss_pred_vs_truth for size, wetness and @ODG become meaningless.
+It must be noted that with the updated loss function calculation, which only uses the predicted quality score to adjust the model's weights, the results in @results_obj_score_loss_table and @results_obj_score_loss_pred_vs_truth for size, wetness, and @ODG become meaningless.
 
-Plotting the objective quality network as seen in @results_obj_score_loss_table against the corresponding size, wetness and $"size" dot "wetness"$ values resulted in the plot seen in @results_obj_score_loss_analyze. This visualization is discussed in @eval_objective_quality_net.
+Plotting the objective quality network as seen in @results_obj_score_loss_table against the corresponding size, wetness, and $"size" dot "wetness"$ values resulted in the plot seen in @results_obj_score_loss_analyze. This visualization is discussed in @eval_objective_quality_net.
 
 #diagram(
-  caption: [Quality score prediction of the objective quality network using the updated quality score and loss at epoch 166 analyzed as loss function over 16421 datapoints from the testing subset (cf. @subset_comp). Data between the 15th and 85th percentile is shown in color.],
+  caption: [Quality score prediction of the objective quality network using the updated quality score and loss at epoch 166 analyzed as loss function over 16421 data points from the testing subset (cf. @subset_comp). Data between the 15th and 85th percentile is shown in color.],
   short-caption: [Objective quality network's quality score prediction analyzed as loss function over testing subset],
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile_objective_score_lossy.svg"),
 )<results_obj_score_loss_analyze>
 
-Analyzing the inference speed of the objective quality network it was found that for a total length of 18.2 hours of audio data sampled at 44.1 kHz the total length of inference time amounted to about 7.74 seconds. As the objective quality network shares the same architecture with the perceptual quality network this result can be assumed similar for all of the above tested configurations.
+Analyzing the inference speed of the objective quality network, it was found that for a total length of 18.2 hours of audio data sampled at 44.1 kHz, the total length of inference time amounted to about 7.74 seconds. As the objective quality network shares the same architecture with the perceptual quality network, this result can be assumed similar for all of the above tested configurations.
 
 
 
@@ -250,9 +256,9 @@ Analyzing the inference speed of the objective quality network it was found that
 == Dereverberation Network<results_derev_net>
 #leo
 
-As described in @impl_derev_net the dereverberation network was trained using multiple loss functions. Namely @SI-SNR as well as the perceptual quality network (@meth_percep_quality_net) and objective quality network (@meth_obj_quality_net) were tested.
+As described in @impl_derev_net, the dereverberation network was trained using multiple loss functions. Namely, @SI-SNR as well as the perceptual quality network (@meth_percep_quality_net) and objective quality network (@meth_obj_quality_net) were tested.
 
-First a baseline using the @SI-SNR was established. Training was done over 62 epochs with early stopping at epoch 55 resulting in a validation loss of 16.6097 dB (cf. @derev_tcn_v4_loss_SISNR).
+First, a baseline using the @SI-SNR was established. Training was done over 62 epochs with early stopping at epoch 55, resulting in a validation loss of 16.6097 dB (cf. @derev_tcn_v4_loss_SISNR).
 @tab_derev_sisnr_results is showing performance metrics for model outputs and is further discussed as part of the evaluation in @eval_derev_net.
 
 #diagram(
@@ -317,7 +323,7 @@ Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4
   ),
 )<derev_tcn_v4_sisnr_updated>
 
-Both the perceptual quality network and objective quality network were not successful in their application. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network), but showed no effective dereverberation. In fact both loss metrics failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
+Both the perceptual quality network and objective quality network were not successful in their application. Training and evaluation loss did both approach 0 (see @derev_tcn_v4_loss_percep for objective quality network) but showed no effective dereverberation. In fact, both failed to reconstruct the original signal properly, resulting in audible artifacts and visible coloration of the source material (cf. @derev_tcn_v4_percep).
 
 #diagram(
   caption: [

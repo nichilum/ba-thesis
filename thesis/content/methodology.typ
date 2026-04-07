@@ -292,7 +292,7 @@ $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
   image("/experiments/perceptual-quality/plots/data_metrics_test_16421_15_85_percentile.svg"),
 )<plot_metrics_against_size_and_wet>
 
-@plot_metrics_against_size_and_wet shows a two-dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as "$"size" dot "wetness"$". The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
+@plot_metrics_against_size_and_wet shows a two-dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as $"size" dot "wetness"$. The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
 
 A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points, therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
 

@@ -175,7 +175,7 @@
   ),
   MSS: (
     short: "MSS",
-    long: "multi-scale spectral loss",
+    long: "multi-scale spectral",
     group: "Metrics",
   ),
   BSD: (

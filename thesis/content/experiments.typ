@@ -17,7 +17,8 @@ The encoder is a 1-D convolution (512 channels, window 2 ms at 8 kHz). The TCN s
 
 The original training sets WSJ0-2mix and WSJ0-3mix @garofolojohns.CSRIWSJ0Complete2007 used in the Conv-TasNet paper are not publicly available, requiring an alternative training dataset. We used LibriSpeech @panayotovLibrispeechASRCorpus2015, resampled to 8 kHz and segmented into random 4-second crops per iteration. Reverberation is applied on-the-fly by convolving the dry signal with one of five impulse responses from the preprocessing pipeline (see @preprocessing_reverberation), yielding time-aligned wet/dry pairs with varied room conditions across epochs. The training dataset is therefore speech-only, which biases the mask priors toward speech characteristics and is expected to reduce generalization to music and other diverse audio content.
 
-Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning rate of $10^(-3)$, gradient clipping with a maximum $L_2$-norm of 5.0 @luoConvTasNetSurpassingIdeal2019, and a batch size of 32 over 100 epochs via PyTorch Lightning.
+Training used the Adam optimizer @kingmaAdamMethodStochastic2017 with a learning rate of $10^(-3)$, gradient clipping with a maximum $L_2$-norm of 5.0 @luoConvTasNetSurpassingIdeal2019, and a batch size of 32 over 100 epochs via PyTorch Lightning. For the loss function, we initially followed the original paper and trained with the @SI-SNR loss, but were unable to achieve meaningful convergence. We subsequently experimented with a @MSS loss, which operates in the frequency domain and has shown promise in related audio tasks, but this too failed to yield satisfactory results. We ultimately trained with @MSE loss directly on the time-domain waveform, which provided stable training dynamics and was used for all reported experiments.
+
 
 #import "@preview/neural-netz:0.3.0": draw-network
 

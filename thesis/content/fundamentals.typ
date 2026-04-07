@@ -272,76 +272,12 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 #import "@preview/fletcher:0.5.8": diagram as fletcher-diagram, edge, node
 
-#let block(pos, label, tint) = node(
-  pos,
-  align(center, label),
-  width: 50mm,
-  height: 8mm,
-  fill: tint.lighten(60%),
-  stroke: 1pt + tint.darken(20%),
-  corner-radius: 4pt,
-)
-
-#let green = rgb("8FBF8F")
-#let yellow = rgb("D8C27A")
-
-#diagram(
-  caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
-  short-caption: [TCN residual block],
-  scale(x: 100%, y: 100%, fletcher-diagram(
-    spacing: 6pt,
-    cell-size: (10mm, 10mm),
-    edge-stroke: 1pt,
-    edge-corner-radius: 6pt,
-
-    // Main vertical stack
-    edge((2, -1), "d", "-|>"),
-    node((2, 0), circle(radius: 3pt, fill: black)),
-
-    edge("ll,d", "-|>"),
-    block((0, 1), [Dilated Causal Conv], green),
-    edge(),
-    block((0, 2), [WeightNorm], yellow),
-    edge(),
-    block((0, 3), [ReLU], green),
-    edge(),
-    block((0, 4), [Dropout], yellow),
-
-    edge(),
-    block((0, 5), [Dilated Causal Conv], green),
-    edge(),
-    block((0, 6), [WeightNorm], yellow),
-    edge(),
-    block((0, 7), [ReLU], green),
-    edge(),
-    block((0, 8), [Dropout], yellow),
-
-    // Sum node
-    edge("d,rr", "-|>"),
-    node((2, 9), circle(radius: 5pt, fill: rgb("E07A6F"))[+]),
-
-    // Residual branch (right side)
-    block((2, 6), [1$times$1 Conv (optional)], green),
-
-    // Connections
-    edge((2, 0), (2, 3), "ddd", "-|>"),
-    edge((2, 3), (2, 6), "ddd", "-|>"),
-    edge((2, 9), "d", "-|>"),
-    // edge((2,6), (0,8), "drr,u", "-|>"),
-  )),
-)<tcn_figure_residual_block>
-
-
 #let circ(pos, fill) = node(
   outset: 0pt,
   inset: 0pt,
   pos,
   circle(radius: 10pt, fill: fill, stroke: 1pt + black),
 )
-
-
-
-Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure while remaining fully convolutional and therefore highly parallelizable. They also provide explicit control over receptive field size through kernel width, depth, and dilation schedule. This makes them attractive for audio tasks that require a compromise between temporal context and computational efficiency. In this thesis, @TCN:pl are particularly relevant because Conv-TasNet uses a temporal convolutional network to estimate masks over an encoded waveform representation @luoConvTasNetSurpassingIdeal2019. The basic principles of @TCN:pl therefore form part of the architectural foundation for the dereverberation models discussed later.
 
 #diagram(
   caption: [
@@ -458,6 +394,75 @@ Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure
     ),
   ),
 )<tcn_figure_dilation>
+
+#TODO[DO WE REALLY NEED THIS?]
+#let block(pos, label, tint) = node(
+  pos,
+  align(center, label),
+  width: 50mm,
+  height: 8mm,
+  fill: tint.lighten(60%),
+  stroke: 1pt + tint.darken(20%),
+  corner-radius: 4pt,
+)
+
+#let green = rgb("8FBF8F")
+#let yellow = rgb("D8C27A")
+
+#diagram(
+  caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
+  short-caption: [TCN residual block],
+  scale(x: 100%, y: 100%, fletcher-diagram(
+    spacing: 6pt,
+    cell-size: (10mm, 10mm),
+    edge-stroke: 1pt,
+    edge-corner-radius: 6pt,
+
+    // Main vertical stack
+    edge((2, -1), "d", "-|>"),
+    node((2, 0), circle(radius: 3pt, fill: black)),
+
+    edge("ll,d", "-|>"),
+    block((0, 1), [Dilated Causal Conv], green),
+    edge(),
+    block((0, 2), [WeightNorm], yellow),
+    edge(),
+    block((0, 3), [ReLU], green),
+    edge(),
+    block((0, 4), [Dropout], yellow),
+
+    edge(),
+    block((0, 5), [Dilated Causal Conv], green),
+    edge(),
+    block((0, 6), [WeightNorm], yellow),
+    edge(),
+    block((0, 7), [ReLU], green),
+    edge(),
+    block((0, 8), [Dropout], yellow),
+
+    // Sum node
+    edge("d,rr", "-|>"),
+    node((2, 9), circle(radius: 5pt, fill: rgb("E07A6F"))[+]),
+
+    // Residual branch (right side)
+    block((2, 6), [1$times$1 Conv (optional)], green),
+
+    // Connections
+    edge((2, 0), (2, 3), "ddd", "-|>"),
+    edge((2, 3), (2, 6), "ddd", "-|>"),
+    edge((2, 9), "d", "-|>"),
+    // edge((2,6), (0,8), "drr,u", "-|>"),
+  )),
+)<tcn_figure_residual_block>
+
+
+
+
+
+
+Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure while remaining fully convolutional and therefore highly parallelizable. They also provide explicit control over receptive field size through kernel width, depth, and dilation schedule. This makes them attractive for audio tasks that require a compromise between temporal context and computational efficiency. In this thesis, @TCN:pl are particularly relevant because Conv-TasNet uses a temporal convolutional network to estimate masks over an encoded waveform representation @luoConvTasNetSurpassingIdeal2019. The basic principles of @TCN:pl therefore form part of the architectural foundation for the dereverberation models discussed later.
+
+
 
 
 ==== Autoencoders

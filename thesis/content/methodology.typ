@@ -6,6 +6,8 @@
 
 = Methodology<methodology>
 
+This chapter outlines the methodology underlying the thesis. It begins with the rationale behind the collection and creation of the dataset, followed by an analysis of applicable loss functions. Finally, the design and implementation of the three proposed networks are described: the perceptual quality network, the objective quality network, and the dereverberation network.
+
 == Dataset
 
 Other machine learning fields, mainly @CV and @LLM:pl, have long been trained on publicly available diverse datasets @dengImageNetLargeScaleHierarchical2009, namely mC4, MassiveText, or the Wikipedia dataset @naveedComprehensiveOverviewLarge2025.

@@ -34,7 +34,7 @@ A second implementation based on CNN14 as introduced by #cite(<kongPANNsLargeSca
 The initial implementation of the perceptual quality network is based on a simple two-dimensional @CNN. This architecture was chosen because
 @CNN:pl have been widely adopted in audio machine learning @grau-haroComprehensiveEvaluationCNNBased2025 and have shown great performance. The small computational cost increase as compared to a waveform-domain approach was a nonissue, as this network was not to be used during inference but only during training of the dereverberation model (see @impl_derev_net).
 
-The forward pass includes conversion into a log-magnitude spectrogram using the @STFT, logarithmic compression is discussed in @impl_percep_qual_net_cnn14, a shared encoder counting three two-dimensional convolutional layers all featuring batch normalization, @ReLU as the activation function, and Max Pooling.
+The forward pass begins with conversion to a log-magnitude spectrogram via the @STFT (logarithmic compression is discussed in @impl_percep_qual_net_cnn14), followed by a shared encoder consisting of three 2D convolutional layers, each with batch normalization, @ReLU activation, and max pooling.
 
 The output of this shared encoder is then fed into three prediction heads, each corresponding to one of the three initial labels (wetness, size, @ODG). The output of each prediction head is concatenated with the shared encoder output and fed into the quality prediction head, giving this model the ability to predict all parameters at once.
 
@@ -94,7 +94,7 @@ This gives us a better chance at debugging (cf. @eval_percep_qual_net_cnn14) and
 $
   "loss" = 2 dot "loss"_"quality" + "loss"_"odg" + 0.75 dot "loss"_"size" + 0.75 dot "loss"_"wetness"
 $<percep_qual_loss_init>
-.
+
 === CNN14<impl_percep_qual_net_cnn14>
 
 Compared to the initial implementation, this version offers a number of improvements. Mainly a new shared encoder architecture based on the CNN14 network (cf. @arch_impl_qual_net_cnn14), which was introduced as a real-time audio pattern recognition model by #cite(<kongPANNsLargeScalePretrained2020>, form: "prose", style: "chicago-author-date"). We thought it fitting as we were trying to solve an adjacent problem (audio characteristic recognition) with good performance, as we did not want to needlessly slow down the training process of the dereverberation network.

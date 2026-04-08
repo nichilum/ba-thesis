@@ -170,7 +170,7 @@ In our own listening tests on speech samples, this quality is confirmed: reverbe
 
 On music and other non-speech content, the model's behavior is less predictable. As the pretrained checkpoint has no exposure to non-speech signals during training, generalization is limited to the extent that spectral patterns of broadband audio are covered by the speech-domain prior. In listening tests, music samples processed by StoRM tend to exhibit subtle timbral changes compared to the unprocessed input, without achieving a consistent reduction of the reverberant tail. This out-of-domain degradation is expected given the training data composition and is explored further in the quantitative comparison in the next section.
 
-The iterative reverse diffusion inference requires many sequential neural network evaluations per sample, making StoRM substantially more expensive than Conv-TasNet. On a single H100 GPU (CLAIX-2023-ML), processing 2048 AudioSet samples took 6 h 14 m 51 s, compared to 4 m 15 s for Conv-TasNet --- approximately $88times$ slower (cf. @conv_tasnet_storm_comparison). Real-time application of this pretrained model is therefore not feasible without architectural modifications such as reducing the number of reverse diffusion steps or distillation.
+The iterative reverse diffusion inference requires many sequential neural network evaluations per sample, making StoRM substantially more expensive than Conv-TasNet. On a single H100 GPU (CLAIX-2023-ML), processing 2048 AudioSet samples took 6 h 14 m 51 s, compared to 4 m 15 s for Conv-TasNet (cf. @conv_tasnet_storm_comparison). Real-time application of this pretrained model is therefore not feasible without architectural modifications such as reducing the number of reverse diffusion steps or distillation.
 
 == Perceptual Quality Network<results_percep_quality_net>
 #jojo
@@ -302,7 +302,7 @@ First, a baseline using the @SI-SNR was established. Training was done over 62 e
   )<derev_tcn_v4_loss_percep>],
 )
 
-Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated, where @derev_tcn_v4_sisnr is a earlier checkpoint at 16 epochs and a validation loss of 14.3848 dB.
+Results of the model output can be seen in @derev_tcn_v4_sisnr and @derev_tcn_v4_sisnr_updated, where @derev_tcn_v4_sisnr is an earlier checkpoint at 16 epochs and a validation loss of 14.3848 dB.
 
 #diagram(
   caption: [

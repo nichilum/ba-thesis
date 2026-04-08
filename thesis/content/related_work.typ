@@ -73,4 +73,4 @@ Quality-Net's performance was evaluated over 100 utterances using the @MSE, @LCC
 
 A constraint applies conditional weighting to each frame. This was done because noise can vary throughout an audio sample, and using a singular quality value for each frame of an audio sample could degrade model performance.
 
-@quality-net-quality shows good correlation but a considerably high @MSE value as @PESQ values lie between 0 and 4. These findings, among other things, motivated our own development of an audio assessment model, which is discussed in @meth_percep_quality_net.
+@quality-net-quality shows good correlation but a considerably high @MSE value, given that @PESQ values lie between 0 and 4. These findings, among other things, motivated our own development of an audio assessment model, which is discussed in @meth_percep_quality_net.

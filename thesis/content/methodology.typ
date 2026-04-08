@@ -143,7 +143,7 @@ Additional labels used for the perceptual loss model (see @meth_percep_quality_n
   ),
 ))<percep_process_pipeline>
 
-This synthetic labeling approach is similar in concept to self-supervised training, where a supervisory signal is generated through augmentation (see @self_supervised_and_supervised_learning). For instance, in @CV:long tasks, self-supervision is often used for autoencoder training or classification. Even in the domain of computational audio, self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However, as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio, it cannot be classified as such (see @self_supervised_and_supervised_learning).
+This synthetic labeling approach is similar in concept to self-supervised training, where a supervisory signal is generated through augmentation (see @self_supervised_and_supervised_learning). In the domain of computational audio, self-supervised approaches have shown great efficiency @baevskiWav2vec20Framework2020. However, as our objective is neither autoassociative nor contrastive but a supervised regression from reverberant to dry audio, it cannot be classified as such (see @self_supervised_and_supervised_learning).
 
 ==== Reverberation<preprocessing_reverberation>
 
@@ -155,6 +155,7 @@ Reverberation through convolution via @RIR:pl is the most realistic way of gener
 
 Parameter-based reverberation, like delay networks, is fast and requires little memory, but careful tuning is necessary to find configurations that sound realistic @schlechtFeedbackDelayNetworks2018 @siddiqOptimizationConvolutionReverberation2020. This gives us easy access to, e.g., size and wetness controls that we can use for labeling (see @meth_percep_quality_net).
 
+In computational acoustics, room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials, and microphone placements. This is done either by trying to solve the wave equation by the discretization of the space, geometric solutions like the @ISM @allenImageMethodEfficiently1979, or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
 In computational acoustics, room simulations are used for reverberating audio @lemercierStoRMDiffusionbasedStochastic2023. Game engines such as Unity @mannallRoomAcoustiCOpensourceRoom2025 or libraries like pyroomacoustics @scheiblerPyroomacousticsPythonPackage2018 can be used to simulate rooms with different sizes, materials, and microphone placements. This is done either by trying to solve the wave equation by the discretization of the space, geometric solutions like the @ISM @allenImageMethodEfficiently1979, or ray tracing @vorlanderAuralizationFundamentalsAcoustics2008. While this is attempting to recreate an acoustic space as close as possible, it is also the most computationally expensive and not possible to do live or offline for our amount of data. Unity's processing is also done in real time, which makes it not feasible, as the runtime would be about 324 hours (cf. @dataset_comp).
 
 A first implementation was done using live processing in memory. All three approaches described above were implemented for an interchangeable framework. Using this, the original Conv-TasNet data loader was adjusted to use the @RIR implementation.
@@ -186,9 +187,9 @@ Specifically, we first used Valhalla Supermassive in the VST3 format, which was 
 //     - Unity is done in realtime (add unity screenshots) -> not feasable for our amount of data (name total length of data in hours)
 //     - pyroomacoustics is not realtime but also not possible to do offline or live for our amount of data
 
-When processing the data from our dataset, the decision was made to reverberate all files in their native sample rate and then later upsample them to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and FreeSound at 44.1 kHz.
+When processing the data from the dataset, the files were reverberated at their native sample rate and later upsampled to the sample rate used for training. The three sub-datasets have the following sample rates: AudioSet at 44.1 kHz, LibriSpeech at 16 kHz, and FreeSound at 44.1 kHz.
 
-While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented, as shown by the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwidth of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, we introduce some inconsistencies in the reverberation.
+While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAudioCompression2006, 16 kHz only allows for an upper frequency of $ f_"max" = f_s / 2 = (16 "kHz") / 2 = 8 "kHz" $ to be represented, as shown by the Nyquist theorem @shannonCommunicationPresenceNoise1949. While this is technically enough to represent speech signals, which only need a bandwidth of 300 Hz to 3400 Hz @itu-tG711PulseCode1988, the reverberation applied at the native sample rate, introduces bandwidth limitations in the reverb signal.
 
 // - sample rate: upscaling downscaling possible??
 // - short usability study what sampling (higher limit) rates are possible in real world scenarios (DAC)
@@ -204,41 +205,7 @@ While 44.1 kHz is a fairly standard sample rate for consumer audio content @puAu
 //   - "size": np.interp(size, SIZE_RANGE, [0, 1]), #sym.arrow schon normiert
 //   - "wetness": np.interp(wet, WET_RANGE, [0, 1]), #sym.arrow schon normiert
 
-The distribution of generated reverberation times ($R T_60$) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968, which is based on the energy decay curve of the reverberant signal.
-
-// #TODO[
-//   - rt60s of dataset
-//   - measured using schroeder method @schroederNewMethodMeasuring1968
-//   - histogram spike to the right not expected
-//     - wetness and size are uniformly distributed, so a "maximum" reverberation time generated, is not expected to be more common than any other reverberation time
-// ]
-
-#diagram(
-  caption: [$R T_60$ distribution of reverberated dataset],
-  table(
-    columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
-    align: (left, right, right, right, right, right),
-
-    table.header([*Split*], [*Mean [s]*], [*Median [s]*], [*Std [s]*], [*Min [s]*], [*Max [s]*]),
-
-    [All], [1.480289], [1.185601], [0.787817], [0.578050], [2.805147],
-    [Train], [1.481210], [1.185624], [0.788235], [0.578050], [2.805147],
-    [Val], [1.475887], [1.188571], [0.784935], [0.578050], [2.805147],
-    [Test], [1.480334], [1.180454], [0.788687], [0.578050], [2.805125],
-  ),
-)<rt60_distribution_table>
-
-The histogram in @rt60_distribution_plot shows the distribution of $R T_60$ values across the entire reverberated dataset, with a mean of 1.48 s. Overall, it shows a wide variety of reverberation times while still being in a realistic range. The spike at the right end of the histogram is not expected, as wetness and size parameters were uniformly distributed, meaning that a "maximum" reverberation time should not be more common than any other reverberation time. This could be caused by a non-linear relationship between the wetness and size parameters and the resulting $R T_60$ value, which could lead to certain combinations of parameters producing similar $R T_60$ values more frequently. Another possibility is that there is a bug in the code that generates the reverberated signals or in the code that measures the $R T_60$ values, which could lead to incorrect measurements or an overrepresentation of certain $R T_60$ values. Further investigation would be needed to determine the exact cause of this spike in the histogram.
-
-#diagram(
-  caption: [
-    Distribution of $R T_60$ values across entire reverberated dataset
-  ],
-  image("../../utils/rt-measure/plots/rt60_distribution_all.png"),
-)<rt60_distribution_plot>
-
-
-
+@eval_reverb_time_distribution discusses the distribution of reverberation times in the dataset.
 
 ==== Calculation of @PEAQ:short Scores<preprocessing_peaq>
 
@@ -294,7 +261,7 @@ $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
 
 @plot_metrics_against_size_and_wet shows a two-dimensional @KDE:both for each metric plotted against both the size and wetness parameters as well as $"size" dot "wetness"$. The latter one was included as it is possible that samples with high size values simultaneously exhibit low wetness values and therefore are not reverberant (cf. @size_and_wetness_eq and @size_or_wetness_eq). The "$"size" dot "wetness"$" plot corrects for that.
 
-A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points, therefore excluding outliers. All data shown in grey is considered outlier data and is only displayed to fill space appropriated by the regression line.
+A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points, therefore excluding outliers. All data shown in grey is considered outlier data.
 
 The dotted blue line represents a linear regression over all data points, including outliers. The light blue confidence interval band represents the 95% confidence interval for the regression line.
 
@@ -308,9 +275,9 @@ The @DI score was not normalized as the exact value range is unknown to us. It b
 
 Although @PESQ was only proven to work on speech signals, it showed a slightly improved performance compared to the @DI score.
 
-It is evident that the @SI-SNR metric performs best as a judgment of dereverberation performance. The wetness @KDE plot shows a strong correlation of absolute @SI-SNR value and reverberation influence. And as wetness and size values are randomly sampled from a uniform distribution, the @SI-SNR density stays mostly the same over the entire wetness range, which is the desired behavior. Although more outlier data is present in the size plot, a clear downward trend can be examined in the highest density parts of the @KDE plot. Further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
+It is evident that the @SI-SNR metric performs best as a judgment of dereverberation performance. The wetness @KDE plot shows a strong correlation of absolute @SI-SNR value and reverberation influence. As wetness and size values are randomly sampled from a uniform distribution, the @SI-SNR density stays mostly the same over the entire wetness range, which is the desired behavior. Although more outlier data is present in the size plot, a clear downward trend can be examined in the highest density parts of the @KDE plot, further strengthening the assessment that @SI-SNR predicts reverberation well in diverse audio signals.
 
-The @MSE metric shows not only no real predictive performance in the @KDE plot but also a broad confidence interval negating the expression of the regression line.
+The @MSE metric shows neither meaningful predictive performance in the @KDE plot nor a narrow confidence interval, with the wide spread undermining the regression line.
 
 In similar fashion, the @MAE shows poor performance against the size parameter. The wetness plot shows a slight increase of @MAE against increasing wetness values. The problem is that this increase happens all below 0.04, meaning that every wetness value is assigned a very low error value or, in other words, is interpreted as "good".
 
@@ -321,11 +288,11 @@ The correlation metric exhibits a similar problem where not only the size plot s
 #jojo
 Although @analyze_loss_functions shows the @SI-SNR metric to have good qualities regarding the assessment of dereverberation performance in diverse audio signals according to the wetness parameter, the size parameter is not well represented. Calculating exact truths about a reverberated signal without the use of a neural network is nearly impossible, as it either requires knowledge of the sound source or the ability to model the reverb tail, which is not possible in short continuous utterances @ratnamBlindEstimationReverberation2003. The @SI-SNR, like all metrics introduced in @fun_quality_metrics, suffers from the need for a "golden" reference, which, as #cite(<fuQualityNetEndtoEndNonintrusive2018>, form: "prose", style: "chicago-author-date") write "considerably restricts the practicality of such assessment tools [...]". The presence of @MOS tests shows that humans can evaluate signal quality without the need of such a reference signal @fuQualityNetEndtoEndNonintrusive2018. Motivated by these shortcomings, we introduce our own loss network initially coined "Perceptual Quality Network".
 
-We place the following requirements on this loss network. It must be differentiable as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection), it must support wideband analysis up to 44.1 kHz.
+We place the following requirements on this loss network. It must be differentiable and support fast inference as it is to be used as a loss function (see @fun_loss_function). As we plan to use it on a dataset of diverse audio signals (cf. @data_collection), it must support wideband analysis up to 44.1 kHz.
 
-Differentiability is given by the fact that the computations of a neural network are differentiable. The only exception is the activation function @ReLU, which does not have a derivative in $z=0$. But in a real application the gradients are almost never zero, so this was ignored.
+Differentiability is given by the fact that the computations of a neural network are differentiable. The only exception is the activation function @ReLU, which does not have a derivative in $z=0$. In a real application the gradients are almost never zero, so this was ignored.
 
-Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018, which estimates a @PESQ score for a given signal (see @related_quality_net), our initial idea was to estimate a combination of the @ODG score, which we then thought best, as well as size and wetness parameters. Therefore, our model combines a perceptual and an objective approach.
+Similar in nature to Quality-Net @fuQualityNetEndtoEndNonintrusive2018, which estimates a @PESQ score for a given signal (see @related_quality_net), our initial idea was to estimate a combination of the @ODG score as well as size and wetness parameters. Therefore, our model combines a perceptual and an objective approach.
 
 
 Every training data pair consists of a reverberated audio sample serving as the network's input, along with four target values the network is trained to predict: the normalized size and wetness parameters used to generate the reverberation, the normalized @ODG score derived from a @PEAQ comparison with the original sample, and a quality score defined as:

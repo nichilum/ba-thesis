@@ -31,17 +31,12 @@ While the growth of sound is perceived as almost instant, the decay is slow.
   image("/thesis/figures/sound_growth_and_decay.svg"),
 )<fun_growth_decay_sound>
 
-Natural reverberation is classified through the reverberation-time metric ($R T$). The $R T_60$ indicates the time it takes for sound to decay by 60 dB after the source stops.
+Natural reverberation is characterized through the reverberation-time metric ($R T$). The $R T_60$ indicates the time it takes for sound to decay by 60 dB after the source stops.
 
 ==== Delay Networks<fun_delay_reverb>
 
 In the 1960s, Schroeder first launched the field of digital artificial reverberation by introducing recursive comb filters and allpass filters as means for cheap simulation of multiple echoes.
-The allpass filters of the form
-$
-  y(n) = g x(n) +x(n-N)-g y(n-N)
-$
-
-, where N is any positive integer, achieve dense echoes with a flat amplitude response rate and have been used extensively in artificial reverberation @moorerThisReverberationBusiness1979 @rocchessoCirculantEllipticFeedback1997.
+The allpass filters achieve dense echoes with a flat amplitude response rate and have been used extensively in artificial reverberation @moorerThisReverberationBusiness1979 @rocchessoCirculantEllipticFeedback1997.
 #import "@preview/diagraph:0.3.6": *
 
 The Schroeder reverberator used in this thesis is called "Freeverb", a public domain program by "Jezar at Dreampoint". It found widespread adoption in the free-software world @smithPhysicalAudioSignal2010.
@@ -77,14 +72,14 @@ The Schroeder reverberator used in this thesis is called "Freeverb", a public do
       }
     ```,
     labels: (
-      LBCF1: [$"LBCF"^(.84, .2, d)_(1557)$],
-      LBCF2: [$"LBCF"^(.84, .2, d)_(1617)$],
-      LBCF3: [$"LBCF"^(.84, .2, d)_(1491)$],
-      LBCF4: [$"LBCF"^(.84, .2, d)_(1422)$],
-      LBCF5: [$"LBCF"^(.84, .2, d)_(1277)$],
-      LBCF6: [$"LBCF"^(.84, .2, d)_(1356)$],
-      LBCF7: [$"LBCF"^(.84, .2, d)_(1188)$],
-      LBCF8: [$"LBCF"^(.84, .2, d)_(1116)$],
+      LBCF1: [$"LBCF"^(.84, .2)_(1557)$],
+      LBCF2: [$"LBCF"^(.84, .2)_(1617)$],
+      LBCF3: [$"LBCF"^(.84, .2)_(1491)$],
+      LBCF4: [$"LBCF"^(.84, .2)_(1422)$],
+      LBCF5: [$"LBCF"^(.84, .2)_(1277)$],
+      LBCF6: [$"LBCF"^(.84, .2)_(1356)$],
+      LBCF7: [$"LBCF"^(.84, .2)_(1188)$],
+      LBCF8: [$"LBCF"^(.84, .2)_(1116)$],
       plus1: [$+$],
       plus2: [$+$],
       plus3: [$+$],
@@ -104,7 +99,7 @@ $ "LBCF"^(f, d)_(N) eq.delta (z^(-N))/(1-f dot (1-d)/(1-d dot z^(-1)) dot z^(-N)
 
 ==== Convolutional Reverberation<fun_conv_reverb>
 
-#cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") proposed the idea of convolving a signal with a simulated @RIR to achieve natural-sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s did hardware become powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016.
+#cite(<schroederDigitalSimulationSound1969>, form: "prose", style: "chicago-author-date") also proposed the idea of convolving a signal with a simulated @RIR to achieve natural-sounding reverberation. Hardware at that time could not calculate convolution of full @RIR:pl and signals in reasonable times @valimakiFiftyYearsArtificial2012. Only in the late 1990s did hardware become powerful enough to support this approach to reverberation @SonyDRES777. Today, with advances in hard- and software, convolutions are considered a fast operation @siddiqOptimizationConvolutionReverberation2020 @misicAnalysisCPUGPU2016.
 
 The convolution of two signals $f$ and $g$ is defined as @wintnerAnalyticConvolutionsBernoulli1934:
 $ (f convolve g)(t) := integral_(-infinity)^infinity f(tau) g(t-tau) dif tau $
@@ -126,14 +121,14 @@ $
 
 , where the microphone is placed at $bold(r)$, the real source at $bold(s)_0$ and the set of image sources is defined as $cal(V)_bold(r) (bold(s)_0)$. $F_s$ is the sampling rate, $"gen"(bold(s))$ gives the reflection order of source $bold(s)$, $alpha$ is the wall absorption factor, $c$ is the speed of sound, and $delta_"LP"$ is the windowed sinc function @scheiblerPyroomacousticsPythonPackage2018.
 
-Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflects off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections. It is available in pyroomacoustics as a complement to the @ISM @vorlanderAuralizationFundamentalsAcoustics2008.
+Another geometric modeling technique is ray tracing. It is based on the assumption that sound travels in straight lines and reflects off surfaces according to the law of reflection. Rays are emitted from the source and traced through the environment until they reach the listener or exceed a certain number of reflections @vorlanderAuralizationFundamentalsAcoustics2008. It is available in pyroomacoustics as a complement to the @ISM.
 
 === Sound Quality<fun_sound_quality>
 
-@fun_quality_metrics describes different metrics that are used to qualify how well a corrupted (later also called predicted, test, or processed) audio signal sounds in comparison to its clean counterpart.
+@fun_quality_metrics describes different metrics that are used to qualify how well a corrupted audio signal sounds in comparison to its clean counterpart.
 Multiple of these metrics are perceptually motivated. This section gives an overview of parameters that impact the perception of audio. It is important to note that not all parameters listed can or should be used by quality metrics to qualify how good audio sounds (cf. @analyze_loss_functions).
 
-There are many different signal corruptions that impact perceived sound quality. Some occur naturally, like reverberation or background noise, while others are of digital origin, like undersampling, insufficient bit depth, or packet loss.
+There are many different signal corruptions that impact perceived sound quality. Some occur naturally, like reverberation or background noise, while others are of digital origin, like undersampling, insufficient bit depth, or packet loss in networks.
 
 The impact of different signal corruptions differs between applications. Arguably the most important parameter in perceived speech quality is the amount of noise introduced in the signal, as speech intelligibility degrades significantly with lower speech-to-noise ratios @longArchitecturalAcoustics2006. Speech intelligibility is also affected by excessive reverberation, as lower-level consonants are masked by the reverb tail. On the other hand, a completely dead room or an outdoor environment is not optimal for intelligibility, as the direct sound level may be too low to clearly hear speech. Also affected by reverberation is music, as different genres benefit from different $R T$s. Absent reverberation makes music sound thin and weak @everestMasterHandbookAcoustics1989.
 
@@ -268,7 +263,7 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
 
 ==== @TCN:short<fun_tcn>
 
-@TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors. This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally (cf. @tcn_figure_dilation), where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
+@TCN:pl adapt the convolutional idea to sequence modeling by applying one-dimensional convolutions along the temporal axis. To cover long contexts efficiently, they often use dilated convolutions, where filter taps are spaced apart by increasing dilation factors (cf. @tcn_figure_dilation). This enlarges the receptive field without requiring very deep networks or large kernels. Depending on the application, @TCN:pl can be implemented causally, where each output depends only on the present and past, or non-causally, where future context is also available @baiEmpiricalEvaluationGeneric2018.
 
 #import "@preview/fletcher:0.5.8": diagram as fletcher-diagram, edge, node
 
@@ -395,69 +390,65 @@ Classical @RNN:pl suffer from vanishing and exploding gradients when the depende
   ),
 )<tcn_figure_dilation>
 
-#TODO[DO WE REALLY NEED THIS?]
-#let block(pos, label, tint) = node(
-  pos,
-  align(center, label),
-  width: 50mm,
-  height: 8mm,
-  fill: tint.lighten(60%),
-  stroke: 1pt + tint.darken(20%),
-  corner-radius: 4pt,
-)
+// #TODO[DO WE REALLY NEED THIS?]
+// #let block(pos, label, tint) = node(
+//   pos,
+//   align(center, label),
+//   width: 50mm,
+//   height: 8mm,
+//   fill: tint.lighten(60%),
+//   stroke: 1pt + tint.darken(20%),
+//   corner-radius: 4pt,
+// )
 
-#let green = rgb("8FBF8F")
-#let yellow = rgb("D8C27A")
+// #let green = rgb("8FBF8F")
+// #let yellow = rgb("D8C27A")
 
-#diagram(
-  caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
-  short-caption: [TCN residual block],
-  scale(x: 100%, y: 100%, fletcher-diagram(
-    spacing: 6pt,
-    cell-size: (10mm, 10mm),
-    edge-stroke: 1pt,
-    edge-corner-radius: 6pt,
+// #diagram(
+//   caption: [TCN residual block, where the 1$times$1 Convolution is only added when input and output differ in dimensions. Replicated from #cite(<baiEmpiricalEvaluationGeneric2018>, form: "prose", style: "chicago-author-date").],
+//   short-caption: [TCN residual block],
+//   scale(x: 100%, y: 100%, fletcher-diagram(
+//     spacing: 6pt,
+//     cell-size: (10mm, 10mm),
+//     edge-stroke: 1pt,
+//     edge-corner-radius: 6pt,
 
-    // Main vertical stack
-    edge((2, -1), "d", "-|>"),
-    node((2, 0), circle(radius: 3pt, fill: black)),
+//     // Main vertical stack
+//     edge((2, -1), "d", "-|>"),
+//     node((2, 0), circle(radius: 3pt, fill: black)),
 
-    edge("ll,d", "-|>"),
-    block((0, 1), [Dilated Causal Conv], green),
-    edge(),
-    block((0, 2), [WeightNorm], yellow),
-    edge(),
-    block((0, 3), [ReLU], green),
-    edge(),
-    block((0, 4), [Dropout], yellow),
+//     edge("ll,d", "-|>"),
+//     block((0, 1), [Dilated Causal Conv], green),
+//     edge(),
+//     block((0, 2), [WeightNorm], yellow),
+//     edge(),
+//     block((0, 3), [ReLU], green),
+//     edge(),
+//     block((0, 4), [Dropout], yellow),
 
-    edge(),
-    block((0, 5), [Dilated Causal Conv], green),
-    edge(),
-    block((0, 6), [WeightNorm], yellow),
-    edge(),
-    block((0, 7), [ReLU], green),
-    edge(),
-    block((0, 8), [Dropout], yellow),
+//     edge(),
+//     block((0, 5), [Dilated Causal Conv], green),
+//     edge(),
+//     block((0, 6), [WeightNorm], yellow),
+//     edge(),
+//     block((0, 7), [ReLU], green),
+//     edge(),
+//     block((0, 8), [Dropout], yellow),
 
-    // Sum node
-    edge("d,rr", "-|>"),
-    node((2, 9), circle(radius: 5pt, fill: rgb("E07A6F"))[+]),
+//     // Sum node
+//     edge("d,rr", "-|>"),
+//     node((2, 9), circle(radius: 5pt, fill: rgb("E07A6F"))[+]),
 
-    // Residual branch (right side)
-    block((2, 6), [1$times$1 Conv (optional)], green),
+//     // Residual branch (right side)
+//     block((2, 6), [1$times$1 Conv (optional)], green),
 
-    // Connections
-    edge((2, 0), (2, 3), "ddd", "-|>"),
-    edge((2, 3), (2, 6), "ddd", "-|>"),
-    edge((2, 9), "d", "-|>"),
-    // edge((2,6), (0,8), "drr,u", "-|>"),
-  )),
-)<tcn_figure_residual_block>
-
-
-
-
+//     // Connections
+//     edge((2, 0), (2, 3), "ddd", "-|>"),
+//     edge((2, 3), (2, 6), "ddd", "-|>"),
+//     edge((2, 9), "d", "-|>"),
+//     // edge((2,6), (0,8), "drr,u", "-|>"),
+//   )),
+// )<tcn_figure_residual_block>
 
 
 Compared to @RNN:pl, @TCN:pl retain the ability to model long temporal structure while remaining fully convolutional and therefore highly parallelizable. They also provide explicit control over receptive field size through kernel width, depth, and dilation schedule. This makes them attractive for audio tasks that require a compromise between temporal context and computational efficiency. In this thesis, @TCN:pl are particularly relevant because Conv-TasNet uses a temporal convolutional network to estimate masks over an encoded waveform representation @luoConvTasNetSurpassingIdeal2019. The basic principles of @TCN:pl therefore form part of the architectural foundation for the dereverberation models discussed later.
@@ -733,13 +724,13 @@ $ (partial E)/(partial y_i) = sum_j (partial E)/(partial x_j) dot w_(j i) $
 
 . This shows how $(partial E)/(partial y)$ of the output layer can be computed when $(partial E)/(partial y_i)$ of the layer before is given. This procedure can therefore be repeated for each layer going backwards.
 
-Historically these computations have been done manually by the researchers @baydinAutomaticDifferentiationMachine2015. This task is tedious and error-prone. Here automatic differentiation algorithms are of assistance. PyTorch's autograd system records all functional computations involved in generating the network's output in a directed acyclic graph, with input tensors as leaves and output tensors as roots. By traversing this graph from roots to leaves, gradients can be computed automatically via the chain rule @AutogradMechanicsPyTorch. It is important to note that this automatic process requires every function to respect the input data's need for a gradient. During computation, gradient calculation can be accidentally disabled. This problem can occur when using another neural network as the loss function. This is further discussed in @impl_derev_net.
+Historically these computations have been done manually by the researchers @baydinAutomaticDifferentiationMachine2015. This task is tedious and error-prone. Here automatic differentiation algorithms are of assistance. PyTorch's autograd system records all functional computations involved in generating the network's output in a directed acyclic graph, with input tensors as leaves and output tensors as roots. By traversing this graph from roots to leaves, gradients can be computed automatically via the chain rule @AutogradMechanicsPyTorch. It is important to note that this automatic process requires every function to respect the input data's need for a gradient. During computation, gradient calculation can be wrongfully disabled. This problem can occur when using another neural network as the loss function. This is further discussed in @impl_derev_net.
 
 ==== Gradient Descent<fun_gradient_descent>
 
 In @fun_backpropagation, it is discussed how partial derivatives of the error function $E$ can be calculated either manually or through the use of an automatic differentiation system.
 
-Once $gradient E$ is calculated, each weight can be adjusted so that the loss is further minimized (cf. @fun_apply_gradient_to_loss_eq). Through this process, called gradient descent, a local minimum is searched. Finding a global minimum is not necessary, as experts "suspect that, for sufficiently large neural networks, most local minima have a low cost function value, and that it is not important to find a true global minimum" @goodfellowDeepLearning2016.
+Once $gradient E$ is calculated, each weight can be adjusted so that the loss is further minimized (cf. @fun_apply_gradient_to_loss_eq). Through this process, called gradient descent, a local minimum is searched. Finding a global minimum is not necessary, as experts "[...] suspect that, for sufficiently large neural networks, most local minima have a low cost function value, and that it is not important to find a true global minimum [...]" @goodfellowDeepLearning2016.
 
 #cite(<rumelhartLearningRepresentationsBackpropagating1986>, form: "prose", style: "chicago-author-date") introduce the simplest version of gradient descent as the accumulation of all gradients over all training examples and changing each weight by an amount proportional to the accumulated $(partial E)/(partial w)$. There are, in fact, improvements to this approach in the @SGD method, which approximates the gradient of the entire dataset over a small subset of training examples, also called minibatches. This lowers the computational cost of calculating a gradient over the entire dataset, which is especially useful when dealing with large amounts of data. It is not guaranteed that the @SGD method arrives at a local minimum in a reasonable amount of time, but often a useful "low enough" loss is found @goodfellowDeepLearning2016.
 

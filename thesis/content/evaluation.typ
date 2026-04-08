@@ -3,7 +3,42 @@
 #import "/thesis/utils/author.typ": *
 = Evaluation
 
-This chapter discusses the results shown @results in regards to the problem statement found in @intro_problem.  Shortcomings of our approach introduced in @methodology are debated and further research questions are asked.
+This chapter discusses the results shown @results in regards to the problem statement found in @intro_problem. Shortcomings of our approach introduced in @methodology are debated and further research questions are asked.
+
+== Reverberation Time Distribution in the Dataset<eval_reverb_time_distribution> 
+
+The distribution of generated reverberation times ($R T_60$) for the samples in our dataset (see @preprocessing_reverberation) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968, which is based on the energy decay curve of the reverberant signal.
+
+// #TODO[
+//   - rt60s of dataset
+//   - measured using schroeder method @schroederNewMethodMeasuring1968
+//   - histogram spike to the right not expected
+//     - wetness and size are uniformly distributed, so a "maximum" reverberation time generated, is not expected to be more common than any other reverberation time
+// ]
+
+#diagram(
+  caption: [$R T_60$ distribution of reverberated dataset],
+  table(
+    columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+    align: (left, right, right, right, right, right),
+
+    table.header([*Split*], [*Mean [s]*], [*Median [s]*], [*Std [s]*], [*Min [s]*], [*Max [s]*]),
+
+    [All], [1.480289], [1.185601], [0.787817], [0.578050], [2.805147],
+    [Train], [1.481210], [1.185624], [0.788235], [0.578050], [2.805147],
+    [Val], [1.475887], [1.188571], [0.784935], [0.578050], [2.805147],
+    [Test], [1.480334], [1.180454], [0.788687], [0.578050], [2.805125],
+  ),
+)<rt60_distribution_table>
+
+The histogram in @rt60_distribution_plot shows the distribution of $R T_60$ values across the entire reverberated dataset, with a mean of 1.48 s. Overall, it shows a wide variety of reverberation times while still being in a realistic range. The spike at the right end of the histogram is not expected, as wetness and size parameters were uniformly distributed, meaning that a "maximum" reverberation time should not be more common than any other reverberation time. This could be caused by a non-linear relationship between the wetness and size parameters and the resulting $R T_60$ value, which could lead to certain combinations of parameters producing similar $R T_60$ values more frequently. Another possibility is that there is a bug in the code that generates the reverberated signals or in the code that measures the $R T_60$ values, which could lead to incorrect measurements or an overrepresentation of certain $R T_60$ values. Further investigation would be needed to determine the exact cause of this spike in the histogram.
+
+#diagram(
+  caption: [
+    Distribution of $R T_60$ values across entire reverberated dataset
+  ],
+  image("../../utils/rt-measure/plots/rt60_distribution_all.png"),
+)<rt60_distribution_plot>
 
 == Analysis of Applicable Loss Functions<eval_analyze_loss_functions>
 
@@ -132,7 +167,7 @@ Multiple shortcomings of the general approach to the training and using as a los
 
 The @MSE, @MAE and correlation averages of the quality score shown in @results_obj_score_table demonstrate worse performance than the ones of the perceptual quality net (cf. @results_percep_table). This is to be expected, as now all values of the quality score are uniformly distributed in the range of 0 to 1.
 
-As we did not utilize the singular @ODG, size, and wetness predictions, it was decided that the extra computational resources used to propagate errors stemming from these prediction heads can be saved. Using the updated loss function (cf. @impl_objective_quality_network), the metric averages of the quality score did not improve notably (cf. @results_obj_score_loss_table).
+As we did not utilize singular @ODG, size, and wetness predictions, it was decided that the extra computational resources used to propagate errors stemming from these prediction heads can be saved. Using the updated loss function (cf. @impl_objective_quality_network), the metric averages of the quality score did not improve notably (cf. @results_obj_score_loss_table).
 
 @results_obj_score_loss_analyze shows that the quality score stemming from the objective quality network using the updated loss function is competitive with the @SI-SNR metric for indicating dereverberation performance (cf. @analyze_loss_functions). Predictions against the size parameter have improved substantially, exhibiting markedly reduced error. While predictions against the wetness parameter remain more dispersed, the nonlinear curvature previously observed in the @SI-SNR visualization (cf. @plot_metrics_against_size_and_wet) is no longer present, indicating that optimization with respect to this metric should yield more stable and predictable convergence behavior.
 

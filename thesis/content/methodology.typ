@@ -263,7 +263,7 @@ $ ("wetness" = 1) or ("size"= 1) $<size_or_wetness_eq>
 
 A @KDE plot is similar to a histogram but differentiates itself through a continuous density curve. This density curve was then subdivided into 15 distinct plateaus or levels where contour lines were drawn. All data shown in color lies between the 15th and 85th percentile of data points, therefore excluding outliers. All data shown in grey is considered outlier data.
 
-The dotted blue line represents a linear regression over all data points, including outliers. The light blue confidence interval band represents the 95% confidence interval for the regression line.
+The dotted blue line represents a linear regression over all data points, including outliers. The light blue confidence interval band represents the $95 %$ confidence interval for the regression line.
 
 All tested signals were time and amplitude aligned. The only difference being the reverberation of the processed signal. Wetness and size values of the reverberator are selected randomly from a uniform distribution.
 

@@ -5,7 +5,7 @@
 
 This chapter discusses the results shown @results in regards to the problem statement found in @intro_problem. Shortcomings of our approach introduced in @methodology are debated and further research questions are asked.
 
-== Reverberation Time Distribution in the Dataset<eval_reverb_time_distribution> 
+== Reverberation Time Distribution in the Dataset<eval_reverb_time_distribution>
 
 The distribution of generated reverberation times ($R T_60$) for the samples in our dataset (see @preprocessing_reverberation) is shown in @rt60_distribution_table and @rt60_distribution_plot. These times were not measured on the reverberated signals directly but measured on an impulse that was reverberated with the same parameters as the audio sample. Measurements were then done using the Schroeder method @schroederNewMethodMeasuring1968, which is based on the energy decay curve of the reverberant signal.
 
@@ -217,9 +217,7 @@ Both Conv-TasNet and StoRM were trained exclusively on speech recordings and had
 )<conv_tasnet_storm_comparison>
 
 Across all metrics, both models perform substantially below their in-domain speech statistics. PESQ-WB reaches only $1.35$ (StoRM) and $1.45$ (Conv-TasNet), far below StoRM's in-domain speech result of $2.83$ (@storm_paper_metrics). @ODG values of $-3.67$ and $-3.83$ place both models near the lower end of the five-step degradation scale, indicating consistently "annoying" to "very annoying" perceived quality. The boxplots in @boxplot_comparison confirm that these results are not driven by a few extreme samples: distributions are broad but consistent, with no single extreme point pulling results in one direction. Boxplots for @SI-SNR and @PESQ show some narrower interquartile ranges and shorter whiskers for the StoRM model, meaning Conv-TasNet's performance is more inconsistent.
-A recurring informal observation from listening tests and viewing spectrograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison and @spectrogram_comparison_storm) and likely contributes to the degraded metric values.
-
-#TODO[also theoretisch ist ja nur mse scale invariant]
+A recurring informal observation from listening tests and viewing spectrograms is that both models tend to lower the output level relative to the input, especially for non-speech signals. This unintended effect is visible in the spectrograms (@spectrogram_comparison and @spectrogram_comparison_storm).
 
 It should be noted that the @SI-SNR values obtained from our Conv-TasNet implementation trained with the MSE loss function may deviate from those reported by the original implementation (see @eval_si_snr_calculations), although a comparable disparity between in-domain and out-of-domain performance can be anticipated when using the original implementation under analogous conditions.
 
